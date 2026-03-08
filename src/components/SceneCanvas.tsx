@@ -26,7 +26,7 @@ function GridLayer({ width, height, zoom, isDark }: { width: number; height: num
   return <>{lines}</>;
 }
 
-function MeasurementLine({ m, onRemove }: { m: Measurement; onRemove: () => void }) {
+function MeasurementLine({ m, isSelected, onSelect, onRemove }: { m: Measurement; isSelected?: boolean; onSelect?: () => void; onRemove: () => void }) {
   const dx = m.x2 - m.x1;
   const dy = m.y2 - m.y1;
   const dist = Math.sqrt(dx * dx + dy * dy);
@@ -36,22 +36,27 @@ function MeasurementLine({ m, onRemove }: { m: Measurement; onRemove: () => void
   const len = dist || 1;
   const perpX = (-dy / len) * 6;
   const perpY = (dx / len) * 6;
+  const strokeColor = isSelected ? '#f59e0b' : '#22d3ee';
 
   return (
-    <Group>
-      <Line points={[m.x1, m.y1, m.x2, m.y2]} stroke="#22d3ee" strokeWidth={1.5} dash={[6, 3]} />
-      <Line points={[m.x1 + perpX, m.y1 + perpY, m.x1 - perpX, m.y1 - perpY]} stroke="#22d3ee" strokeWidth={2} />
-      <Line points={[m.x2 + perpX, m.y2 + perpY, m.x2 - perpX, m.y2 - perpY]} stroke="#22d3ee" strokeWidth={2} />
-      <Circle x={m.x1} y={m.y1} radius={4} fill="#22d3ee" />
-      <Circle x={m.x2} y={m.y2} radius={4} fill="#22d3ee" />
+    <Group onClick={onSelect} onTap={onSelect}>
+      {/* Wider invisible hit area */}
+      <Line points={[m.x1, m.y1, m.x2, m.y2]} stroke="transparent" strokeWidth={12} />
+      <Line points={[m.x1, m.y1, m.x2, m.y2]} stroke={strokeColor} strokeWidth={isSelected ? 2.5 : 1.5} dash={[6, 3]} />
+      <Line points={[m.x1 + perpX, m.y1 + perpY, m.x1 - perpX, m.y1 - perpY]} stroke={strokeColor} strokeWidth={2} />
+      <Line points={[m.x2 + perpX, m.y2 + perpY, m.x2 - perpX, m.y2 - perpY]} stroke={strokeColor} strokeWidth={2} />
+      <Circle x={m.x1} y={m.y1} radius={4} fill={strokeColor} />
+      <Circle x={m.x2} y={m.y2} radius={4} fill={strokeColor} />
       <Group x={midX} y={midY}>
-        <Rect x={-30} y={-22} width={60} height={18} fill="hsl(225, 22%, 11%)" stroke="#22d3ee" strokeWidth={1} cornerRadius={3} opacity={0.9} />
-        <Text x={-30} y={-20} width={60} text={`${distUnits}'`} fontSize={11} fontFamily="JetBrains Mono, monospace" fill="#22d3ee" align="center" />
+        <Rect x={-30} y={-22} width={60} height={18} fill="hsl(225, 22%, 11%)" stroke={strokeColor} strokeWidth={1} cornerRadius={3} opacity={0.9} />
+        <Text x={-30} y={-20} width={60} text={`${distUnits}'`} fontSize={11} fontFamily="JetBrains Mono, monospace" fill={strokeColor} align="center" />
       </Group>
-      <Group x={midX + 35} y={midY - 22} onClick={onRemove} onTap={onRemove}>
-        <Circle radius={7} fill="#ef4444" opacity={0.8} />
-        <Text x={-4} y={-5} text="×" fontSize={10} fill="#fff" fontStyle="bold" />
-      </Group>
+      {isSelected && (
+        <Group x={midX + 35} y={midY - 22} onClick={onRemove} onTap={onRemove}>
+          <Circle radius={8} fill="#ef4444" opacity={0.9} />
+          <Text x={-4} y={-6} text="×" fontSize={12} fill="#fff" fontStyle="bold" />
+        </Group>
+      )}
     </Group>
   );
 }
