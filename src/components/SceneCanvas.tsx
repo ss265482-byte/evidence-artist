@@ -595,13 +595,16 @@ export default function SceneCanvas() {
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Delete' || e.key === 'Backspace') {
         const tag = document.activeElement?.tagName;
-        if (selectedObjectId && tag !== 'INPUT' && tag !== 'TEXTAREA') {
-          e.preventDefault();
-          removeObject(selectedObjectId);
-        }
+        if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+        e.preventDefault();
+        if (selectedObjectId) { removeObject(selectedObjectId); }
+        else if (selectedWallId) { removeWall(selectedWallId); selectWall(null); }
+        else if (selectedMeasurementId) { removeMeasurement(selectedMeasurementId); selectMeasurement(null); }
       }
       if (e.key === 'Escape') {
         selectObject(null);
+        selectWall(null);
+        selectMeasurement(null);
         setTool('select');
         setContextMenu(null);
         setIsDrawing(false);
@@ -612,7 +615,7 @@ export default function SceneCanvas() {
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [selectedObjectId, removeObject, selectObject, setTool]);
+  }, [selectedObjectId, selectedWallId, selectedMeasurementId, removeObject, removeWall, removeMeasurement, selectObject, selectWall, selectMeasurement, setTool]);
 
   useEffect(() => {
     if (!contextMenu) return;
