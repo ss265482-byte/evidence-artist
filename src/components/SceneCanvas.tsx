@@ -160,13 +160,21 @@ function SceneObjectShape({ obj, isSelected, onSelect }: {
     if (!node) return;
     const scaleX = node.scaleX();
     const scaleY = node.scaleY();
+    const rotation = node.rotation();
+    
+    // Reset scale and apply to dimensions
     node.scaleX(1);
     node.scaleY(1);
+    
+    const newWidth = Math.max(5, Math.abs(node.width() * scaleX));
+    const newHeight = Math.max(5, Math.abs(node.height() * scaleY));
+    
     updateObject(obj.id, {
-      x: snapPos(node.x()), y: snapPos(node.y()),
-      width: Math.max(5, node.width() * scaleX),
-      height: Math.max(5, node.height() * scaleY),
-      rotation: node.rotation(),
+      x: snapPos(node.x()),
+      y: snapPos(node.y()),
+      width: newWidth,
+      height: newHeight,
+      rotation,
     });
   };
 
@@ -628,11 +636,19 @@ function SceneObjectShape({ obj, isSelected, onSelect }: {
         <Transformer
           ref={trRef}
           rotateEnabled
-          enabledAnchors={['top-left', 'top-right', 'bottom-left', 'bottom-right']}
+          enabledAnchors={['top-left', 'top-right', 'bottom-left', 'bottom-right', 'middle-left', 'middle-right', 'top-center', 'bottom-center']}
           borderStroke="hsl(215, 80%, 55%)"
           anchorFill="hsl(215, 80%, 55%)"
           anchorStroke="#fff"
           anchorSize={8}
+          keepRatio={false}
+          centeredScaling={false}
+          boundBoxFunc={(oldBox, newBox) => {
+            if (Math.abs(newBox.width) < 5 || Math.abs(newBox.height) < 5) {
+              return oldBox;
+            }
+            return newBox;
+          }}
         />
       )}
     </>
