@@ -594,9 +594,20 @@ function SceneObjectShape({ obj, isSelected, onSelect, allObjects, onSnapGuides 
       case 'table':
         return (
           <>
-            <Rect width={w} height={h} fill={c} opacity={0.2} stroke={c} strokeWidth={1.5} cornerRadius={2} />
-            <Line points={[4, 4, w - 4, 4, w - 4, h - 4, 4, h - 4, 4, 4]} stroke={c} strokeWidth={0.8} opacity={0.5} />
-            <Text text="TABLE" x={0} y={h / 2 - 5} width={w} fontSize={9} fill={c} align="center" fontFamily="JetBrains Mono, monospace" opacity={0.7} />
+            {/* Tabletop */}
+            <Rect width={w} height={h} fill={c} opacity={0.18} stroke={c} strokeWidth={1.5} cornerRadius={3} />
+            {/* Wood grain lines */}
+            <Line points={[w * 0.1, h * 0.25, w * 0.9, h * 0.25]} stroke={c} strokeWidth={0.5} opacity={0.12} />
+            <Line points={[w * 0.1, h * 0.5, w * 0.9, h * 0.5]} stroke={c} strokeWidth={0.5} opacity={0.12} />
+            <Line points={[w * 0.1, h * 0.75, w * 0.9, h * 0.75]} stroke={c} strokeWidth={0.5} opacity={0.12} />
+            {/* Inner edge bevel */}
+            <Rect x={3} y={3} width={w - 6} height={h - 6} stroke={c} strokeWidth={0.6} opacity={0.3} cornerRadius={2} fill="transparent" />
+            {/* Legs */}
+            <Circle x={8} y={8} radius={4} fill={c} opacity={0.3} stroke={c} strokeWidth={0.5} />
+            <Circle x={w - 8} y={8} radius={4} fill={c} opacity={0.3} stroke={c} strokeWidth={0.5} />
+            <Circle x={8} y={h - 8} radius={4} fill={c} opacity={0.3} stroke={c} strokeWidth={0.5} />
+            <Circle x={w - 8} y={h - 8} radius={4} fill={c} opacity={0.3} stroke={c} strokeWidth={0.5} />
+            <Text text="TABLE" x={0} y={h / 2 - 5} width={w} fontSize={9} fill={c} align="center" fontFamily="JetBrains Mono, monospace" opacity={0.5} />
           </>
         );
       case 'chair':
