@@ -111,6 +111,7 @@ interface SceneState {
   removeMeasurement: (id: string) => void;
   addWall: (w: Omit<WallSegment, 'id'>) => void;
   removeWall: (id: string) => void;
+  clearAll: () => void;
   undo: () => void;
   redo: () => void;
   bringToFront: (id: string) => void;
@@ -318,6 +319,17 @@ export function SceneProvider({ children }: { children: ReactNode }) {
     setWalls(prev => prev.filter(w => w.id !== id));
   }, [pushUndo]);
 
+  const clearAll = useCallback(() => {
+    pushUndo();
+    setObjects([]);
+    setEvidence([]);
+    setMeasurements([]);
+    setWalls([]);
+    setSelectedObjectId(null);
+    setSelectedWallId(null);
+    setSelectedMeasurementId(null);
+  }, [pushUndo]);
+
   const setCaseInfo = useCallback((info: Partial<CaseInfo>) => {
     setCaseInfoState(prev => ({ ...prev, ...info }));
   }, []);
@@ -347,7 +359,7 @@ export function SceneProvider({ children }: { children: ReactNode }) {
       setTool: setActiveTool, toggleGrid, toggleSnap: () => setSnapToGrid(p => !p),
       toggleLegend, setZoom, toggleDark, setCaseInfo, addEvidence, updateEvidence,
       addMeasurement, removeMeasurement, addWall, removeWall,
-      undo, redo, bringToFront, sendToBack, moveLayerUp, moveLayerDown,
+      clearAll, undo, redo, bringToFront, sendToBack, moveLayerUp, moveLayerDown,
     }}>
       {children}
     </SceneContext.Provider>
