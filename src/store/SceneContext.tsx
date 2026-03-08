@@ -100,6 +100,7 @@ const SceneContext = createContext<SceneState | null>(null);
 
 let nextId = 1;
 let nextMeasurement = 1;
+let nextWall = 1;
 
 const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
