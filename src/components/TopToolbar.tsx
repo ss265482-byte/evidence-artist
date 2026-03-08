@@ -27,7 +27,7 @@ const shortcutMap: Record<string, ToolType> = {
 };
 
 export default function TopToolbar() {
-  const { activeTool, setTool, showGrid, toggleGrid, snapToGrid, toggleSnap, showLegend, toggleLegend, isDark, toggleDark, caseInfo, setCaseInfo, zoom, setZoom, undo, redo, canUndo, canRedo, objects } = useScene();
+  const { activeTool, setTool, showGrid, toggleGrid, snapToGrid, toggleSnap, showLegend, toggleLegend, isDark, toggleDark, caseInfo, setCaseInfo, zoom, setZoom, undo, redo, canUndo, canRedo, objects, clearAll, walls, measurements } = useScene();
   const [showShortcuts, setShowShortcuts] = useState(false);
 
   useEffect(() => {
