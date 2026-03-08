@@ -819,6 +819,7 @@ export default function SceneCanvas() {
   const [isDrawing, setIsDrawing] = useState(false);
   const [arrowStart, setArrowStart] = useState<{ x: number; y: number } | null>(null);
   const [arrowPreview, setArrowPreview] = useState<{ x: number; y: number } | null>(null);
+  const [snapGuides, setSnapGuides] = useState<SnapGuide[]>([]);
 
   useEffect(() => {
     const updateDims = () => {
