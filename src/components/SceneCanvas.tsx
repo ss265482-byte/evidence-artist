@@ -786,14 +786,43 @@ function SceneObjectShape({ obj, isSelected, onSelect, allObjects, onSnapGuides 
         return (
           <>
             <Rect width={w} height={h} fill="transparent" />
-            <Circle x={w * 0.2} y={h * 0.6} radius={h * 0.3} stroke={c} strokeWidth={1.5} />
-            <Circle x={w * 0.8} y={h * 0.6} radius={h * 0.3} stroke={c} strokeWidth={1.5} />
-            <Circle x={w * 0.2} y={h * 0.6} radius={1.5} fill={c} />
-            <Circle x={w * 0.8} y={h * 0.6} radius={1.5} fill={c} />
-            <Line points={[w * 0.2, h * 0.6, w * 0.5, h * 0.3, w * 0.8, h * 0.6, w * 0.5, h * 0.6, w * 0.2, h * 0.6]} stroke={c} strokeWidth={1.5} />
-            <Line points={[w * 0.5, h * 0.3, w * 0.5, h * 0.6]} stroke={c} strokeWidth={1.5} />
-            <Line points={[w * 0.75, h * 0.2, w * 0.8, h * 0.35]} stroke={c} strokeWidth={1.5} />
-            <Line points={[w * 0.45, h * 0.25, w * 0.55, h * 0.25]} stroke={c} strokeWidth={3} lineCap="round" />
+            {/* Rear wheel */}
+            <Circle x={w * 0.2} y={h * 0.6} radius={h * 0.32} stroke={c} strokeWidth={1.5} />
+            <Circle x={w * 0.2} y={h * 0.6} radius={h * 0.2} stroke={c} strokeWidth={0.4} opacity={0.2} />
+            <Circle x={w * 0.2} y={h * 0.6} radius={2} fill={c} />
+            {/* Spokes */}
+            {[0, 60, 120].map((angle) => {
+              const rad = (angle * Math.PI) / 180;
+              const r = h * 0.3;
+              return <Line key={angle} points={[w * 0.2 + Math.cos(rad) * r, h * 0.6 + Math.sin(rad) * r, w * 0.2 - Math.cos(rad) * r, h * 0.6 - Math.sin(rad) * r]} stroke={c} strokeWidth={0.5} opacity={0.3} />;
+            })}
+            {/* Front wheel */}
+            <Circle x={w * 0.8} y={h * 0.6} radius={h * 0.32} stroke={c} strokeWidth={1.5} />
+            <Circle x={w * 0.8} y={h * 0.6} radius={h * 0.2} stroke={c} strokeWidth={0.4} opacity={0.2} />
+            <Circle x={w * 0.8} y={h * 0.6} radius={2} fill={c} />
+            {[0, 60, 120].map((angle) => {
+              const rad = (angle * Math.PI) / 180;
+              const r = h * 0.3;
+              return <Line key={`f-${angle}`} points={[w * 0.8 + Math.cos(rad) * r, h * 0.6 + Math.sin(rad) * r, w * 0.8 - Math.cos(rad) * r, h * 0.6 - Math.sin(rad) * r]} stroke={c} strokeWidth={0.5} opacity={0.3} />;
+            })}
+            {/* Frame triangle */}
+            <Line points={[w * 0.2, h * 0.6, w * 0.45, h * 0.3, w * 0.5, h * 0.6, w * 0.2, h * 0.6]} stroke={c} strokeWidth={1.8} />
+            {/* Top tube + down tube */}
+            <Line points={[w * 0.45, h * 0.3, w * 0.7, h * 0.32]} stroke={c} strokeWidth={1.8} />
+            <Line points={[w * 0.5, h * 0.6, w * 0.8, h * 0.6]} stroke={c} strokeWidth={1.2} opacity={0.5} />
+            {/* Fork */}
+            <Line points={[w * 0.7, h * 0.32, w * 0.8, h * 0.6]} stroke={c} strokeWidth={1.8} />
+            {/* Seat post */}
+            <Line points={[w * 0.45, h * 0.3, w * 0.43, h * 0.18]} stroke={c} strokeWidth={1.5} />
+            {/* Seat */}
+            <Line points={[w * 0.38, h * 0.18, w * 0.48, h * 0.18]} stroke={c} strokeWidth={3.5} lineCap="round" />
+            {/* Handlebars */}
+            <Line points={[w * 0.7, h * 0.32, w * 0.72, h * 0.2]} stroke={c} strokeWidth={1.5} />
+            <Line points={[w * 0.68, h * 0.18, w * 0.76, h * 0.22]} stroke={c} strokeWidth={3} lineCap="round" />
+            {/* Pedal crank */}
+            <Circle x={w * 0.5} y={h * 0.6} radius={3} stroke={c} strokeWidth={1} fill={c} opacity={0.3} />
+            {/* Chain guard hint */}
+            <Line points={[w * 0.2, h * 0.6, w * 0.5, h * 0.6]} stroke={c} strokeWidth={0.5} opacity={0.2} dash={[2, 2]} />
           </>
         );
       case 'freehand':
