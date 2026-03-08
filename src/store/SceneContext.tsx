@@ -348,7 +348,7 @@ export function SceneProvider({ children }: { children: ReactNode }) {
       setTool: setActiveTool, toggleGrid, toggleSnap: () => setSnapToGrid(p => !p),
       toggleLegend, setZoom, toggleDark, setCaseInfo, addEvidence, updateEvidence,
       addMeasurement, removeMeasurement, addWall, removeWall,
-      undo, redo, bringToFront, sendToBack, moveLayerUp, moveLayerDown,
+      clearAll, undo, redo, bringToFront, sendToBack, moveLayerUp, moveLayerDown,
     }}>
       {children}
     </SceneContext.Provider>
