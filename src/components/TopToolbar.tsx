@@ -20,7 +20,32 @@ const tools: { type: ToolType; icon: React.ElementType; label: string }[] = [
 export default function TopToolbar() {
   const { activeTool, setTool, showGrid, toggleGrid, snapToGrid, toggleSnap, showLegend, toggleLegend, isDark, toggleDark, caseInfo, setCaseInfo, zoom, setZoom } = useScene();
 
-  return (
+  const getStageDataURL = (pixelRatio = 2): string | null => {
+    const stage = stageStore.current;
+    if (!stage) return null;
+    return stage.toDataURL({ pixelRatio });
+  };
+
+  const handleExportPNG = () => {
+    const dataURL = getStageDataURL();
+    if (!dataURL) return;
+    const link = document.createElement('a');
+    link.download = `crime-scene${caseInfo.caseNumber ? `-${caseInfo.caseNumber}` : ''}.png`;
+    link.href = dataURL;
+    link.click();
+  };
+
+  const handleExportPDF = () => {
+    const dataURL = getStageDataURL(2);
+    if (!dataURL) return;
+    const stage = stageStore.current!;
+    const w = stage.width();
+    const h = stage.height();
+    const orientation = w > h ? 'landscape' : 'portrait';
+    const pdf = new jsPDF({ orientation, unit: 'px', format: [w, h] });
+    pdf.addImage(dataURL, 'PNG', 0, 0, w, h);
+    pdf.save(`crime-scene${caseInfo.caseNumber ? `-${caseInfo.caseNumber}` : ''}.pdf`);
+  };
     <div className="h-11 bg-card border-b border-border flex items-center px-3 gap-2 shrink-0">
       {/* App brand */}
       <div className="flex items-center gap-2 mr-4 shrink-0">
