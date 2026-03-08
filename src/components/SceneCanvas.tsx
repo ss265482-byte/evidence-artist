@@ -788,11 +788,7 @@ export default function SceneCanvas() {
   const legendX = (dims.width - stagePos.x) / zoom - 200;
   const legendY = 20 / zoom;
 
-  // Compass & scale bar positions (in canvas coordinates)
-  const compassX = (dims.width - stagePos.x) / zoom - 40;
-  const compassY = (dims.height - stagePos.y) / zoom - 50;
-  const scaleBarX = (60 - stagePos.x) / zoom;
-  const scaleBarY = (dims.height - stagePos.y) / zoom - 40;
+  const scaleBarFeet = Math.round(100 / PIXELS_PER_UNIT);
 
   return (
     <div
