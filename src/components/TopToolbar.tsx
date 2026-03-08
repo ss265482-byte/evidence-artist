@@ -1,9 +1,11 @@
+import { useEffect } from 'react';
 import { useScene, ToolType } from '@/store/SceneContext';
 import { stageStore } from '@/lib/stageRef';
 import { jsPDF } from 'jspdf';
 import {
   MousePointer2, Hand, Minus, ArrowRight, Pencil, Type, Ruler,
-  Grid3X3, Magnet, Sun, Moon, Download, FileText, LayoutList, Square
+  Grid3X3, Magnet, Sun, Moon, Download, FileText, LayoutList, Square,
+  Undo2, Redo2
 } from 'lucide-react';
 
 const tools: { type: ToolType; icon: React.ElementType; label: string }[] = [
