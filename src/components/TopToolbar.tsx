@@ -1,15 +1,15 @@
 import { useEffect, useState } from 'react';
 import { useScene, ToolType } from '@/store/SceneContext';
 import { stageStore } from '@/lib/stageRef';
-import { jsPDF } from 'jspdf';
 import {
   MousePointer2, Hand, Minus, ArrowRight, Pencil, Type, Ruler,
-  Grid3X3, Magnet, Sun, Moon, Download, FileText, LayoutList, Square,
+  Grid3X3, Magnet, Sun, Moon, LayoutList, Square,
   Undo2, Redo2, Maximize, Info, Keyboard, ChevronDown, Trash2
 } from 'lucide-react';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import ExportDialog from '@/components/ExportDialog';
 
 const tools: { type: ToolType; icon: React.ElementType; label: string; shortcut: string }[] = [
   { type: 'select', icon: MousePointer2, label: 'Select', shortcut: 'V' },
@@ -46,33 +46,6 @@ export default function TopToolbar() {
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
   }, [undo, redo, setTool, toggleGrid, toggleSnap]);
-
-  const getStageDataURL = (pixelRatio = 2): string | null => {
-    const stage = stageStore.current;
-    if (!stage) return null;
-    return stage.toDataURL({ pixelRatio });
-  };
-
-  const handleExportPNG = () => {
-    const dataURL = getStageDataURL();
-    if (!dataURL) return;
-    const link = document.createElement('a');
-    link.download = `crime-scene${caseInfo.caseNumber ? `-${caseInfo.caseNumber}` : ''}.png`;
-    link.href = dataURL;
-    link.click();
-  };
-
-  const handleExportPDF = () => {
-    const dataURL = getStageDataURL(2);
-    if (!dataURL) return;
-    const stage = stageStore.current!;
-    const w = stage.width();
-    const h = stage.height();
-    const orientation = w > h ? 'landscape' : 'portrait';
-    const pdf = new jsPDF({ orientation, unit: 'px', format: [w, h] });
-    pdf.addImage(dataURL, 'PNG', 0, 0, w, h);
-    pdf.save(`crime-scene${caseInfo.caseNumber ? `-${caseInfo.caseNumber}` : ''}.pdf`);
-  };
 
   const handleFitToContent = () => {
     if (objects.length === 0) return;
@@ -303,22 +276,7 @@ export default function TopToolbar() {
           </PopoverContent>
         </Popover>
 
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button onClick={handleExportPNG} className="h-7 w-7 flex items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
-              <Download className="h-3.5 w-3.5" />
-            </button>
-          </TooltipTrigger>
-          <TooltipContent side="bottom" className="text-xs">Export PNG</TooltipContent>
-        </Tooltip>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button onClick={handleExportPDF} className="h-7 w-7 flex items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
-              <FileText className="h-3.5 w-3.5" />
-            </button>
-          </TooltipTrigger>
-          <TooltipContent side="bottom" className="text-xs">Export PDF</TooltipContent>
-        </Tooltip>
+        <ExportDialog />
         <Tooltip>
           <TooltipTrigger asChild>
             <button onClick={toggleDark} className="h-7 w-7 flex items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
