@@ -1,9 +1,11 @@
+import { useEffect } from 'react';
 import { useScene, ToolType } from '@/store/SceneContext';
 import { stageStore } from '@/lib/stageRef';
 import { jsPDF } from 'jspdf';
 import {
   MousePointer2, Hand, Minus, ArrowRight, Pencil, Type, Ruler,
-  Grid3X3, Magnet, Sun, Moon, Download, FileText, LayoutList, Square
+  Grid3X3, Magnet, Sun, Moon, Download, FileText, LayoutList, Square,
+  Undo2, Redo2
 } from 'lucide-react';
 
 const tools: { type: ToolType; icon: React.ElementType; label: string }[] = [
@@ -18,8 +20,23 @@ const tools: { type: ToolType; icon: React.ElementType; label: string }[] = [
 ];
 
 export default function TopToolbar() {
-  const { activeTool, setTool, showGrid, toggleGrid, snapToGrid, toggleSnap, showLegend, toggleLegend, isDark, toggleDark, caseInfo, setCaseInfo, zoom, setZoom } = useScene();
+  const { activeTool, setTool, showGrid, toggleGrid, snapToGrid, toggleSnap, showLegend, toggleLegend, isDark, toggleDark, caseInfo, setCaseInfo, zoom, setZoom, undo, redo, canUndo, canRedo } = useScene();
 
+  // Keyboard shortcuts for undo/redo
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) {
+        e.preventDefault();
+        undo();
+      }
+      if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) {
+        e.preventDefault();
+        redo();
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [undo, redo]);
   const getStageDataURL = (pixelRatio = 2): string | null => {
     const stage = stageStore.current;
     if (!stage) return null;
@@ -79,7 +96,16 @@ export default function TopToolbar() {
 
       <div className="h-5 w-px bg-border" />
 
-      {/* Grid, snap, legend */}
+      {/* Undo / Redo */}
+      <button onClick={undo} disabled={!canUndo} title="Undo (Ctrl+Z)" className={`h-7 w-7 flex items-center justify-center rounded transition-colors ${canUndo ? 'text-muted-foreground hover:text-foreground hover:bg-secondary' : 'text-muted-foreground/30 cursor-not-allowed'}`}>
+        <Undo2 className="h-3.5 w-3.5" />
+      </button>
+      <button onClick={redo} disabled={!canRedo} title="Redo (Ctrl+Shift+Z)" className={`h-7 w-7 flex items-center justify-center rounded transition-colors ${canRedo ? 'text-muted-foreground hover:text-foreground hover:bg-secondary' : 'text-muted-foreground/30 cursor-not-allowed'}`}>
+        <Redo2 className="h-3.5 w-3.5" />
+      </button>
+
+      <div className="h-5 w-px bg-border" />
+
       <button onClick={toggleGrid} title="Toggle Grid" className={`h-7 w-7 flex items-center justify-center rounded transition-colors ${showGrid ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:text-foreground hover:bg-secondary'}`}>
         <Grid3X3 className="h-3.5 w-3.5" />
       </button>
