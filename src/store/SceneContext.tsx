@@ -81,6 +81,8 @@ interface SceneState {
   walls: WallSegment[];
   caseInfo: CaseInfo;
   selectedObjectId: string | null;
+  selectedWallId: string | null;
+  selectedMeasurementId: string | null;
   activeTool: ToolType;
   showGrid: boolean;
   snapToGrid: boolean;
@@ -94,6 +96,8 @@ interface SceneState {
   updateObjectSilent: (id: string, updates: Partial<SceneObject>) => void;
   removeObject: (id: string) => void;
   selectObject: (id: string | null) => void;
+  selectWall: (id: string | null) => void;
+  selectMeasurement: (id: string | null) => void;
   setTool: (tool: ToolType) => void;
   toggleGrid: () => void;
   toggleSnap: () => void;
