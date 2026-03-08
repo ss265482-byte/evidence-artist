@@ -339,11 +339,11 @@ export function SceneProvider({ children }: { children: ReactNode }) {
 
   return (
     <SceneContext.Provider value={{
-      objects, evidence, measurements, walls, caseInfo, selectedObjectId, activeTool,
+      objects, evidence, measurements, walls, caseInfo, selectedObjectId, selectedWallId, selectedMeasurementId, activeTool,
       showGrid, snapToGrid, showLegend, zoom, isDark,
       canUndo: undoStack.current.length > 0,
       canRedo: redoStack.current.length > 0,
-      addObject, updateObject, updateObjectSilent, removeObject, selectObject,
+      addObject, updateObject, updateObjectSilent, removeObject, selectObject, selectWall, selectMeasurement,
       setTool: setActiveTool, toggleGrid, toggleSnap: () => setSnapToGrid(p => !p),
       toggleLegend, setZoom, toggleDark, setCaseInfo, addEvidence, updateEvidence,
       addMeasurement, removeMeasurement, addWall, removeWall,
