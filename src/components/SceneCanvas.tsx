@@ -1021,6 +1021,50 @@ export default function SceneCanvas() {
         );
       })()}
 
+      {/* Wall selection action bar */}
+      {selectedWallId && (() => {
+        const selWall = walls.find(w => w.id === selectedWallId);
+        if (!selWall) return null;
+        const midX = ((selWall.x1 + selWall.x2) / 2) * zoom + stagePos.x;
+        const midY = ((selWall.y1 + selWall.y2) / 2) * zoom + stagePos.y - 48;
+        const clampedX = Math.max(8, Math.min(midX - 60, dims.width - 160));
+        const clampedY = Math.max(8, midY);
+        return (
+          <div className="absolute z-40 flex items-center gap-1 bg-card border border-border rounded-lg shadow-xl px-2 py-1.5 animate-in fade-in-0 zoom-in-95" style={{ left: clampedX, top: clampedY }}>
+            <span className="text-[10px] font-mono text-muted-foreground mr-1">Wall</span>
+            <div className="h-4 w-px bg-border" />
+            <button onClick={() => { removeWall(selectedWallId); selectWall(null); }} className="h-7 w-7 flex items-center justify-center rounded text-destructive hover:bg-destructive/10 transition-colors" title="Delete (Del)">
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
+            <button onClick={() => selectWall(null)} className="h-7 w-7 flex items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors" title="Deselect (Esc)">
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        );
+      })()}
+
+      {/* Measurement selection action bar */}
+      {selectedMeasurementId && (() => {
+        const selMeas = measurements.find(m => m.id === selectedMeasurementId);
+        if (!selMeas) return null;
+        const midX = ((selMeas.x1 + selMeas.x2) / 2) * zoom + stagePos.x;
+        const midY = ((selMeas.y1 + selMeas.y2) / 2) * zoom + stagePos.y - 48;
+        const clampedX = Math.max(8, Math.min(midX - 60, dims.width - 180));
+        const clampedY = Math.max(8, midY);
+        return (
+          <div className="absolute z-40 flex items-center gap-1 bg-card border border-border rounded-lg shadow-xl px-2 py-1.5 animate-in fade-in-0 zoom-in-95" style={{ left: clampedX, top: clampedY }}>
+            <span className="text-[10px] font-mono text-muted-foreground mr-1">Measurement</span>
+            <div className="h-4 w-px bg-border" />
+            <button onClick={() => { removeMeasurement(selectedMeasurementId); selectMeasurement(null); }} className="h-7 w-7 flex items-center justify-center rounded text-destructive hover:bg-destructive/10 transition-colors" title="Delete (Del)">
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
+            <button onClick={() => selectMeasurement(null)} className="h-7 w-7 flex items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors" title="Deselect (Esc)">
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        );
+      })()}
+
       {/* Context menu */}
       {contextMenu && (() => {
         const ctxObj = objects.find(o => o.id === contextMenu.objectId);
