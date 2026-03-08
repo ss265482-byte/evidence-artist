@@ -840,19 +840,42 @@ export default function SceneCanvas() {
         </Layer>
       </Stage>
 
+      {/* Compass rose overlay (fixed position) */}
+      <div className="absolute bottom-10 right-3 w-14 h-14 flex items-center justify-center">
+        <div className="relative w-12 h-12 bg-card/90 backdrop-blur-sm border border-border rounded-full flex items-center justify-center">
+          <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 text-[8px] font-mono font-bold text-destructive">N</span>
+          <span className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 text-[7px] font-mono text-muted-foreground">S</span>
+          <span className="absolute top-1/2 -right-2 -translate-y-1/2 text-[7px] font-mono text-muted-foreground">E</span>
+          <span className="absolute top-1/2 -left-2 -translate-y-1/2 text-[7px] font-mono text-muted-foreground">W</span>
+          {/* Arrow */}
+          <svg width="20" height="20" viewBox="0 0 20 20" className="text-destructive">
+            <polygon points="10,1 7,10 10,8 13,10" fill="currentColor" />
+            <polygon points="10,19 7,10 10,12 13,10" fill="currentColor" opacity="0.3" />
+          </svg>
+        </div>
+      </div>
+
+      {/* Scale bar overlay (fixed position) */}
+      <div className="absolute bottom-10 left-3 bg-card/90 backdrop-blur-sm border border-border rounded-md px-2.5 py-1.5 flex flex-col items-center gap-0.5">
+        <span className="text-[8px] font-mono text-muted-foreground">{scaleBarFeet} ft</span>
+        <div className="flex items-center">
+          <div className="w-px h-2 bg-foreground/60" />
+          <div className="w-[60px] h-0.5 bg-foreground/60" />
+          <div className="w-px h-2 bg-foreground/60" />
+        </div>
+      </div>
+
       {/* Status bar */}
       <div className="absolute bottom-0 left-0 right-0 h-7 bg-card/90 backdrop-blur-sm border-t border-border flex items-center px-3 gap-4 text-[10px] font-mono text-muted-foreground">
         <span>Zoom: {Math.round(zoom * 100)}%</span>
         <span className="h-3 w-px bg-border" />
-        <span>Cursor: ({mousePos.x}, {mousePos.y})</span>
+        <span>({mousePos.x}, {mousePos.y})</span>
         <span className="h-3 w-px bg-border" />
-        <span>Objects: {objects.length}</span>
+        <span>{objects.length} obj</span>
         <span className="h-3 w-px bg-border" />
-        <span>Walls: {walls.length}</span>
+        <span>{walls.length} walls</span>
         <span className="h-3 w-px bg-border" />
-        <span>Measurements: {measurements.length}</span>
-        <span className="h-3 w-px bg-border" />
-        <span>Evidence: {evidence.length}</span>
+        <span>{evidence.length} ev</span>
         <span className="flex-1" />
         <span className="text-muted-foreground/50">Grid: {showGrid ? 'ON' : 'OFF'} · Snap: {snapToGrid ? 'ON' : 'OFF'}</span>
       </div>
@@ -898,6 +921,7 @@ export default function SceneCanvas() {
         );
       })()}
 
+      {/* Tool hints */}
       {activeTool === 'measure' && (
         <div className="absolute top-3 left-1/2 -translate-x-1/2 bg-card/90 backdrop-blur-sm border border-border rounded-md px-4 py-2 text-xs text-foreground flex items-center gap-2">
           <span className="inline-block w-2 h-2 rounded-full bg-[#22d3ee]" />
@@ -910,7 +934,7 @@ export default function SceneCanvas() {
 
       {activeTool === 'wall' && (
         <div className="absolute top-3 left-1/2 -translate-x-1/2 bg-card/90 backdrop-blur-sm border border-border rounded-md px-4 py-2 text-xs text-foreground flex items-center gap-2">
-          <span className="inline-block w-2 h-2 rounded-full bg-[#a3a3a3]" />
+          <span className="inline-block w-2 h-2 rounded-full bg-muted-foreground" />
           {wallStart ? 'Click to place next wall point (walls chain automatically)' : 'Click to set wall start point'}
           {wallStart && (
             <button onClick={() => { setWallStart(null); setWallPreview(null); }} className="ml-2 text-[10px] text-destructive hover:underline">Finish</button>
@@ -918,8 +942,16 @@ export default function SceneCanvas() {
         </div>
       )}
 
+      {activeTool === 'text' && (
+        <div className="absolute top-3 left-1/2 -translate-x-1/2 bg-card/90 backdrop-blur-sm border border-border rounded-md px-4 py-2 text-xs text-foreground flex items-center gap-2">
+          <span className="inline-block w-2 h-2 rounded-full bg-muted-foreground" />
+          Click to place a text label
+        </div>
+      )}
+
       {activeTool === 'room-label' && (
-        <div className="absolute top-3 left-1/2 -translate-x-1/2 bg-card/90 backdrop-blur-sm border border-border rounded-md px-4 py-2 text-xs text-foreground">
+        <div className="absolute top-3 left-1/2 -translate-x-1/2 bg-card/90 backdrop-blur-sm border border-border rounded-md px-4 py-2 text-xs text-foreground flex items-center gap-2">
+          <span className="inline-block w-2 h-2 rounded-full bg-muted-foreground" />
           Click to place a room label
         </div>
       )}
