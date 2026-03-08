@@ -699,7 +699,7 @@ export default function SceneCanvas() {
     const stage = stageRef.current;
     if (!stage) return;
 
-    if (e.target === e.target.getStage()) selectObject(null);
+    if (e.target === e.target.getStage()) { selectObject(null); selectWall(null); selectMeasurement(null); }
 
     if (activeTool === 'measure') {
       const pos = getCanvasPos(stage);
