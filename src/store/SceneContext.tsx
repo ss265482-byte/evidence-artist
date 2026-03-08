@@ -33,6 +33,15 @@ export interface Measurement {
   y2: number;
 }
 
+export interface WallSegment {
+  id: string;
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+  thickness: number;
+}
+
 export interface EvidenceItem {
   id: string;
   letter: string;
@@ -59,6 +68,7 @@ interface SceneState {
   objects: SceneObject[];
   evidence: EvidenceItem[];
   measurements: Measurement[];
+  walls: WallSegment[];
   caseInfo: CaseInfo;
   selectedObjectId: string | null;
   activeTool: ToolType;
@@ -82,12 +92,15 @@ interface SceneState {
   updateEvidence: (id: string, updates: Partial<EvidenceItem>) => void;
   addMeasurement: (m: Omit<Measurement, 'id'>) => void;
   removeMeasurement: (id: string) => void;
+  addWall: (w: Omit<WallSegment, 'id'>) => void;
+  removeWall: (id: string) => void;
 }
 
 const SceneContext = createContext<SceneState | null>(null);
 
 let nextId = 1;
 let nextMeasurement = 1;
+let nextWall = 1;
 
 const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
@@ -95,6 +108,7 @@ export function SceneProvider({ children }: { children: ReactNode }) {
   const [objects, setObjects] = useState<SceneObject[]>([]);
   const [evidence, setEvidence] = useState<EvidenceItem[]>([]);
   const [measurements, setMeasurements] = useState<Measurement[]>([]);
+  const [walls, setWalls] = useState<WallSegment[]>([]);
   const [caseInfo, setCaseInfoState] = useState<CaseInfo>({
     caseNumber: '',
     investigator: '',
@@ -165,6 +179,15 @@ export function SceneProvider({ children }: { children: ReactNode }) {
     setMeasurements(prev => prev.filter(m => m.id !== id));
   }, []);
 
+  const addWall = useCallback((w: Omit<WallSegment, 'id'>) => {
+    const id = `wall-${nextWall++}`;
+    setWalls(prev => [...prev, { ...w, id }]);
+  }, []);
+
+  const removeWall = useCallback((id: string) => {
+    setWalls(prev => prev.filter(w => w.id !== id));
+  }, []);
+
   const setCaseInfo = useCallback((info: Partial<CaseInfo>) => {
     setCaseInfoState(prev => ({ ...prev, ...info }));
   }, []);
@@ -186,12 +209,12 @@ export function SceneProvider({ children }: { children: ReactNode }) {
 
   return (
     <SceneContext.Provider value={{
-      objects, evidence, measurements, caseInfo, selectedObjectId, activeTool,
+      objects, evidence, measurements, walls, caseInfo, selectedObjectId, activeTool,
       showGrid, snapToGrid, showLegend, zoom, isDark,
       addObject, updateObject, removeObject, selectObject,
       setTool: setActiveTool, toggleGrid, toggleSnap: () => setSnapToGrid(p => !p),
       toggleLegend, setZoom, toggleDark, setCaseInfo, addEvidence, updateEvidence,
-      addMeasurement, removeMeasurement,
+      addMeasurement, removeMeasurement, addWall, removeWall,
     }}>
       {children}
     </SceneContext.Provider>

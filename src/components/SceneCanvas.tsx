@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { Stage, Layer, Rect, Text, Line, Circle, Group, Transformer } from 'react-konva';
-import { useScene, SceneObject, Measurement } from '@/store/SceneContext';
+import { useScene, SceneObject, Measurement, WallSegment } from '@/store/SceneContext';
 import Konva from 'konva';
 
 const GRID_SIZE = 20;
@@ -45,6 +45,41 @@ function MeasurementLine({ m, onRemove }: { m: Measurement; onRemove: () => void
       <Group x={midX + 35} y={midY - 22} onClick={onRemove} onTap={onRemove}>
         <Circle radius={7} fill="#ef4444" opacity={0.8} />
         <Text x={-4} y={-5} text="×" fontSize={10} fill="#fff" fontStyle="bold" />
+      </Group>
+    </Group>
+  );
+}
+
+function WallLine({ w, onRemove }: { w: WallSegment; onRemove: () => void }) {
+  const dx = w.x2 - w.x1;
+  const dy = w.y2 - w.y1;
+  const dist = Math.sqrt(dx * dx + dy * dy);
+  const distUnits = (dist / PIXELS_PER_UNIT).toFixed(1);
+  const midX = (w.x1 + w.x2) / 2;
+  const midY = (w.y1 + w.y2) / 2;
+  const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+  const len = dist || 1;
+  const perpX = (-dy / len) * 12;
+  const perpY = (dx / len) * 12;
+
+  return (
+    <Group>
+      {/* Main wall line */}
+      <Line points={[w.x1, w.y1, w.x2, w.y2]} stroke="#a3a3a3" strokeWidth={w.thickness} lineCap="round" />
+      {/* Wall edge lines */}
+      <Line points={[w.x1, w.y1, w.x2, w.y2]} stroke="#737373" strokeWidth={w.thickness + 2} opacity={0.3} lineCap="round" />
+      {/* Endpoint indicators */}
+      <Circle x={w.x1} y={w.y1} radius={3} fill="#d4d4d4" />
+      <Circle x={w.x2} y={w.y2} radius={3} fill="#d4d4d4" />
+      {/* Dimension label */}
+      <Group x={midX + perpX} y={midY + perpY}>
+        <Rect x={-24} y={-9} width={48} height={18} fill="hsl(225, 22%, 11%)" stroke="#737373" strokeWidth={0.5} cornerRadius={3} opacity={0.9} />
+        <Text x={-24} y={-7} width={48} text={`${distUnits}'`} fontSize={10} fontFamily="JetBrains Mono, monospace" fill="#d4d4d4" align="center" />
+      </Group>
+      {/* Delete button */}
+      <Group x={midX - perpX} y={midY - perpY} onClick={onRemove} onTap={onRemove}>
+        <Circle radius={6} fill="#ef4444" opacity={0.7} />
+        <Text x={-3} y={-5} text="×" fontSize={9} fill="#fff" fontStyle="bold" />
       </Group>
     </Group>
   );
@@ -252,13 +287,15 @@ function SceneObjectShape({ obj, isSelected, onSelect }: {
 }
 
 export default function SceneCanvas() {
-  const { objects, selectedObjectId, selectObject, activeTool, showGrid, showLegend, zoom, setZoom, addObject, snapToGrid, measurements, addMeasurement, removeMeasurement, evidence } = useScene();
+  const { objects, selectedObjectId, selectObject, activeTool, showGrid, showLegend, zoom, setZoom, addObject, snapToGrid, measurements, addMeasurement, removeMeasurement, walls, addWall, removeWall, evidence } = useScene();
   const containerRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<Konva.Stage>(null);
   const [dims, setDims] = useState({ width: 800, height: 600 });
   const [stagePos, setStagePos] = useState({ x: 0, y: 0 });
   const [measureStart, setMeasureStart] = useState<{ x: number; y: number } | null>(null);
   const [measurePreview, setMeasurePreview] = useState<{ x: number; y: number } | null>(null);
+  const [wallStart, setWallStart] = useState<{ x: number; y: number } | null>(null);
+  const [wallPreview, setWallPreview] = useState<{ x: number; y: number } | null>(null);
 
   useEffect(() => {
     const updateDims = () => {
@@ -307,6 +344,18 @@ export default function SceneCanvas() {
       return;
     }
 
+    if (activeTool === 'wall') {
+      const pos = getCanvasPos(stage);
+      if (!pos) return;
+      if (!wallStart) {
+        setWallStart(pos);
+      } else {
+        addWall({ x1: wallStart.x, y1: wallStart.y, x2: pos.x, y2: pos.y, thickness: 6 });
+        setWallStart(pos); // chain walls: end point becomes next start
+        setWallPreview(null);
+      }
+    }
+
     if (activeTool === 'text' || activeTool === 'room-label') {
       const pos = getCanvasPos(stage);
       if (!pos) return;
@@ -324,16 +373,21 @@ export default function SceneCanvas() {
   };
 
   const handleMouseMove = () => {
+    const stage = stageRef.current;
+    if (!stage) return;
     if (activeTool === 'measure' && measureStart) {
-      const stage = stageRef.current;
-      if (!stage) return;
       const pos = getCanvasPos(stage);
       if (pos) setMeasurePreview(pos);
+    }
+    if (activeTool === 'wall' && wallStart) {
+      const pos = getCanvasPos(stage);
+      if (pos) setWallPreview(pos);
     }
   };
 
   useEffect(() => {
     if (activeTool !== 'measure') { setMeasureStart(null); setMeasurePreview(null); }
+    if (activeTool !== 'wall') { setWallStart(null); setWallPreview(null); }
   }, [activeTool]);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
@@ -361,7 +415,7 @@ export default function SceneCanvas() {
     <div
       ref={containerRef}
       className="flex-1 bg-canvas-bg relative overflow-hidden"
-      style={{ cursor: activeTool === 'measure' ? 'crosshair' : activeTool === 'pan' ? 'grab' : 'default' }}
+      style={{ cursor: activeTool === 'measure' || activeTool === 'wall' ? 'crosshair' : activeTool === 'pan' ? 'grab' : 'default' }}
       onDrop={handleDrop}
       onDragOver={(e) => e.preventDefault()}
     >
@@ -387,6 +441,15 @@ export default function SceneCanvas() {
           {measurements.map(m => (
             <MeasurementLine key={m.id} m={m} onRemove={() => removeMeasurement(m.id)} />
           ))}
+          {walls.map(w => (
+            <WallLine key={w.id} w={w} onRemove={() => removeWall(w.id)} />
+          ))}
+          {wallStart && wallPreview && (
+            <WallLine w={{ id: 'wall-preview', x1: wallStart.x, y1: wallStart.y, x2: wallPreview.x, y2: wallPreview.y, thickness: 6 }} onRemove={() => { setWallStart(null); setWallPreview(null); }} />
+          )}
+          {wallStart && !wallPreview && (
+            <Circle x={wallStart.x} y={wallStart.y} radius={5} fill="#a3a3a3" opacity={0.8} />
+          )}
           {measureStart && measurePreview && (
             <MeasurementLine m={{ id: 'preview', x1: measureStart.x, y1: measureStart.y, x2: measurePreview.x, y2: measurePreview.y }} onRemove={() => { setMeasureStart(null); setMeasurePreview(null); }} />
           )}
@@ -407,6 +470,16 @@ export default function SceneCanvas() {
           {measureStart ? 'Click second point to complete measurement' : 'Click to set first measurement point'}
           {measureStart && (
             <button onClick={() => { setMeasureStart(null); setMeasurePreview(null); }} className="ml-2 text-[10px] text-destructive hover:underline">Cancel</button>
+          )}
+        </div>
+      )}
+
+      {activeTool === 'wall' && (
+        <div className="absolute top-3 left-1/2 -translate-x-1/2 bg-card/90 backdrop-blur-sm border border-border rounded-md px-4 py-2 text-xs text-foreground flex items-center gap-2">
+          <span className="inline-block w-2 h-2 rounded-full bg-[#a3a3a3]" />
+          {wallStart ? 'Click to place next wall point (walls chain automatically)' : 'Click to set wall start point'}
+          {wallStart && (
+            <button onClick={() => { setWallStart(null); setWallPreview(null); }} className="ml-2 text-[10px] text-destructive hover:underline">Finish</button>
           )}
         </div>
       )}
