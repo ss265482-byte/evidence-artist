@@ -373,11 +373,15 @@ export default function SceneCanvas() {
   };
 
   const handleMouseMove = () => {
+    const stage = stageRef.current;
+    if (!stage) return;
     if (activeTool === 'measure' && measureStart) {
-      const stage = stageRef.current;
-      if (!stage) return;
       const pos = getCanvasPos(stage);
       if (pos) setMeasurePreview(pos);
+    }
+    if (activeTool === 'wall' && wallStart) {
+      const pos = getCanvasPos(stage);
+      if (pos) setWallPreview(pos);
     }
   };
 
