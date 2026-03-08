@@ -297,6 +297,10 @@ export function SceneProvider({ children }: { children: ReactNode }) {
         notes: '',
         location: obj ? `(${Math.round(obj.x)}, ${Math.round(obj.y)})` : '',
         timeLogged: new Date().toLocaleTimeString(),
+        priority: 'medium',
+        status: 'identified',
+        collectedBy: '',
+        category: obj?.category || 'Evidence',
       };
       setObjects(objs => objs.map(o => o.id === objectId ? { ...o, evidenceId: letter } : o));
       return [...prev, newEvidence];
