@@ -633,7 +633,7 @@ function ScaleBar({ x, y, zoom }: { x: number; y: number; zoom: number }) {
 }
 
 export default function SceneCanvas() {
-  const { objects, selectedObjectId, selectObject, removeObject, addEvidence, activeTool, setTool, showGrid, showLegend, zoom, setZoom, addObject, snapToGrid, measurements, addMeasurement, removeMeasurement, walls, addWall, removeWall, evidence } = useScene();
+  const { objects, selectedObjectId, selectObject, removeObject, addEvidence, activeTool, setTool, showGrid, showLegend, zoom, setZoom, addObject, snapToGrid, measurements, addMeasurement, removeMeasurement, walls, addWall, removeWall, evidence, isDark } = useScene();
   const containerRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<Konva.Stage>(null);
 
