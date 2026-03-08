@@ -96,7 +96,16 @@ export default function TopToolbar() {
 
       <div className="h-5 w-px bg-border" />
 
-      {/* Grid, snap, legend */}
+      {/* Undo / Redo */}
+      <button onClick={undo} disabled={!canUndo} title="Undo (Ctrl+Z)" className={`h-7 w-7 flex items-center justify-center rounded transition-colors ${canUndo ? 'text-muted-foreground hover:text-foreground hover:bg-secondary' : 'text-muted-foreground/30 cursor-not-allowed'}`}>
+        <Undo2 className="h-3.5 w-3.5" />
+      </button>
+      <button onClick={redo} disabled={!canRedo} title="Redo (Ctrl+Shift+Z)" className={`h-7 w-7 flex items-center justify-center rounded transition-colors ${canRedo ? 'text-muted-foreground hover:text-foreground hover:bg-secondary' : 'text-muted-foreground/30 cursor-not-allowed'}`}>
+        <Redo2 className="h-3.5 w-3.5" />
+      </button>
+
+      <div className="h-5 w-px bg-border" />
+
       <button onClick={toggleGrid} title="Toggle Grid" className={`h-7 w-7 flex items-center justify-center rounded transition-colors ${showGrid ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:text-foreground hover:bg-secondary'}`}>
         <Grid3X3 className="h-3.5 w-3.5" />
       </button>
