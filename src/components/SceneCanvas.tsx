@@ -701,6 +701,7 @@ function SceneObjectShape({ obj, isSelected, onSelect, allObjects, onSnapGuides 
         draggable={!obj.locked}
         onClick={onSelect}
         onTap={onSelect}
+        onDragMove={handleDragMove}
         onDragEnd={handleDragEnd}
         onTransformEnd={handleTransformEnd}
         onMouseEnter={() => setHovered(true)}
