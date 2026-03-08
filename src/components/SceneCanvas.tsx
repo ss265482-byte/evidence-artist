@@ -755,13 +755,31 @@ function SceneObjectShape({ obj, isSelected, onSelect, allObjects, onSnapGuides 
         return (
           <>
             <Rect width={w} height={h} fill="transparent" />
-            <Line points={[w * 0.2, h * 0.4, w * 0.5, h * 0.3, w * 0.8, h * 0.4]} stroke={c} strokeWidth={2} />
-            <Line points={[w * 0.5, h * 0.3, w * 0.45, h * 0.15]} stroke={c} strokeWidth={2} />
-            <Circle x={w * 0.18} y={h * 0.6} radius={h * 0.3} stroke="#475569" strokeWidth={2} />
-            <Circle x={w * 0.82} y={h * 0.6} radius={h * 0.3} stroke="#475569" strokeWidth={2} />
-            <Circle x={w * 0.18} y={h * 0.6} radius={2} fill="#475569" />
-            <Circle x={w * 0.82} y={h * 0.6} radius={2} fill="#475569" />
-            <Line points={[w * 0.35, h * 0.28, w * 0.65, h * 0.28]} stroke={c} strokeWidth={4} lineCap="round" />
+            {/* Rear wheel */}
+            <Circle x={w * 0.18} y={h * 0.6} radius={h * 0.32} stroke="#475569" strokeWidth={2} />
+            <Circle x={w * 0.18} y={h * 0.6} radius={h * 0.22} stroke="#475569" strokeWidth={0.5} opacity={0.3} />
+            <Circle x={w * 0.18} y={h * 0.6} radius={2.5} fill="#6b7280" />
+            {/* Front wheel */}
+            <Circle x={w * 0.82} y={h * 0.6} radius={h * 0.32} stroke="#475569" strokeWidth={2} />
+            <Circle x={w * 0.82} y={h * 0.6} radius={h * 0.22} stroke="#475569" strokeWidth={0.5} opacity={0.3} />
+            <Circle x={w * 0.82} y={h * 0.6} radius={2.5} fill="#6b7280" />
+            {/* Frame */}
+            <Line points={[w * 0.18, h * 0.6, w * 0.35, h * 0.35, w * 0.55, h * 0.3, w * 0.75, h * 0.35, w * 0.82, h * 0.6]} stroke={c} strokeWidth={2} />
+            {/* Engine block */}
+            <Rect x={w * 0.32} y={h * 0.4} width={w * 0.2} height={h * 0.2} fill={c} opacity={0.2} stroke={c} strokeWidth={1} cornerRadius={2} />
+            {/* Tank */}
+            <Line points={[w * 0.35, h * 0.3, w * 0.55, h * 0.22, w * 0.6, h * 0.3]} stroke={c} strokeWidth={1.5} fill={c} opacity={0.25} closed tension={0.3} />
+            {/* Seat */}
+            <Line points={[w * 0.28, h * 0.32, w * 0.42, h * 0.28, w * 0.55, h * 0.3]} stroke={c} strokeWidth={3} lineCap="round" />
+            {/* Handlebars */}
+            <Line points={[w * 0.65, h * 0.15, w * 0.72, h * 0.3]} stroke={c} strokeWidth={2} lineCap="round" />
+            <Line points={[w * 0.62, h * 0.12, w * 0.68, h * 0.18]} stroke={c} strokeWidth={3} lineCap="round" />
+            {/* Exhaust */}
+            <Line points={[w * 0.32, h * 0.55, w * 0.15, h * 0.52]} stroke="#a3a3a3" strokeWidth={2.5} lineCap="round" />
+            {/* Headlight */}
+            <Circle x={w * 0.78} y={h * 0.28} radius={3} fill="#fbbf24" opacity={0.6} stroke="#fbbf24" strokeWidth={0.5} />
+            {/* Taillight */}
+            <Rect x={w * 0.12} y={h * 0.35} width={4} height={3} fill="#ef4444" opacity={0.6} cornerRadius={1} />
           </>
         );
       case 'bicycle':
