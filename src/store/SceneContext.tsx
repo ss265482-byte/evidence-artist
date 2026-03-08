@@ -81,6 +81,8 @@ interface SceneState {
   walls: WallSegment[];
   caseInfo: CaseInfo;
   selectedObjectId: string | null;
+  selectedWallId: string | null;
+  selectedMeasurementId: string | null;
   activeTool: ToolType;
   showGrid: boolean;
   snapToGrid: boolean;
@@ -94,6 +96,8 @@ interface SceneState {
   updateObjectSilent: (id: string, updates: Partial<SceneObject>) => void;
   removeObject: (id: string) => void;
   selectObject: (id: string | null) => void;
+  selectWall: (id: string | null) => void;
+  selectMeasurement: (id: string | null) => void;
   setTool: (tool: ToolType) => void;
   toggleGrid: () => void;
   toggleSnap: () => void;
@@ -139,6 +143,8 @@ export function SceneProvider({ children }: { children: ReactNode }) {
     sketchBy: '',
   });
   const [selectedObjectId, setSelectedObjectId] = useState<string | null>(null);
+  const [selectedWallId, setSelectedWallId] = useState<string | null>(null);
+  const [selectedMeasurementId, setSelectedMeasurementId] = useState<string | null>(null);
   const [activeTool, setActiveTool] = useState<ToolType>('select');
   const [showGrid, setShowGrid] = useState(true);
   const [snapToGrid, setSnapToGrid] = useState(true);
@@ -221,7 +227,9 @@ export function SceneProvider({ children }: { children: ReactNode }) {
     setSelectedObjectId(prev => prev === id ? null : prev);
   }, [pushUndo]);
 
-  const selectObject = useCallback((id: string | null) => { setSelectedObjectId(id); }, []);
+  const selectObject = useCallback((id: string | null) => { setSelectedObjectId(id); setSelectedWallId(null); setSelectedMeasurementId(null); }, []);
+  const selectWall = useCallback((id: string | null) => { setSelectedWallId(id); setSelectedObjectId(null); setSelectedMeasurementId(null); }, []);
+  const selectMeasurement = useCallback((id: string | null) => { setSelectedMeasurementId(id); setSelectedObjectId(null); setSelectedWallId(null); }, []);
 
   // Layer ordering
   const bringToFront = useCallback((id: string) => {
@@ -331,11 +339,11 @@ export function SceneProvider({ children }: { children: ReactNode }) {
 
   return (
     <SceneContext.Provider value={{
-      objects, evidence, measurements, walls, caseInfo, selectedObjectId, activeTool,
+      objects, evidence, measurements, walls, caseInfo, selectedObjectId, selectedWallId, selectedMeasurementId, activeTool,
       showGrid, snapToGrid, showLegend, zoom, isDark,
       canUndo: undoStack.current.length > 0,
       canRedo: redoStack.current.length > 0,
-      addObject, updateObject, updateObjectSilent, removeObject, selectObject,
+      addObject, updateObject, updateObjectSilent, removeObject, selectObject, selectWall, selectMeasurement,
       setTool: setActiveTool, toggleGrid, toggleSnap: () => setSnapToGrid(p => !p),
       toggleLegend, setZoom, toggleDark, setCaseInfo, addEvidence, updateEvidence,
       addMeasurement, removeMeasurement, addWall, removeWall,

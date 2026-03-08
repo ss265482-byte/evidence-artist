@@ -26,7 +26,7 @@ function GridLayer({ width, height, zoom, isDark }: { width: number; height: num
   return <>{lines}</>;
 }
 
-function MeasurementLine({ m, onRemove }: { m: Measurement; onRemove: () => void }) {
+function MeasurementLine({ m, isSelected, onSelect, onRemove }: { m: Measurement; isSelected?: boolean; onSelect?: () => void; onRemove: () => void }) {
   const dx = m.x2 - m.x1;
   const dy = m.y2 - m.y1;
   const dist = Math.sqrt(dx * dx + dy * dy);
@@ -36,27 +36,32 @@ function MeasurementLine({ m, onRemove }: { m: Measurement; onRemove: () => void
   const len = dist || 1;
   const perpX = (-dy / len) * 6;
   const perpY = (dx / len) * 6;
+  const strokeColor = isSelected ? '#f59e0b' : '#22d3ee';
 
   return (
-    <Group>
-      <Line points={[m.x1, m.y1, m.x2, m.y2]} stroke="#22d3ee" strokeWidth={1.5} dash={[6, 3]} />
-      <Line points={[m.x1 + perpX, m.y1 + perpY, m.x1 - perpX, m.y1 - perpY]} stroke="#22d3ee" strokeWidth={2} />
-      <Line points={[m.x2 + perpX, m.y2 + perpY, m.x2 - perpX, m.y2 - perpY]} stroke="#22d3ee" strokeWidth={2} />
-      <Circle x={m.x1} y={m.y1} radius={4} fill="#22d3ee" />
-      <Circle x={m.x2} y={m.y2} radius={4} fill="#22d3ee" />
+    <Group onClick={onSelect} onTap={onSelect}>
+      {/* Wider invisible hit area */}
+      <Line points={[m.x1, m.y1, m.x2, m.y2]} stroke="transparent" strokeWidth={12} />
+      <Line points={[m.x1, m.y1, m.x2, m.y2]} stroke={strokeColor} strokeWidth={isSelected ? 2.5 : 1.5} dash={[6, 3]} />
+      <Line points={[m.x1 + perpX, m.y1 + perpY, m.x1 - perpX, m.y1 - perpY]} stroke={strokeColor} strokeWidth={2} />
+      <Line points={[m.x2 + perpX, m.y2 + perpY, m.x2 - perpX, m.y2 - perpY]} stroke={strokeColor} strokeWidth={2} />
+      <Circle x={m.x1} y={m.y1} radius={4} fill={strokeColor} />
+      <Circle x={m.x2} y={m.y2} radius={4} fill={strokeColor} />
       <Group x={midX} y={midY}>
-        <Rect x={-30} y={-22} width={60} height={18} fill="hsl(225, 22%, 11%)" stroke="#22d3ee" strokeWidth={1} cornerRadius={3} opacity={0.9} />
-        <Text x={-30} y={-20} width={60} text={`${distUnits}'`} fontSize={11} fontFamily="JetBrains Mono, monospace" fill="#22d3ee" align="center" />
+        <Rect x={-30} y={-22} width={60} height={18} fill="hsl(225, 22%, 11%)" stroke={strokeColor} strokeWidth={1} cornerRadius={3} opacity={0.9} />
+        <Text x={-30} y={-20} width={60} text={`${distUnits}'`} fontSize={11} fontFamily="JetBrains Mono, monospace" fill={strokeColor} align="center" />
       </Group>
-      <Group x={midX + 35} y={midY - 22} onClick={onRemove} onTap={onRemove}>
-        <Circle radius={7} fill="#ef4444" opacity={0.8} />
-        <Text x={-4} y={-5} text="×" fontSize={10} fill="#fff" fontStyle="bold" />
-      </Group>
+      {isSelected && (
+        <Group x={midX + 35} y={midY - 22} onClick={onRemove} onTap={onRemove}>
+          <Circle radius={8} fill="#ef4444" opacity={0.9} />
+          <Text x={-4} y={-6} text="×" fontSize={12} fill="#fff" fontStyle="bold" />
+        </Group>
+      )}
     </Group>
   );
 }
 
-function WallLine({ w, onRemove }: { w: WallSegment; onRemove: () => void }) {
+function WallLine({ w, isSelected, onSelect, onRemove }: { w: WallSegment; isSelected?: boolean; onSelect?: () => void; onRemove: () => void }) {
   const dx = w.x2 - w.x1;
   const dy = w.y2 - w.y1;
   const dist = Math.sqrt(dx * dx + dy * dy);
@@ -66,21 +71,26 @@ function WallLine({ w, onRemove }: { w: WallSegment; onRemove: () => void }) {
   const len = dist || 1;
   const perpX = (-dy / len) * 12;
   const perpY = (dx / len) * 12;
+  const strokeColor = isSelected ? '#f59e0b' : '#a3a3a3';
 
   return (
-    <Group>
-      <Line points={[w.x1, w.y1, w.x2, w.y2]} stroke="#737373" strokeWidth={w.thickness + 2} opacity={0.3} lineCap="round" />
-      <Line points={[w.x1, w.y1, w.x2, w.y2]} stroke="#a3a3a3" strokeWidth={w.thickness} lineCap="round" />
-      <Circle x={w.x1} y={w.y1} radius={3} fill="#d4d4d4" />
-      <Circle x={w.x2} y={w.y2} radius={3} fill="#d4d4d4" />
+    <Group onClick={onSelect} onTap={onSelect}>
+      {/* Wider invisible hit area for easier clicking */}
+      <Line points={[w.x1, w.y1, w.x2, w.y2]} stroke="transparent" strokeWidth={Math.max(16, w.thickness + 10)} />
+      <Line points={[w.x1, w.y1, w.x2, w.y2]} stroke={isSelected ? '#f59e0b' : '#737373'} strokeWidth={w.thickness + 2} opacity={0.3} lineCap="round" />
+      <Line points={[w.x1, w.y1, w.x2, w.y2]} stroke={strokeColor} strokeWidth={w.thickness} lineCap="round" />
+      <Circle x={w.x1} y={w.y1} radius={3} fill={isSelected ? '#f59e0b' : '#d4d4d4'} />
+      <Circle x={w.x2} y={w.y2} radius={3} fill={isSelected ? '#f59e0b' : '#d4d4d4'} />
       <Group x={midX + perpX} y={midY + perpY}>
-        <Rect x={-24} y={-9} width={48} height={18} fill="hsl(225, 22%, 11%)" stroke="#737373" strokeWidth={0.5} cornerRadius={3} opacity={0.9} />
-        <Text x={-24} y={-7} width={48} text={`${distUnits}'`} fontSize={10} fontFamily="JetBrains Mono, monospace" fill="#d4d4d4" align="center" />
+        <Rect x={-24} y={-9} width={48} height={18} fill="hsl(225, 22%, 11%)" stroke={isSelected ? '#f59e0b' : '#737373'} strokeWidth={0.5} cornerRadius={3} opacity={0.9} />
+        <Text x={-24} y={-7} width={48} text={`${distUnits}'`} fontSize={10} fontFamily="JetBrains Mono, monospace" fill={isSelected ? '#f59e0b' : '#d4d4d4'} align="center" />
       </Group>
-      <Group x={midX - perpX} y={midY - perpY} onClick={onRemove} onTap={onRemove}>
-        <Circle radius={6} fill="#ef4444" opacity={0.7} />
-        <Text x={-3} y={-5} text="×" fontSize={9} fill="#fff" fontStyle="bold" />
-      </Group>
+      {isSelected && (
+        <Group x={midX - perpX} y={midY - perpY} onClick={(e) => { e.cancelBubble = true; onRemove(); }} onTap={(e) => { e.cancelBubble = true; onRemove(); }}>
+          <Circle radius={8} fill="#ef4444" opacity={0.9} />
+          <Text x={-4} y={-6} text="×" fontSize={12} fill="#fff" fontStyle="bold" />
+        </Group>
+      )}
     </Group>
   );
 }
@@ -558,7 +568,7 @@ function Minimap({ objects, walls, dims, stagePos, zoom }: {
 }
 
 export default function SceneCanvas() {
-  const { objects, selectedObjectId, selectObject, removeObject, updateObject, addEvidence, activeTool, setTool, showGrid, showLegend, zoom, setZoom, addObject, snapToGrid, measurements, addMeasurement, removeMeasurement, walls, addWall, removeWall, evidence, isDark, bringToFront, sendToBack } = useScene();
+  const { objects, selectedObjectId, selectedWallId, selectedMeasurementId, selectObject, selectWall, selectMeasurement, removeObject, updateObject, addEvidence, activeTool, setTool, showGrid, showLegend, zoom, setZoom, addObject, snapToGrid, measurements, addMeasurement, removeMeasurement, walls, addWall, removeWall, evidence, isDark, bringToFront, sendToBack } = useScene();
   const containerRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<Konva.Stage>(null);
 
@@ -595,13 +605,16 @@ export default function SceneCanvas() {
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Delete' || e.key === 'Backspace') {
         const tag = document.activeElement?.tagName;
-        if (selectedObjectId && tag !== 'INPUT' && tag !== 'TEXTAREA') {
-          e.preventDefault();
-          removeObject(selectedObjectId);
-        }
+        if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+        e.preventDefault();
+        if (selectedObjectId) { removeObject(selectedObjectId); }
+        else if (selectedWallId) { removeWall(selectedWallId); selectWall(null); }
+        else if (selectedMeasurementId) { removeMeasurement(selectedMeasurementId); selectMeasurement(null); }
       }
       if (e.key === 'Escape') {
         selectObject(null);
+        selectWall(null);
+        selectMeasurement(null);
         setTool('select');
         setContextMenu(null);
         setIsDrawing(false);
@@ -612,7 +625,7 @@ export default function SceneCanvas() {
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [selectedObjectId, removeObject, selectObject, setTool]);
+  }, [selectedObjectId, selectedWallId, selectedMeasurementId, removeObject, removeWall, removeMeasurement, selectObject, selectWall, selectMeasurement, setTool]);
 
   useEffect(() => {
     if (!contextMenu) return;
@@ -696,7 +709,7 @@ export default function SceneCanvas() {
     const stage = stageRef.current;
     if (!stage) return;
 
-    if (e.target === e.target.getStage()) selectObject(null);
+    if (e.target === e.target.getStage()) { selectObject(null); selectWall(null); selectMeasurement(null); }
 
     if (activeTool === 'measure') {
       const pos = getCanvasPos(stage);
@@ -869,10 +882,10 @@ export default function SceneCanvas() {
             <SceneObjectShape key={obj.id} obj={obj} isSelected={selectedObjectId === obj.id} onSelect={() => selectObject(obj.id)} />
           ))}
           {measurements.map(m => (
-            <MeasurementLine key={m.id} m={m} onRemove={() => removeMeasurement(m.id)} />
+            <MeasurementLine key={m.id} m={m} isSelected={selectedMeasurementId === m.id} onSelect={() => selectMeasurement(m.id)} onRemove={() => removeMeasurement(m.id)} />
           ))}
           {walls.map(w => (
-            <WallLine key={w.id} w={w} onRemove={() => removeWall(w.id)} />
+            <WallLine key={w.id} w={w} isSelected={selectedWallId === w.id} onSelect={() => selectWall(w.id)} onRemove={() => removeWall(w.id)} />
           ))}
           {wallStart && wallPreview && (
             <WallLine w={{ id: 'wall-preview', x1: wallStart.x, y1: wallStart.y, x2: wallPreview.x, y2: wallPreview.y, thickness: 6 }} onRemove={() => { setWallStart(null); setWallPreview(null); }} />
@@ -1002,6 +1015,50 @@ export default function SceneCanvas() {
               className="h-7 w-7 flex items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
               title="Deselect (Esc)"
             >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        );
+      })()}
+
+      {/* Wall selection action bar */}
+      {selectedWallId && (() => {
+        const selWall = walls.find(w => w.id === selectedWallId);
+        if (!selWall) return null;
+        const midX = ((selWall.x1 + selWall.x2) / 2) * zoom + stagePos.x;
+        const midY = ((selWall.y1 + selWall.y2) / 2) * zoom + stagePos.y - 48;
+        const clampedX = Math.max(8, Math.min(midX - 60, dims.width - 160));
+        const clampedY = Math.max(8, midY);
+        return (
+          <div className="absolute z-40 flex items-center gap-1 bg-card border border-border rounded-lg shadow-xl px-2 py-1.5 animate-in fade-in-0 zoom-in-95" style={{ left: clampedX, top: clampedY }}>
+            <span className="text-[10px] font-mono text-muted-foreground mr-1">Wall</span>
+            <div className="h-4 w-px bg-border" />
+            <button onClick={() => { removeWall(selectedWallId); selectWall(null); }} className="h-7 w-7 flex items-center justify-center rounded text-destructive hover:bg-destructive/10 transition-colors" title="Delete (Del)">
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
+            <button onClick={() => selectWall(null)} className="h-7 w-7 flex items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors" title="Deselect (Esc)">
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        );
+      })()}
+
+      {/* Measurement selection action bar */}
+      {selectedMeasurementId && (() => {
+        const selMeas = measurements.find(m => m.id === selectedMeasurementId);
+        if (!selMeas) return null;
+        const midX = ((selMeas.x1 + selMeas.x2) / 2) * zoom + stagePos.x;
+        const midY = ((selMeas.y1 + selMeas.y2) / 2) * zoom + stagePos.y - 48;
+        const clampedX = Math.max(8, Math.min(midX - 60, dims.width - 180));
+        const clampedY = Math.max(8, midY);
+        return (
+          <div className="absolute z-40 flex items-center gap-1 bg-card border border-border rounded-lg shadow-xl px-2 py-1.5 animate-in fade-in-0 zoom-in-95" style={{ left: clampedX, top: clampedY }}>
+            <span className="text-[10px] font-mono text-muted-foreground mr-1">Measurement</span>
+            <div className="h-4 w-px bg-border" />
+            <button onClick={() => { removeMeasurement(selectedMeasurementId); selectMeasurement(null); }} className="h-7 w-7 flex items-center justify-center rounded text-destructive hover:bg-destructive/10 transition-colors" title="Delete (Del)">
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
+            <button onClick={() => selectMeasurement(null)} className="h-7 w-7 flex items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors" title="Deselect (Esc)">
               <X className="h-3.5 w-3.5" />
             </button>
           </div>
