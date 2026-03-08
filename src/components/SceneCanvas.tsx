@@ -387,6 +387,7 @@ export default function SceneCanvas() {
 
   useEffect(() => {
     if (activeTool !== 'measure') { setMeasureStart(null); setMeasurePreview(null); }
+    if (activeTool !== 'wall') { setWallStart(null); setWallPreview(null); }
   }, [activeTool]);
 
   const handleDrop = useCallback((e: React.DragEvent) => {
