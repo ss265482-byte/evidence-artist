@@ -179,6 +179,15 @@ export function SceneProvider({ children }: { children: ReactNode }) {
     setMeasurements(prev => prev.filter(m => m.id !== id));
   }, []);
 
+  const addWall = useCallback((w: Omit<WallSegment, 'id'>) => {
+    const id = `wall-${nextWall++}`;
+    setWalls(prev => [...prev, { ...w, id }]);
+  }, []);
+
+  const removeWall = useCallback((id: string) => {
+    setWalls(prev => prev.filter(w => w.id !== id));
+  }, []);
+
   const setCaseInfo = useCallback((info: Partial<CaseInfo>) => {
     setCaseInfoState(prev => ({ ...prev, ...info }));
   }, []);
