@@ -291,6 +291,12 @@ export default function SceneCanvas() {
   const { objects, selectedObjectId, selectObject, activeTool, showGrid, showLegend, zoom, setZoom, addObject, snapToGrid, measurements, addMeasurement, removeMeasurement, walls, addWall, removeWall, evidence } = useScene();
   const containerRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<Konva.Stage>(null);
+
+  // Sync stage ref to shared store for export
+  useEffect(() => {
+    stageStore.current = stageRef.current;
+    return () => { stageStore.current = null; };
+  });
   const [dims, setDims] = useState({ width: 800, height: 600 });
   const [stagePos, setStagePos] = useState({ x: 0, y: 0 });
   const [measureStart, setMeasureStart] = useState<{ x: number; y: number } | null>(null);
