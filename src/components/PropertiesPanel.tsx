@@ -1,8 +1,10 @@
 import { useScene } from '@/store/SceneContext';
-import { Trash2, Tag } from 'lucide-react';
+import { Trash2, Tag, Ruler } from 'lucide-react';
+
+const PIXELS_PER_UNIT = 20;
 
 export default function PropertiesPanel() {
-  const { objects, selectedObjectId, updateObject, removeObject, evidence, addEvidence, updateEvidence, selectObject } = useScene();
+  const { objects, selectedObjectId, updateObject, removeObject, evidence, addEvidence, updateEvidence, selectObject, measurements, removeMeasurement } = useScene();
   const selectedObj = objects.find(o => o.id === selectedObjectId);
 
   return (
