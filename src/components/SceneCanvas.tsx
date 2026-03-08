@@ -415,7 +415,7 @@ export default function SceneCanvas() {
     <div
       ref={containerRef}
       className="flex-1 bg-canvas-bg relative overflow-hidden"
-      style={{ cursor: activeTool === 'measure' ? 'crosshair' : activeTool === 'pan' ? 'grab' : 'default' }}
+      style={{ cursor: activeTool === 'measure' || activeTool === 'wall' ? 'crosshair' : activeTool === 'pan' ? 'grab' : 'default' }}
       onDrop={handleDrop}
       onDragOver={(e) => e.preventDefault()}
     >
