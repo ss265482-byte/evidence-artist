@@ -593,44 +593,7 @@ function SceneObjectShape({ obj, isSelected, onSelect }: {
   );
 }
 
-// Compass rose for the canvas
-function CompassRose({ x, y }: { x: number; y: number }) {
-  const size = 22;
-  return (
-    <Group x={x} y={y}>
-      <Circle radius={size + 4} fill="hsl(225, 22%, 11%)" opacity={0.85} stroke="#475569" strokeWidth={0.5} />
-      {/* N arrow */}
-      <Line points={[0, -size, -5, -4, 0, -8, 5, -4]} fill="#ef4444" stroke="#ef4444" strokeWidth={1} closed />
-      {/* S arrow */}
-      <Line points={[0, size, -5, 4, 0, 8, 5, 4]} fill="#64748b" stroke="#64748b" strokeWidth={1} closed />
-      {/* E arrow */}
-      <Line points={[size, 0, 4, -5, 8, 0, 4, 5]} fill="#64748b" stroke="#64748b" strokeWidth={1} closed />
-      {/* W arrow */}
-      <Line points={[-size, 0, -4, -5, -8, 0, -4, 5]} fill="#64748b" stroke="#64748b" strokeWidth={1} closed />
-      {/* Labels */}
-      <Text text="N" x={-4} y={-size - 14} fontSize={9} fill="#ef4444" fontStyle="bold" fontFamily="JetBrains Mono, monospace" />
-      <Text text="S" x={-3} y={size + 5} fontSize={8} fill="#94a3b8" fontFamily="JetBrains Mono, monospace" />
-      <Text text="E" x={size + 5} y={-5} fontSize={8} fill="#94a3b8" fontFamily="JetBrains Mono, monospace" />
-      <Text text="W" x={-size - 14} y={-5} fontSize={8} fill="#94a3b8" fontFamily="JetBrains Mono, monospace" />
-    </Group>
-  );
-}
-
-// Scale bar
-function ScaleBar({ x, y, zoom }: { x: number; y: number; zoom: number }) {
-  const barPixels = 100;
-  const barUnits = (barPixels / PIXELS_PER_UNIT).toFixed(0);
-  return (
-    <Group x={x} y={y}>
-      <Rect x={0} y={0} width={barPixels + 20} height={28} fill="hsl(225, 22%, 11%)" opacity={0.85} cornerRadius={3} stroke="#475569" strokeWidth={0.5} />
-      <Line points={[10, 18, 10 + barPixels, 18]} stroke="#e2e8f0" strokeWidth={2} />
-      <Line points={[10, 14, 10, 22]} stroke="#e2e8f0" strokeWidth={1.5} />
-      <Line points={[10 + barPixels, 14, 10 + barPixels, 22]} stroke="#e2e8f0" strokeWidth={1.5} />
-      <Line points={[10 + barPixels / 2, 16, 10 + barPixels / 2, 20]} stroke="#e2e8f0" strokeWidth={1} />
-      <Text text={`${barUnits} ft`} x={10} y={3} width={barPixels} fontSize={9} fill="#94a3b8" align="center" fontFamily="JetBrains Mono, monospace" />
-    </Group>
-  );
-}
+// Compass and scale bar moved to HTML overlays for fixed positioning
 
 export default function SceneCanvas() {
   const { objects, selectedObjectId, selectObject, removeObject, addEvidence, activeTool, setTool, showGrid, showLegend, zoom, setZoom, addObject, snapToGrid, measurements, addMeasurement, removeMeasurement, walls, addWall, removeWall, evidence, isDark } = useScene();
