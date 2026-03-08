@@ -88,10 +88,10 @@ export default function TopToolbar() {
 
       <div className="h-5 w-px bg-border" />
 
-      <button title="Export PNG" className="h-7 w-7 flex items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
+      <button onClick={handleExportPNG} title="Export PNG" className="h-7 w-7 flex items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
         <Download className="h-3.5 w-3.5" />
       </button>
-      <button title="Export PDF" className="h-7 w-7 flex items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
+      <button onClick={handleExportPDF} title="Export PDF" className="h-7 w-7 flex items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
         <FileText className="h-3.5 w-3.5" />
       </button>
       <button onClick={toggleDark} title="Toggle theme" className="h-7 w-7 flex items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
