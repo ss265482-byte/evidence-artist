@@ -47,33 +47,6 @@ export default function TopToolbar() {
     return () => window.removeEventListener('keydown', handler);
   }, [undo, redo, setTool, toggleGrid, toggleSnap]);
 
-  const getStageDataURL = (pixelRatio = 2): string | null => {
-    const stage = stageStore.current;
-    if (!stage) return null;
-    return stage.toDataURL({ pixelRatio });
-  };
-
-  const handleExportPNG = () => {
-    const dataURL = getStageDataURL();
-    if (!dataURL) return;
-    const link = document.createElement('a');
-    link.download = `crime-scene${caseInfo.caseNumber ? `-${caseInfo.caseNumber}` : ''}.png`;
-    link.href = dataURL;
-    link.click();
-  };
-
-  const handleExportPDF = () => {
-    const dataURL = getStageDataURL(2);
-    if (!dataURL) return;
-    const stage = stageStore.current!;
-    const w = stage.width();
-    const h = stage.height();
-    const orientation = w > h ? 'landscape' : 'portrait';
-    const pdf = new jsPDF({ orientation, unit: 'px', format: [w, h] });
-    pdf.addImage(dataURL, 'PNG', 0, 0, w, h);
-    pdf.save(`crime-scene${caseInfo.caseNumber ? `-${caseInfo.caseNumber}` : ''}.pdf`);
-  };
-
   const handleFitToContent = () => {
     if (objects.length === 0) return;
     const stage = stageStore.current;
