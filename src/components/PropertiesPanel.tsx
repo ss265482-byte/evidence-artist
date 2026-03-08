@@ -135,6 +135,33 @@ export default function PropertiesPanel() {
           </div>
         )}
       </div>
+
+      {/* Measurements */}
+      {measurements.length > 0 && (
+        <div className="border-t border-border p-3">
+          <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2 flex items-center gap-1">
+            <Ruler className="h-3 w-3" /> Measurements
+          </h2>
+          <div className="space-y-1.5">
+            {measurements.map(m => {
+              const dist = (Math.sqrt(Math.pow(m.x2 - m.x1, 2) + Math.pow(m.y2 - m.y1, 2)) / PIXELS_PER_UNIT).toFixed(1);
+              return (
+                <div key={m.id} className="flex items-center justify-between p-1.5 rounded bg-secondary/30 border border-border">
+                  <div>
+                    <span className="text-xs font-mono text-[#22d3ee] font-medium">{dist} ft</span>
+                    <span className="text-[10px] text-muted-foreground ml-2">
+                      ({Math.round(m.x1)},{Math.round(m.y1)}) → ({Math.round(m.x2)},{Math.round(m.y2)})
+                    </span>
+                  </div>
+                  <button onClick={() => removeMeasurement(m.id)} className="text-destructive hover:opacity-70">
+                    <Trash2 className="h-3 w-3" />
+                  </button>
+                </div>
+              );
+            })}
+          </div>
+        </div>
+      )}
     </div>
   );
 }
