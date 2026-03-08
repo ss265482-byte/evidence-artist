@@ -319,6 +319,17 @@ export function SceneProvider({ children }: { children: ReactNode }) {
     setWalls(prev => prev.filter(w => w.id !== id));
   }, [pushUndo]);
 
+  const clearAll = useCallback(() => {
+    pushUndo();
+    setObjects([]);
+    setEvidence([]);
+    setMeasurements([]);
+    setWalls([]);
+    setSelectedObjectId(null);
+    setSelectedWallId(null);
+    setSelectedMeasurementId(null);
+  }, [pushUndo]);
+
   const setCaseInfo = useCallback((info: Partial<CaseInfo>) => {
     setCaseInfoState(prev => ({ ...prev, ...info }));
   }, []);
