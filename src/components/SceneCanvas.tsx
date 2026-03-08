@@ -854,7 +854,7 @@ export default function SceneCanvas() {
         onDragEnd={(e) => { if (activeTool === 'pan') setStagePos({ x: e.target.x(), y: e.target.y() }); }}
       >
         <Layer>
-          {showGrid && <GridLayer width={dims.width} height={dims.height} zoom={zoom} />}
+          {showGrid && <GridLayer width={dims.width} height={dims.height} zoom={zoom} isDark={isDark} />}
           {objects.map(obj => (
             <SceneObjectShape key={obj.id} obj={obj} isSelected={selectedObjectId === obj.id} onSelect={() => selectObject(obj.id)} />
           ))}
