@@ -344,6 +344,18 @@ export default function SceneCanvas() {
       return;
     }
 
+    if (activeTool === 'wall') {
+      const pos = getCanvasPos(stage);
+      if (!pos) return;
+      if (!wallStart) {
+        setWallStart(pos);
+      } else {
+        addWall({ x1: wallStart.x, y1: wallStart.y, x2: pos.x, y2: pos.y, thickness: 6 });
+        setWallStart(pos); // chain walls: end point becomes next start
+        setWallPreview(null);
+      }
+    }
+
     if (activeTool === 'text' || activeTool === 'room-label') {
       const pos = getCanvasPos(stage);
       if (!pos) return;
