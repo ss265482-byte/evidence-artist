@@ -111,6 +111,7 @@ interface SceneState {
   removeMeasurement: (id: string) => void;
   addWall: (w: Omit<WallSegment, 'id'>) => void;
   removeWall: (id: string) => void;
+  clearAll: () => void;
   undo: () => void;
   redo: () => void;
   bringToFront: (id: string) => void;
