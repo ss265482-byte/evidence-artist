@@ -19,6 +19,7 @@ const categoryColors: Record<string, string> = {
   'Furniture': 'text-violet-400',
   'Structures': 'text-blue-400',
   'Vehicles': 'text-emerald-400',
+  'Outdoor': 'text-green-400',
 };
 
 export default function ObjectLibrary() {

@@ -58,4 +58,18 @@ export const objectLibrary: Record<string, ObjectTemplate[]> = {
     { type: 'motorcycle', label: 'Motorcycle', icon: '🏍️', width: 60, height: 30, color: '#1e293b', category: 'Vehicles' },
     { type: 'bicycle', label: 'Bicycle', icon: '🚲', width: 50, height: 30, color: '#059669', category: 'Vehicles' },
   ],
+  'Outdoor': [
+    { type: 'tree', label: 'Tree', icon: '🌳', width: 50, height: 50, color: '#16a34a', category: 'Outdoor' },
+    { type: 'bush', label: 'Bush', icon: '🌿', width: 40, height: 30, color: '#22c55e', category: 'Outdoor' },
+    { type: 'fence', label: 'Fence', icon: '🏗️', width: 120, height: 10, color: '#78716c', category: 'Outdoor' },
+    { type: 'streetlight', label: 'Streetlight', icon: '🔦', width: 20, height: 20, color: '#facc15', category: 'Outdoor' },
+    { type: 'fire-hydrant', label: 'Fire Hydrant', icon: '🧯', width: 20, height: 25, color: '#dc2626', category: 'Outdoor' },
+    { type: 'dumpster', label: 'Dumpster', icon: '🗑️', width: 60, height: 40, color: '#4b5563', category: 'Outdoor' },
+    { type: 'bench', label: 'Bench', icon: '🪑', width: 80, height: 25, color: '#92400e', category: 'Outdoor' },
+    { type: 'sidewalk', label: 'Sidewalk', icon: '⬜', width: 120, height: 40, color: '#d1d5db', category: 'Outdoor' },
+    { type: 'road', label: 'Road', icon: '🛣️', width: 150, height: 60, color: '#374151', category: 'Outdoor' },
+    { type: 'mailbox', label: 'Mailbox', icon: '📮', width: 20, height: 25, color: '#2563eb', category: 'Outdoor' },
+    { type: 'manhole', label: 'Manhole', icon: '⭕', width: 30, height: 30, color: '#6b7280', category: 'Outdoor' },
+    { type: 'trash-can', label: 'Trash Can', icon: '🗑️', width: 25, height: 25, color: '#57534e', category: 'Outdoor' },
+  ],
 };
