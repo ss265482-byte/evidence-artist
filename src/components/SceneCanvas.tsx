@@ -590,8 +590,47 @@ function SceneObjectShape({ obj, isSelected, onSelect }: {
   );
 }
 
+// Compass rose for the canvas
+function CompassRose({ x, y }: { x: number; y: number }) {
+  const size = 22;
+  return (
+    <Group x={x} y={y}>
+      <Circle radius={size + 4} fill="hsl(225, 22%, 11%)" opacity={0.85} stroke="#475569" strokeWidth={0.5} />
+      {/* N arrow */}
+      <Line points={[0, -size, -5, -4, 0, -8, 5, -4]} fill="#ef4444" stroke="#ef4444" strokeWidth={1} closed />
+      {/* S arrow */}
+      <Line points={[0, size, -5, 4, 0, 8, 5, 4]} fill="#64748b" stroke="#64748b" strokeWidth={1} closed />
+      {/* E arrow */}
+      <Line points={[size, 0, 4, -5, 8, 0, 4, 5]} fill="#64748b" stroke="#64748b" strokeWidth={1} closed />
+      {/* W arrow */}
+      <Line points={[-size, 0, -4, -5, -8, 0, -4, 5]} fill="#64748b" stroke="#64748b" strokeWidth={1} closed />
+      {/* Labels */}
+      <Text text="N" x={-4} y={-size - 14} fontSize={9} fill="#ef4444" fontStyle="bold" fontFamily="JetBrains Mono, monospace" />
+      <Text text="S" x={-3} y={size + 5} fontSize={8} fill="#94a3b8" fontFamily="JetBrains Mono, monospace" />
+      <Text text="E" x={size + 5} y={-5} fontSize={8} fill="#94a3b8" fontFamily="JetBrains Mono, monospace" />
+      <Text text="W" x={-size - 14} y={-5} fontSize={8} fill="#94a3b8" fontFamily="JetBrains Mono, monospace" />
+    </Group>
+  );
+}
+
+// Scale bar
+function ScaleBar({ x, y, zoom }: { x: number; y: number; zoom: number }) {
+  const barPixels = 100;
+  const barUnits = (barPixels / PIXELS_PER_UNIT).toFixed(0);
+  return (
+    <Group x={x} y={y}>
+      <Rect x={0} y={0} width={barPixels + 20} height={28} fill="hsl(225, 22%, 11%)" opacity={0.85} cornerRadius={3} stroke="#475569" strokeWidth={0.5} />
+      <Line points={[10, 18, 10 + barPixels, 18]} stroke="#e2e8f0" strokeWidth={2} />
+      <Line points={[10, 14, 10, 22]} stroke="#e2e8f0" strokeWidth={1.5} />
+      <Line points={[10 + barPixels, 14, 10 + barPixels, 22]} stroke="#e2e8f0" strokeWidth={1.5} />
+      <Line points={[10 + barPixels / 2, 16, 10 + barPixels / 2, 20]} stroke="#e2e8f0" strokeWidth={1} />
+      <Text text={`${barUnits} ft`} x={10} y={3} width={barPixels} fontSize={9} fill="#94a3b8" align="center" fontFamily="JetBrains Mono, monospace" />
+    </Group>
+  );
+}
+
 export default function SceneCanvas() {
-  const { objects, selectedObjectId, selectObject, activeTool, showGrid, showLegend, zoom, setZoom, addObject, snapToGrid, measurements, addMeasurement, removeMeasurement, walls, addWall, removeWall, evidence } = useScene();
+  const { objects, selectedObjectId, selectObject, removeObject, addEvidence, activeTool, setTool, showGrid, showLegend, zoom, setZoom, addObject, snapToGrid, measurements, addMeasurement, removeMeasurement, walls, addWall, removeWall, evidence } = useScene();
   const containerRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<Konva.Stage>(null);
 
@@ -606,6 +645,8 @@ export default function SceneCanvas() {
   const [measurePreview, setMeasurePreview] = useState<{ x: number; y: number } | null>(null);
   const [wallStart, setWallStart] = useState<{ x: number; y: number } | null>(null);
   const [wallPreview, setWallPreview] = useState<{ x: number; y: number } | null>(null);
+  const [mousePos, setMousePos] = useState({ x: 0, y: 0 });
+  const [contextMenu, setContextMenu] = useState<{ x: number; y: number; objectId: string } | null>(null);
 
   useEffect(() => {
     const updateDims = () => {
@@ -617,6 +658,33 @@ export default function SceneCanvas() {
     window.addEventListener('resize', updateDims);
     return () => window.removeEventListener('resize', updateDims);
   }, []);
+
+  // Keyboard shortcuts: Delete, Escape
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      if (e.key === 'Delete' || e.key === 'Backspace') {
+        if (selectedObjectId && document.activeElement?.tagName !== 'INPUT') {
+          e.preventDefault();
+          removeObject(selectedObjectId);
+        }
+      }
+      if (e.key === 'Escape') {
+        selectObject(null);
+        setTool('select');
+        setContextMenu(null);
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [selectedObjectId, removeObject, selectObject, setTool]);
+
+  // Close context menu on click outside
+  useEffect(() => {
+    if (!contextMenu) return;
+    const handler = () => setContextMenu(null);
+    window.addEventListener('click', handler);
+    return () => window.removeEventListener('click', handler);
+  }, [contextMenu]);
 
   const handleWheel = useCallback((e: Konva.KonvaEventObject<WheelEvent>) => {
     e.evt.preventDefault();
@@ -661,7 +729,7 @@ export default function SceneCanvas() {
         setWallStart(pos);
       } else {
         addWall({ x1: wallStart.x, y1: wallStart.y, x2: pos.x, y2: pos.y, thickness: 6 });
-        setWallStart(pos); // chain walls: end point becomes next start
+        setWallStart(pos);
         setWallPreview(null);
       }
     }
@@ -682,18 +750,50 @@ export default function SceneCanvas() {
     }
   };
 
-  const handleMouseMove = () => {
+  const handleMouseMove = (e: Konva.KonvaEventObject<MouseEvent>) => {
     const stage = stageRef.current;
     if (!stage) return;
+    const pos = getCanvasPos(stage);
+    if (pos) setMousePos({ x: Math.round(pos.x), y: Math.round(pos.y) });
     if (activeTool === 'measure' && measureStart) {
-      const pos = getCanvasPos(stage);
       if (pos) setMeasurePreview(pos);
     }
     if (activeTool === 'wall' && wallStart) {
-      const pos = getCanvasPos(stage);
       if (pos) setWallPreview(pos);
     }
   };
+
+  const handleContextMenu = useCallback((e: React.MouseEvent) => {
+    e.preventDefault();
+    // Find if right-click was on an object
+    const stage = stageRef.current;
+    if (!stage) return;
+    const pointerPos = stage.getPointerPosition();
+    if (!pointerPos) return;
+    const canvasX = (pointerPos.x - stagePos.x) / zoom;
+    const canvasY = (pointerPos.y - stagePos.y) / zoom;
+
+    // Find closest object
+    const clickedObj = objects.find(obj => {
+      return canvasX >= obj.x && canvasX <= obj.x + obj.width && canvasY >= obj.y && canvasY <= obj.y + obj.height;
+    });
+
+    if (clickedObj) {
+      selectObject(clickedObj.id);
+      setContextMenu({ x: e.clientX, y: e.clientY, objectId: clickedObj.id });
+    }
+  }, [objects, stagePos, zoom, selectObject]);
+
+  const handleDuplicate = useCallback((objId: string) => {
+    const obj = objects.find(o => o.id === objId);
+    if (!obj) return;
+    addObject({
+      type: obj.type, x: obj.x + 20, y: obj.y + 20,
+      width: obj.width, height: obj.height, rotation: obj.rotation,
+      label: obj.label, color: obj.color, category: obj.category,
+    });
+    setContextMenu(null);
+  }, [objects, addObject]);
 
   useEffect(() => {
     if (activeTool !== 'measure') { setMeasureStart(null); setMeasurePreview(null); }
@@ -717,9 +817,15 @@ export default function SceneCanvas() {
     });
   }, [addObject, zoom, stagePos, snapToGrid]);
 
-  // Compute legend position (bottom-right of visible area)
+  // Compute legend position
   const legendX = (dims.width - stagePos.x) / zoom - 200;
   const legendY = 20 / zoom;
+
+  // Compass & scale bar positions (in canvas coordinates)
+  const compassX = (dims.width - stagePos.x) / zoom - 40;
+  const compassY = (dims.height - stagePos.y) / zoom - 50;
+  const scaleBarX = (60 - stagePos.x) / zoom;
+  const scaleBarY = (dims.height - stagePos.y) / zoom - 40;
 
   return (
     <div
@@ -728,6 +834,7 @@ export default function SceneCanvas() {
       style={{ cursor: activeTool === 'measure' || activeTool === 'wall' ? 'crosshair' : activeTool === 'pan' ? 'grab' : 'default' }}
       onDrop={handleDrop}
       onDragOver={(e) => e.preventDefault()}
+      onContextMenu={handleContextMenu}
     >
       <Stage
         ref={stageRef}
@@ -767,12 +874,68 @@ export default function SceneCanvas() {
             <Circle x={measureStart.x} y={measureStart.y} radius={5} fill="#22d3ee" opacity={0.8} />
           )}
           {showLegend && <CanvasLegend x={legendX} y={legendY} />}
+          <CompassRose x={compassX} y={compassY} />
+          <ScaleBar x={scaleBarX} y={scaleBarY} zoom={zoom} />
         </Layer>
       </Stage>
 
-      <div className="absolute bottom-3 right-3 bg-card/80 backdrop-blur-sm border border-border rounded-md px-3 py-1.5 font-mono text-xs text-muted-foreground">
-        {Math.round(zoom * 100)}%
+      {/* Status bar */}
+      <div className="absolute bottom-0 left-0 right-0 h-7 bg-card/90 backdrop-blur-sm border-t border-border flex items-center px-3 gap-4 text-[10px] font-mono text-muted-foreground">
+        <span>Zoom: {Math.round(zoom * 100)}%</span>
+        <span className="h-3 w-px bg-border" />
+        <span>Cursor: ({mousePos.x}, {mousePos.y})</span>
+        <span className="h-3 w-px bg-border" />
+        <span>Objects: {objects.length}</span>
+        <span className="h-3 w-px bg-border" />
+        <span>Walls: {walls.length}</span>
+        <span className="h-3 w-px bg-border" />
+        <span>Measurements: {measurements.length}</span>
+        <span className="h-3 w-px bg-border" />
+        <span>Evidence: {evidence.length}</span>
+        <span className="flex-1" />
+        <span className="text-muted-foreground/50">Grid: {showGrid ? 'ON' : 'OFF'} · Snap: {snapToGrid ? 'ON' : 'OFF'}</span>
       </div>
+
+      {/* Context menu */}
+      {contextMenu && (() => {
+        const ctxObj = objects.find(o => o.id === contextMenu.objectId);
+        if (!ctxObj) return null;
+        const containerRect = containerRef.current?.getBoundingClientRect();
+        const menuX = containerRect ? contextMenu.x - containerRect.left : contextMenu.x;
+        const menuY = containerRect ? contextMenu.y - containerRect.top : contextMenu.y;
+        return (
+          <div
+            className="absolute z-50 bg-card border border-border rounded-lg shadow-xl py-1 min-w-[160px] animate-in fade-in-0 zoom-in-95"
+            style={{ left: menuX, top: menuY }}
+            onClick={e => e.stopPropagation()}
+          >
+            <div className="px-3 py-1.5 text-[10px] text-muted-foreground font-mono border-b border-border mb-1 truncate">
+              {ctxObj.label} ({ctxObj.type})
+            </div>
+            <button
+              onClick={() => handleDuplicate(contextMenu.objectId)}
+              className="w-full text-left px-3 py-1.5 text-xs text-foreground hover:bg-secondary transition-colors flex items-center gap-2"
+            >
+              <span className="text-muted-foreground text-[10px] w-4">⎘</span> Duplicate
+            </button>
+            {!ctxObj.evidenceId && (
+              <button
+                onClick={() => { addEvidence(contextMenu.objectId, ctxObj.label); setContextMenu(null); }}
+                className="w-full text-left px-3 py-1.5 text-xs text-foreground hover:bg-secondary transition-colors flex items-center gap-2"
+              >
+                <span className="text-muted-foreground text-[10px] w-4">🏷</span> Mark as Evidence
+              </button>
+            )}
+            <div className="h-px bg-border my-1" />
+            <button
+              onClick={() => { removeObject(contextMenu.objectId); setContextMenu(null); }}
+              className="w-full text-left px-3 py-1.5 text-xs text-destructive hover:bg-destructive/10 transition-colors flex items-center gap-2"
+            >
+              <span className="text-[10px] w-4">🗑</span> Delete
+            </button>
+          </div>
+        );
+      })()}
 
       {activeTool === 'measure' && (
         <div className="absolute top-3 left-1/2 -translate-x-1/2 bg-card/90 backdrop-blur-sm border border-border rounded-md px-4 py-2 text-xs text-foreground flex items-center gap-2">
