@@ -882,10 +882,10 @@ export default function SceneCanvas() {
             <SceneObjectShape key={obj.id} obj={obj} isSelected={selectedObjectId === obj.id} onSelect={() => selectObject(obj.id)} />
           ))}
           {measurements.map(m => (
-            <MeasurementLine key={m.id} m={m} onRemove={() => removeMeasurement(m.id)} />
+            <MeasurementLine key={m.id} m={m} isSelected={selectedMeasurementId === m.id} onSelect={() => selectMeasurement(m.id)} onRemove={() => removeMeasurement(m.id)} />
           ))}
           {walls.map(w => (
-            <WallLine key={w.id} w={w} onRemove={() => removeWall(w.id)} />
+            <WallLine key={w.id} w={w} isSelected={selectedWallId === w.id} onSelect={() => selectWall(w.id)} onRemove={() => removeWall(w.id)} />
           ))}
           {wallStart && wallPreview && (
             <WallLine w={{ id: 'wall-preview', x1: wallStart.x, y1: wallStart.y, x2: wallPreview.x, y2: wallPreview.y, thickness: 6 }} onRemove={() => { setWallStart(null); setWallPreview(null); }} />
