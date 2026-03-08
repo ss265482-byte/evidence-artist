@@ -68,6 +68,7 @@ interface SceneState {
   objects: SceneObject[];
   evidence: EvidenceItem[];
   measurements: Measurement[];
+  walls: WallSegment[];
   caseInfo: CaseInfo;
   selectedObjectId: string | null;
   activeTool: ToolType;
