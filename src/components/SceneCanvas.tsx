@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { Stage, Layer, Rect, Text, Line, Circle, Group, Transformer } from 'react-konva';
 import { useScene, SceneObject, Measurement, WallSegment } from '@/store/SceneContext';
 import Konva from 'konva';
+import { stageStore } from '@/lib/stageRef';
 
 const GRID_SIZE = 20;
 const PIXELS_PER_UNIT = 20;
@@ -290,6 +291,12 @@ export default function SceneCanvas() {
   const { objects, selectedObjectId, selectObject, activeTool, showGrid, showLegend, zoom, setZoom, addObject, snapToGrid, measurements, addMeasurement, removeMeasurement, walls, addWall, removeWall, evidence } = useScene();
   const containerRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<Konva.Stage>(null);
+
+  // Sync stage ref to shared store for export
+  useEffect(() => {
+    stageStore.current = stageRef.current;
+    return () => { stageStore.current = null; };
+  });
   const [dims, setDims] = useState({ width: 800, height: 600 });
   const [stagePos, setStagePos] = useState({ x: 0, y: 0 });
   const [measureStart, setMeasureStart] = useState<{ x: number; y: number } | null>(null);
