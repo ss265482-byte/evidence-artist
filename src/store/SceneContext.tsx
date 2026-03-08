@@ -20,9 +20,12 @@ export interface SceneObject {
   label: string;
   color: string;
   category: string;
+  opacity: number;
+  locked: boolean;
   evidenceId?: string;
   notes?: string;
   timeLogged?: string;
+  points?: number[]; // for freehand/arrow/line
 }
 
 export interface Measurement {
@@ -64,7 +67,6 @@ export interface CaseInfo {
 
 export type ToolType = 'select' | 'pan' | 'wall' | 'line' | 'arrow' | 'freehand' | 'text' | 'measure' | 'room-label';
 
-// Snapshot of undoable state
 interface SceneSnapshot {
   objects: SceneObject[];
   evidence: EvidenceItem[];
@@ -107,6 +109,10 @@ interface SceneState {
   removeWall: (id: string) => void;
   undo: () => void;
   redo: () => void;
+  bringToFront: (id: string) => void;
+  sendToBack: (id: string) => void;
+  moveLayerUp: (id: string) => void;
+  moveLayerDown: (id: string) => void;
 }
 
 const SceneContext = createContext<SceneState | null>(null);
@@ -140,19 +146,10 @@ export function SceneProvider({ children }: { children: ReactNode }) {
   const [zoom, setZoom] = useState(1);
   const [isDark, setIsDark] = useState(true);
 
-  // Undo/redo history
   const undoStack = useRef<SceneSnapshot[]>([]);
   const redoStack = useRef<SceneSnapshot[]>([]);
-  const [historyVersion, setHistoryVersion] = useState(0); // trigger re-renders for canUndo/canRedo
+  const [, setHistoryVersion] = useState(0);
 
-  const takeSnapshot = (): SceneSnapshot => ({
-    objects: [...objects],
-    evidence: [...evidence],
-    measurements: [...measurements],
-    walls: [...walls],
-  });
-
-  // We need current refs for snapshot inside callbacks
   const objectsRef = useRef(objects);
   const evidenceRef = useRef(evidence);
   const measurementsRef = useRef(measurements);
@@ -184,12 +181,7 @@ export function SceneProvider({ children }: { children: ReactNode }) {
 
   const undo = useCallback(() => {
     if (undoStack.current.length === 0) return;
-    const currentSnap: SceneSnapshot = {
-      objects: objectsRef.current,
-      evidence: evidenceRef.current,
-      measurements: measurementsRef.current,
-      walls: wallsRef.current,
-    };
+    const currentSnap: SceneSnapshot = { objects: objectsRef.current, evidence: evidenceRef.current, measurements: measurementsRef.current, walls: wallsRef.current };
     redoStack.current.push(currentSnap);
     const prev = undoStack.current.pop()!;
     applySnapshot(prev);
@@ -198,12 +190,7 @@ export function SceneProvider({ children }: { children: ReactNode }) {
 
   const redo = useCallback(() => {
     if (redoStack.current.length === 0) return;
-    const currentSnap: SceneSnapshot = {
-      objects: objectsRef.current,
-      evidence: evidenceRef.current,
-      measurements: measurementsRef.current,
-      walls: wallsRef.current,
-    };
+    const currentSnap: SceneSnapshot = { objects: objectsRef.current, evidence: evidenceRef.current, measurements: measurementsRef.current, walls: wallsRef.current };
     undoStack.current.push(currentSnap);
     const next = redoStack.current.pop()!;
     applySnapshot(next);
@@ -213,11 +200,11 @@ export function SceneProvider({ children }: { children: ReactNode }) {
   const addObject = useCallback((obj: Omit<SceneObject, 'id'>) => {
     pushUndo();
     const id = `obj-${nextId++}`;
-    setObjects(prev => [...prev, { ...obj, id }]);
+    const fullObj: SceneObject = { ...obj, id, opacity: obj.opacity ?? 1, locked: obj.locked ?? false };
+    setObjects(prev => [...prev, fullObj]);
     return id;
   }, [pushUndo]);
 
-  // updateObject without undo (for drag moves - undo is pushed on dragStart)
   const updateObjectSilent = useCallback((id: string, updates: Partial<SceneObject>) => {
     setObjects(prev => prev.map(o => o.id === id ? { ...o, ...updates } : o));
   }, []);
@@ -234,9 +221,50 @@ export function SceneProvider({ children }: { children: ReactNode }) {
     setSelectedObjectId(prev => prev === id ? null : prev);
   }, [pushUndo]);
 
-  const selectObject = useCallback((id: string | null) => {
-    setSelectedObjectId(id);
-  }, []);
+  const selectObject = useCallback((id: string | null) => { setSelectedObjectId(id); }, []);
+
+  // Layer ordering
+  const bringToFront = useCallback((id: string) => {
+    pushUndo();
+    setObjects(prev => {
+      const idx = prev.findIndex(o => o.id === id);
+      if (idx < 0 || idx === prev.length - 1) return prev;
+      const obj = prev[idx];
+      return [...prev.slice(0, idx), ...prev.slice(idx + 1), obj];
+    });
+  }, [pushUndo]);
+
+  const sendToBack = useCallback((id: string) => {
+    pushUndo();
+    setObjects(prev => {
+      const idx = prev.findIndex(o => o.id === id);
+      if (idx <= 0) return prev;
+      const obj = prev[idx];
+      return [obj, ...prev.slice(0, idx), ...prev.slice(idx + 1)];
+    });
+  }, [pushUndo]);
+
+  const moveLayerUp = useCallback((id: string) => {
+    pushUndo();
+    setObjects(prev => {
+      const idx = prev.findIndex(o => o.id === id);
+      if (idx < 0 || idx === prev.length - 1) return prev;
+      const arr = [...prev];
+      [arr[idx], arr[idx + 1]] = [arr[idx + 1], arr[idx]];
+      return arr;
+    });
+  }, [pushUndo]);
+
+  const moveLayerDown = useCallback((id: string) => {
+    pushUndo();
+    setObjects(prev => {
+      const idx = prev.findIndex(o => o.id === id);
+      if (idx <= 0) return prev;
+      const arr = [...prev];
+      [arr[idx], arr[idx - 1]] = [arr[idx - 1], arr[idx]];
+      return arr;
+    });
+  }, [pushUndo]);
 
   const addEvidence = useCallback((objectId: string, description: string) => {
     pushUndo();
@@ -246,9 +274,7 @@ export function SceneProvider({ children }: { children: ReactNode }) {
       const obj = objectsRef.current.find(o => o.id === objectId);
       const newEvidence: EvidenceItem = {
         id: `ev-${objectId}`,
-        letter,
-        objectId,
-        description,
+        letter, objectId, description,
         notes: '',
         location: obj ? `(${Math.round(obj.x)}, ${Math.round(obj.y)})` : '',
         timeLogged: new Date().toLocaleTimeString(),
@@ -258,7 +284,6 @@ export function SceneProvider({ children }: { children: ReactNode }) {
     });
   }, [pushUndo]);
 
-  // Evidence note updates don't push undo (too granular)
   const updateEvidence = useCallback((id: string, updates: Partial<EvidenceItem>) => {
     setEvidence(prev => prev.map(e => e.id === id ? { ...e, ...updates } : e));
   }, []);
@@ -314,7 +339,7 @@ export function SceneProvider({ children }: { children: ReactNode }) {
       setTool: setActiveTool, toggleGrid, toggleSnap: () => setSnapToGrid(p => !p),
       toggleLegend, setZoom, toggleDark, setCaseInfo, addEvidence, updateEvidence,
       addMeasurement, removeMeasurement, addWall, removeWall,
-      undo, redo,
+      undo, redo, bringToFront, sendToBack, moveLayerUp, moveLayerDown,
     }}>
       {children}
     </SceneContext.Provider>

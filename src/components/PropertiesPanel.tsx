@@ -1,10 +1,14 @@
 import { useScene } from '@/store/SceneContext';
-import { Trash2, Tag, Ruler, Copy, RotateCw, Layers } from 'lucide-react';
+import { Trash2, Tag, Ruler, Copy, RotateCw, Layers, Lock, Unlock, ChevronsUp, ChevronsDown, ArrowUp, ArrowDown, Eye } from 'lucide-react';
 
 const PIXELS_PER_UNIT = 20;
 
 export default function PropertiesPanel() {
-  const { objects, selectedObjectId, updateObject, removeObject, addObject, evidence, addEvidence, updateEvidence, selectObject, measurements, removeMeasurement, walls } = useScene();
+  const {
+    objects, selectedObjectId, updateObject, removeObject, addObject, evidence,
+    addEvidence, updateEvidence, selectObject, measurements, removeMeasurement, walls,
+    bringToFront, sendToBack, moveLayerUp, moveLayerDown,
+  } = useScene();
   const selectedObj = objects.find(o => o.id === selectedObjectId);
   const selectedIndex = objects.findIndex(o => o.id === selectedObjectId);
 
@@ -14,6 +18,7 @@ export default function PropertiesPanel() {
       type: selectedObj.type, x: selectedObj.x + 20, y: selectedObj.y + 20,
       width: selectedObj.width, height: selectedObj.height, rotation: selectedObj.rotation,
       label: selectedObj.label + ' (copy)', color: selectedObj.color, category: selectedObj.category,
+      opacity: selectedObj.opacity, locked: false,
     });
     selectObject(newId);
   };
@@ -27,13 +32,19 @@ export default function PropertiesPanel() {
         </h2>
         {selectedObj ? (
           <div className="space-y-2.5">
-            {/* Object type badge */}
+            {/* Object type badge + lock */}
             <div className="flex items-center gap-2">
               <span className="text-[9px] font-mono bg-secondary text-muted-foreground px-1.5 py-0.5 rounded uppercase">{selectedObj.type}</span>
               <span className="text-[9px] font-mono text-muted-foreground/40">#{selectedObj.id}</span>
-              {selectedIndex >= 0 && (
-                <span className="text-[9px] font-mono text-muted-foreground/40 ml-auto">Layer {selectedIndex + 1}/{objects.length}</span>
-              )}
+              <button
+                onClick={() => updateObject(selectedObj.id, { locked: !selectedObj.locked })}
+                className={`ml-auto h-5 w-5 flex items-center justify-center rounded transition-colors ${
+                  selectedObj.locked ? 'text-destructive bg-destructive/10' : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
+                }`}
+                title={selectedObj.locked ? 'Unlock' : 'Lock'}
+              >
+                {selectedObj.locked ? <Lock className="h-3 w-3" /> : <Unlock className="h-3 w-3" />}
+              </button>
             </div>
 
             <div>
@@ -80,6 +91,8 @@ export default function PropertiesPanel() {
                   value={Math.round(selectedObj.height)} onChange={e => updateObject(selectedObj.id, { height: +e.target.value })} />
               </div>
             </div>
+
+            {/* Rotation + Color */}
             <div className="grid grid-cols-2 gap-2">
               <div>
                 <label className="text-[10px] text-muted-foreground uppercase flex items-center gap-1">
@@ -102,26 +115,59 @@ export default function PropertiesPanel() {
             {/* Quick rotation presets */}
             <div className="flex gap-1">
               {[0, 45, 90, 180, 270].map(deg => (
-                <button
-                  key={deg}
-                  onClick={() => updateObject(selectedObj.id, { rotation: deg })}
+                <button key={deg} onClick={() => updateObject(selectedObj.id, { rotation: deg })}
                   className={`flex-1 text-[9px] font-mono py-1 rounded transition-colors ${
                     Math.round(selectedObj.rotation) === deg
                       ? 'bg-primary text-primary-foreground'
                       : 'bg-secondary text-muted-foreground hover:text-foreground hover:bg-secondary/80'
                   }`}
-                >
-                  {deg}°
-                </button>
+                >{deg}°</button>
               ))}
+            </div>
+
+            {/* Opacity slider */}
+            <div>
+              <label className="text-[10px] text-muted-foreground uppercase flex items-center gap-1">
+                <Eye className="h-2.5 w-2.5" /> Opacity
+                <span className="ml-auto font-mono text-foreground">{Math.round((selectedObj.opacity ?? 1) * 100)}%</span>
+              </label>
+              <input
+                type="range" min="0.1" max="1" step="0.05"
+                value={selectedObj.opacity ?? 1}
+                onChange={e => updateObject(selectedObj.id, { opacity: parseFloat(e.target.value) })}
+                className="w-full h-1.5 mt-1 accent-primary cursor-pointer"
+              />
+            </div>
+
+            {/* Layer ordering */}
+            <div>
+              <label className="text-[10px] text-muted-foreground uppercase flex items-center gap-1 mb-1">
+                <Layers className="h-2.5 w-2.5" /> Layer {selectedIndex + 1}/{objects.length}
+              </label>
+              <div className="flex gap-1">
+                <button onClick={() => sendToBack(selectedObj.id)} title="Send to Back"
+                  className="flex-1 flex items-center justify-center py-1 rounded bg-secondary text-muted-foreground hover:text-foreground transition-colors text-[9px]">
+                  <ChevronsDown className="h-3 w-3" />
+                </button>
+                <button onClick={() => moveLayerDown(selectedObj.id)} title="Move Down"
+                  className="flex-1 flex items-center justify-center py-1 rounded bg-secondary text-muted-foreground hover:text-foreground transition-colors text-[9px]">
+                  <ArrowDown className="h-3 w-3" />
+                </button>
+                <button onClick={() => moveLayerUp(selectedObj.id)} title="Move Up"
+                  className="flex-1 flex items-center justify-center py-1 rounded bg-secondary text-muted-foreground hover:text-foreground transition-colors text-[9px]">
+                  <ArrowUp className="h-3 w-3" />
+                </button>
+                <button onClick={() => bringToFront(selectedObj.id)} title="Bring to Front"
+                  className="flex-1 flex items-center justify-center py-1 rounded bg-secondary text-muted-foreground hover:text-foreground transition-colors text-[9px]">
+                  <ChevronsUp className="h-3 w-3" />
+                </button>
+              </div>
             </div>
 
             <div className="flex gap-2 pt-1">
               {!selectedObj.evidenceId && (
-                <button
-                  onClick={() => addEvidence(selectedObj.id, selectedObj.label)}
-                  className="flex-1 flex items-center justify-center gap-1 text-xs bg-accent text-accent-foreground rounded-md py-1.5 hover:opacity-90 transition-opacity font-medium"
-                >
+                <button onClick={() => addEvidence(selectedObj.id, selectedObj.label)}
+                  className="flex-1 flex items-center justify-center gap-1 text-xs bg-accent text-accent-foreground rounded-md py-1.5 hover:opacity-90 transition-opacity font-medium">
                   <Tag className="h-3 w-3" /> Mark Evidence
                 </button>
               )}
@@ -131,17 +177,12 @@ export default function PropertiesPanel() {
                   <span className="text-muted-foreground">— Evidence</span>
                 </div>
               )}
-              <button
-                onClick={handleDuplicate}
-                title="Duplicate"
-                className="flex items-center justify-center gap-1 text-xs bg-secondary text-secondary-foreground rounded-md py-1.5 px-3 hover:opacity-90 transition-opacity"
-              >
+              <button onClick={handleDuplicate} title="Duplicate"
+                className="flex items-center justify-center gap-1 text-xs bg-secondary text-secondary-foreground rounded-md py-1.5 px-3 hover:opacity-90 transition-opacity">
                 <Copy className="h-3 w-3" />
               </button>
-              <button
-                onClick={() => removeObject(selectedObj.id)}
-                className="flex items-center justify-center gap-1 text-xs bg-destructive text-destructive-foreground rounded-md py-1.5 px-3 hover:opacity-90 transition-opacity"
-              >
+              <button onClick={() => removeObject(selectedObj.id)}
+                className="flex items-center justify-center gap-1 text-xs bg-destructive text-destructive-foreground rounded-md py-1.5 px-3 hover:opacity-90 transition-opacity">
                 <Trash2 className="h-3 w-3" />
               </button>
             </div>
@@ -170,15 +211,12 @@ export default function PropertiesPanel() {
         ) : (
           <div className="space-y-2">
             {evidence.map(ev => (
-              <button
-                key={ev.id}
-                onClick={() => selectObject(ev.objectId)}
+              <button key={ev.id} onClick={() => selectObject(ev.objectId)}
                 className={`w-full text-left p-2 rounded-md border transition-all ${
                   selectedObjectId === ev.objectId
                     ? 'border-primary bg-primary/10 shadow-sm'
                     : 'border-border bg-secondary/30 hover:bg-secondary/60 hover:shadow-sm'
-                }`}
-              >
+                }`}>
                 <div className="flex items-center gap-2 mb-1">
                   <span className="text-xs font-mono font-bold bg-accent text-accent-foreground w-6 h-6 flex items-center justify-center rounded">{ev.letter}</span>
                   <span className="text-xs font-medium text-foreground truncate flex-1">{ev.description}</span>
