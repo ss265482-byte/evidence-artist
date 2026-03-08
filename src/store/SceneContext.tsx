@@ -216,6 +216,11 @@ export function SceneProvider({ children }: { children: ReactNode }) {
     return id;
   }, [pushUndo]);
 
+  // updateObject without undo (for drag moves - undo is pushed on dragStart)
+  const updateObjectSilent = useCallback((id: string, updates: Partial<SceneObject>) => {
+    setObjects(prev => prev.map(o => o.id === id ? { ...o, ...updates } : o));
+  }, []);
+
   const updateObject = useCallback((id: string, updates: Partial<SceneObject>) => {
     pushUndo();
     setObjects(prev => prev.map(o => o.id === id ? { ...o, ...updates } : o));
