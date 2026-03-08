@@ -945,6 +945,69 @@ export default function SceneCanvas() {
         <span className="text-muted-foreground/50">Grid: {showGrid ? 'ON' : 'OFF'} · Snap: {snapToGrid ? 'ON' : 'OFF'}</span>
       </div>
 
+      {/* Selection action bar */}
+      {selectedObjectId && (() => {
+        const selObj = objects.find(o => o.id === selectedObjectId);
+        if (!selObj) return null;
+        // Position the bar above the selected object
+        const barX = selObj.x * zoom + stagePos.x;
+        const barY = selObj.y * zoom + stagePos.y - 48;
+        const clampedX = Math.max(8, Math.min(barX, dims.width - 280));
+        const clampedY = Math.max(8, barY);
+        return (
+          <div
+            className="absolute z-40 flex items-center gap-1 bg-card border border-border rounded-lg shadow-xl px-2 py-1.5 animate-in fade-in-0 zoom-in-95"
+            style={{ left: clampedX, top: clampedY }}
+          >
+            <span className="text-[10px] font-mono text-muted-foreground truncate max-w-[80px] mr-1">{selObj.label}</span>
+            <div className="h-4 w-px bg-border" />
+            <button
+              onClick={() => handleDuplicate(selectedObjectId)}
+              className="h-7 w-7 flex items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+              title="Duplicate"
+            >
+              <Copy className="h-3.5 w-3.5" />
+            </button>
+            <button
+              onClick={() => updateObject(selectedObjectId, { locked: !selObj.locked })}
+              className={`h-7 w-7 flex items-center justify-center rounded transition-colors ${selObj.locked ? 'text-destructive hover:bg-destructive/10' : 'text-muted-foreground hover:text-foreground hover:bg-secondary'}`}
+              title={selObj.locked ? 'Unlock' : 'Lock'}
+            >
+              {selObj.locked ? <Lock className="h-3.5 w-3.5" /> : <Unlock className="h-3.5 w-3.5" />}
+            </button>
+            <button
+              onClick={() => { bringToFront(selectedObjectId); }}
+              className="h-7 w-7 flex items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+              title="Bring to Front"
+            >
+              <ArrowUpToLine className="h-3.5 w-3.5" />
+            </button>
+            <button
+              onClick={() => { sendToBack(selectedObjectId); }}
+              className="h-7 w-7 flex items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+              title="Send to Back"
+            >
+              <ArrowDownToLine className="h-3.5 w-3.5" />
+            </button>
+            <div className="h-4 w-px bg-border" />
+            <button
+              onClick={() => { removeObject(selectedObjectId); }}
+              className="h-7 w-7 flex items-center justify-center rounded text-destructive hover:bg-destructive/10 transition-colors"
+              title="Delete (Del)"
+            >
+              <Trash2 className="h-3.5 w-3.5" />
+            </button>
+            <button
+              onClick={() => selectObject(null)}
+              className="h-7 w-7 flex items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors"
+              title="Deselect (Esc)"
+            >
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </div>
+        );
+      })()}
+
       {/* Context menu */}
       {contextMenu && (() => {
         const ctxObj = objects.find(o => o.id === contextMenu.objectId);
@@ -963,27 +1026,32 @@ export default function SceneCanvas() {
             </div>
             <button onClick={() => handleDuplicate(contextMenu.objectId)}
               className="w-full text-left px-3 py-1.5 text-xs text-foreground hover:bg-secondary transition-colors flex items-center gap-2">
-              <span className="text-muted-foreground text-[10px] w-4">⎘</span> Duplicate
+              <Copy className="h-3 w-3 text-muted-foreground" /> Duplicate
             </button>
             {!ctxObj.evidenceId && (
               <button onClick={() => { addEvidence(contextMenu.objectId, ctxObj.label); setContextMenu(null); }}
                 className="w-full text-left px-3 py-1.5 text-xs text-foreground hover:bg-secondary transition-colors flex items-center gap-2">
-                <span className="text-muted-foreground text-[10px] w-4">🏷</span> Mark as Evidence
+                <span className="text-muted-foreground text-[10px] w-3">🏷</span> Mark as Evidence
               </button>
             )}
             <div className="h-px bg-border my-1" />
+            <button onClick={() => { updateObject(contextMenu.objectId, { locked: !ctxObj.locked }); setContextMenu(null); }}
+              className="w-full text-left px-3 py-1.5 text-xs text-foreground hover:bg-secondary transition-colors flex items-center gap-2">
+              {ctxObj.locked ? <Unlock className="h-3 w-3 text-muted-foreground" /> : <Lock className="h-3 w-3 text-muted-foreground" />}
+              {ctxObj.locked ? 'Unlock' : 'Lock'}
+            </button>
             <button onClick={() => { bringToFront(contextMenu.objectId); setContextMenu(null); }}
               className="w-full text-left px-3 py-1.5 text-xs text-foreground hover:bg-secondary transition-colors flex items-center gap-2">
-              <span className="text-muted-foreground text-[10px] w-4">⬆</span> Bring to Front
+              <ArrowUpToLine className="h-3 w-3 text-muted-foreground" /> Bring to Front
             </button>
             <button onClick={() => { sendToBack(contextMenu.objectId); setContextMenu(null); }}
               className="w-full text-left px-3 py-1.5 text-xs text-foreground hover:bg-secondary transition-colors flex items-center gap-2">
-              <span className="text-muted-foreground text-[10px] w-4">⬇</span> Send to Back
+              <ArrowDownToLine className="h-3 w-3 text-muted-foreground" /> Send to Back
             </button>
             <div className="h-px bg-border my-1" />
             <button onClick={() => { removeObject(contextMenu.objectId); setContextMenu(null); }}
               className="w-full text-left px-3 py-1.5 text-xs text-destructive hover:bg-destructive/10 transition-colors flex items-center gap-2">
-              <span className="text-[10px] w-4">🗑</span> Delete
+              <Trash2 className="h-3 w-3" /> Delete
             </button>
           </div>
         );
