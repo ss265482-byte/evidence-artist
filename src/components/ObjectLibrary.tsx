@@ -9,6 +9,7 @@ const categoryIcons: Record<string, React.ElementType> = {
   'Furniture': Sofa,
   'Structures': Building,
   'Vehicles': Car,
+  'Outdoor': Trees,
 };
 
 const categoryColors: Record<string, string> = {
