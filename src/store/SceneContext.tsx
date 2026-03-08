@@ -89,6 +89,7 @@ interface SceneState {
   canRedo: boolean;
   addObject: (obj: Omit<SceneObject, 'id'>) => string;
   updateObject: (id: string, updates: Partial<SceneObject>) => void;
+  updateObjectSilent: (id: string, updates: Partial<SceneObject>) => void;
   removeObject: (id: string) => void;
   selectObject: (id: string | null) => void;
   setTool: (tool: ToolType) => void;
