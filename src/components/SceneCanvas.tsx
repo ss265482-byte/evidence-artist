@@ -160,13 +160,21 @@ function SceneObjectShape({ obj, isSelected, onSelect }: {
     if (!node) return;
     const scaleX = node.scaleX();
     const scaleY = node.scaleY();
+    const rotation = node.rotation();
+    
+    // Reset scale and apply to dimensions
     node.scaleX(1);
     node.scaleY(1);
+    
+    const newWidth = Math.max(5, Math.abs(node.width() * scaleX));
+    const newHeight = Math.max(5, Math.abs(node.height() * scaleY));
+    
     updateObject(obj.id, {
-      x: snapPos(node.x()), y: snapPos(node.y()),
-      width: Math.max(5, node.width() * scaleX),
-      height: Math.max(5, node.height() * scaleY),
-      rotation: node.rotation(),
+      x: snapPos(node.x()),
+      y: snapPos(node.y()),
+      width: newWidth,
+      height: newHeight,
+      rotation,
     });
   };
 
