@@ -326,9 +326,23 @@ function SceneObjectShape({ obj, isSelected, onSelect, allObjects, onSnapGuides 
         return (
           <>
             <Rect width={w} height={h} fill="transparent" />
-            <Line points={[2, h / 2, w * 0.65, h / 2 - 2, w * 0.65, h / 2 + 3, 2, h / 2]} stroke="#94a3b8" strokeWidth={1} fill="#cbd5e1" closed />
-            <Rect x={w * 0.65} y={h / 2 - 4} width={w * 0.32} height={8} fill="#78350f" stroke="#451a03" strokeWidth={0.5} cornerRadius={2} />
-            <Rect x={w * 0.63} y={h / 2 - 5} width={3} height={10} fill="#a3a3a3" />
+            {/* Blade with spine and edge */}
+            <Line points={[2, h / 2 + 1, w * 0.15, h / 2 - 3, w * 0.6, h / 2 - 2, w * 0.63, h / 2]} stroke="#94a3b8" strokeWidth={0.8} fill="#e2e8f0" closed />
+            <Line points={[2, h / 2 + 1, w * 0.6, h / 2 + 2, w * 0.63, h / 2]} stroke="#94a3b8" strokeWidth={0.8} fill="#cbd5e1" closed />
+            {/* Blade reflection */}
+            <Line points={[w * 0.1, h / 2 - 1, w * 0.5, h / 2 - 1]} stroke="#f8fafc" strokeWidth={0.5} opacity={0.4} />
+            {/* Blood spot */}
+            <Circle x={w * 0.25} y={h / 2} radius={2} fill="#dc2626" opacity={0.4} />
+            {/* Guard */}
+            <Rect x={w * 0.61} y={h / 2 - 5} width={4} height={10} fill="#a8a29e" stroke="#78716c" strokeWidth={0.5} cornerRadius={1} />
+            {/* Handle with grip texture */}
+            <Rect x={w * 0.65} y={h / 2 - 4} width={w * 0.32} height={8} fill="#78350f" stroke="#451a03" strokeWidth={0.8} cornerRadius={2} />
+            <Line points={[w * 0.7, h / 2 - 3, w * 0.7, h / 2 + 3]} stroke="#451a03" strokeWidth={0.5} opacity={0.5} />
+            <Line points={[w * 0.76, h / 2 - 3, w * 0.76, h / 2 + 3]} stroke="#451a03" strokeWidth={0.5} opacity={0.5} />
+            <Line points={[w * 0.82, h / 2 - 3, w * 0.82, h / 2 + 3]} stroke="#451a03" strokeWidth={0.5} opacity={0.5} />
+            <Line points={[w * 0.88, h / 2 - 3, w * 0.88, h / 2 + 3]} stroke="#451a03" strokeWidth={0.5} opacity={0.5} />
+            {/* Pommel */}
+            <Circle x={w * 0.97} y={h / 2} radius={3} fill="#78716c" stroke="#57534e" strokeWidth={0.5} />
           </>
         );
       case 'gun':
