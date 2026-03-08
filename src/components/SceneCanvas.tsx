@@ -666,7 +666,8 @@ export default function SceneCanvas() {
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Delete' || e.key === 'Backspace') {
-        if (selectedObjectId && document.activeElement?.tagName !== 'INPUT') {
+        const tag = document.activeElement?.tagName;
+        if (selectedObjectId && tag !== 'INPUT' && tag !== 'TEXTAREA') {
           e.preventDefault();
           removeObject(selectedObjectId);
         }
