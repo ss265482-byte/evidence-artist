@@ -227,7 +227,9 @@ export function SceneProvider({ children }: { children: ReactNode }) {
     setSelectedObjectId(prev => prev === id ? null : prev);
   }, [pushUndo]);
 
-  const selectObject = useCallback((id: string | null) => { setSelectedObjectId(id); }, []);
+  const selectObject = useCallback((id: string | null) => { setSelectedObjectId(id); setSelectedWallId(null); setSelectedMeasurementId(null); }, []);
+  const selectWall = useCallback((id: string | null) => { setSelectedWallId(id); setSelectedObjectId(null); setSelectedMeasurementId(null); }, []);
+  const selectMeasurement = useCallback((id: string | null) => { setSelectedMeasurementId(id); setSelectedObjectId(null); setSelectedWallId(null); }, []);
 
   // Layer ordering
   const bringToFront = useCallback((id: string) => {
