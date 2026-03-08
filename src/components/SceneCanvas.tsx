@@ -474,6 +474,16 @@ export default function SceneCanvas() {
         </div>
       )}
 
+      {activeTool === 'wall' && (
+        <div className="absolute top-3 left-1/2 -translate-x-1/2 bg-card/90 backdrop-blur-sm border border-border rounded-md px-4 py-2 text-xs text-foreground flex items-center gap-2">
+          <span className="inline-block w-2 h-2 rounded-full bg-[#a3a3a3]" />
+          {wallStart ? 'Click to place next wall point (walls chain automatically)' : 'Click to set wall start point'}
+          {wallStart && (
+            <button onClick={() => { setWallStart(null); setWallPreview(null); }} className="ml-2 text-[10px] text-destructive hover:underline">Finish</button>
+          )}
+        </div>
+      )}
+
       {activeTool === 'room-label' && (
         <div className="absolute top-3 left-1/2 -translate-x-1/2 bg-card/90 backdrop-blur-sm border border-border rounded-md px-4 py-2 text-xs text-foreground">
           Click to place a room label
