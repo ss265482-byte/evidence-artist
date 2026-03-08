@@ -48,6 +48,9 @@ export interface WallSegment {
   thickness: number;
 }
 
+export type EvidencePriority = 'critical' | 'high' | 'medium' | 'low';
+export type EvidenceStatus = 'identified' | 'photographed' | 'collected' | 'processed' | 'sent-to-lab';
+
 export interface EvidenceItem {
   id: string;
   letter: string;
@@ -56,6 +59,10 @@ export interface EvidenceItem {
   notes: string;
   location: string;
   timeLogged: string;
+  priority: EvidencePriority;
+  status: EvidenceStatus;
+  collectedBy: string;
+  category: string;
 }
 
 export interface CaseInfo {
@@ -290,6 +297,10 @@ export function SceneProvider({ children }: { children: ReactNode }) {
         notes: '',
         location: obj ? `(${Math.round(obj.x)}, ${Math.round(obj.y)})` : '',
         timeLogged: new Date().toLocaleTimeString(),
+        priority: 'medium',
+        status: 'identified',
+        collectedBy: '',
+        category: obj?.category || 'Evidence',
       };
       setObjects(objs => objs.map(o => o.id === objectId ? { ...o, evidenceId: letter } : o));
       return [...prev, newEvidence];
