@@ -2,6 +2,7 @@ import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { Stage, Layer, Rect, Text, Line, Circle, Group, Transformer } from 'react-konva';
 import { useScene, SceneObject, Measurement, WallSegment } from '@/store/SceneContext';
 import Konva from 'konva';
+import { stageStore } from '@/lib/stageRef';
 
 const GRID_SIZE = 20;
 const PIXELS_PER_UNIT = 20;
