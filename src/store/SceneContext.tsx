@@ -143,6 +143,8 @@ export function SceneProvider({ children }: { children: ReactNode }) {
     sketchBy: '',
   });
   const [selectedObjectId, setSelectedObjectId] = useState<string | null>(null);
+  const [selectedWallId, setSelectedWallId] = useState<string | null>(null);
+  const [selectedMeasurementId, setSelectedMeasurementId] = useState<string | null>(null);
   const [activeTool, setActiveTool] = useState<ToolType>('select');
   const [showGrid, setShowGrid] = useState(true);
   const [snapToGrid, setSnapToGrid] = useState(true);
