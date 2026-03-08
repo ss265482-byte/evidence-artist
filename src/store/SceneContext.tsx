@@ -209,12 +209,12 @@ export function SceneProvider({ children }: { children: ReactNode }) {
 
   return (
     <SceneContext.Provider value={{
-      objects, evidence, measurements, caseInfo, selectedObjectId, activeTool,
+      objects, evidence, measurements, walls, caseInfo, selectedObjectId, activeTool,
       showGrid, snapToGrid, showLegend, zoom, isDark,
       addObject, updateObject, removeObject, selectObject,
       setTool: setActiveTool, toggleGrid, toggleSnap: () => setSnapToGrid(p => !p),
       toggleLegend, setZoom, toggleDark, setCaseInfo, addEvidence, updateEvidence,
-      addMeasurement, removeMeasurement,
+      addMeasurement, removeMeasurement, addWall, removeWall,
     }}>
       {children}
     </SceneContext.Provider>
