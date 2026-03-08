@@ -1110,8 +1110,14 @@ export default function SceneCanvas() {
         <Layer>
           {showGrid && <GridLayer width={dims.width} height={dims.height} zoom={zoom} isDark={isDark} />}
           {objects.map(obj => (
-            <SceneObjectShape key={obj.id} obj={obj} isSelected={selectedObjectId === obj.id} onSelect={() => selectObject(obj.id)} />
+            <SceneObjectShape key={obj.id} obj={obj} isSelected={selectedObjectId === obj.id} onSelect={() => selectObject(obj.id)} allObjects={objects} onSnapGuides={setSnapGuides} />
           ))}
+          {/* Snap alignment guides */}
+          {snapGuides.map((g, i) =>
+            g.orientation === 'v'
+              ? <Line key={`sg-${i}`} points={[g.pos, -10000, g.pos, 10000]} stroke="#f59e0b" strokeWidth={1} dash={[4, 4]} opacity={0.7} />
+              : <Line key={`sg-${i}`} points={[-10000, g.pos, 10000, g.pos]} stroke="#f59e0b" strokeWidth={1} dash={[4, 4]} opacity={0.7} />
+          )}
           {measurements.map(m => (
             <MeasurementLine key={m.id} m={m} isSelected={selectedMeasurementId === m.id} onSelect={() => selectMeasurement(m.id)} onRemove={() => removeMeasurement(m.id)} />
           ))}
