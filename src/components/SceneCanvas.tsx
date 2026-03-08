@@ -613,9 +613,23 @@ function SceneObjectShape({ obj, isSelected, onSelect, allObjects, onSnapGuides 
       case 'chair':
         return (
           <>
-            <Rect width={w} height={h} fill={c} opacity={0.2} stroke={c} strokeWidth={1.5} cornerRadius={2} />
-            <Rect x={4} y={h * 0.35} width={w - 8} height={h * 0.55} fill={c} opacity={0.15} cornerRadius={2} />
-            <Rect x={4} y={2} width={w - 8} height={h * 0.3} fill={c} opacity={0.25} cornerRadius={[4, 4, 0, 0]} />
+            <Rect width={w} height={h} fill="transparent" />
+            {/* Seat */}
+            <Rect x={w * 0.1} y={h * 0.4} width={w * 0.8} height={h * 0.25} fill={c} opacity={0.25} stroke={c} strokeWidth={1.5} cornerRadius={3} />
+            {/* Backrest */}
+            <Rect x={w * 0.12} y={h * 0.05} width={w * 0.76} height={h * 0.32} fill={c} opacity={0.2} stroke={c} strokeWidth={1.2} cornerRadius={[6, 6, 0, 0]} />
+            {/* Backrest slats */}
+            <Line points={[w * 0.3, h * 0.1, w * 0.3, h * 0.33]} stroke={c} strokeWidth={0.8} opacity={0.3} />
+            <Line points={[w * 0.5, h * 0.08, w * 0.5, h * 0.33]} stroke={c} strokeWidth={0.8} opacity={0.3} />
+            <Line points={[w * 0.7, h * 0.1, w * 0.7, h * 0.33]} stroke={c} strokeWidth={0.8} opacity={0.3} />
+            {/* Front legs */}
+            <Line points={[w * 0.18, h * 0.65, w * 0.12, h * 0.98]} stroke={c} strokeWidth={2} lineCap="round" />
+            <Line points={[w * 0.82, h * 0.65, w * 0.88, h * 0.98]} stroke={c} strokeWidth={2} lineCap="round" />
+            {/* Back legs */}
+            <Line points={[w * 0.18, h * 0.37, w * 0.15, h * 0.65]} stroke={c} strokeWidth={1.5} opacity={0.6} />
+            <Line points={[w * 0.82, h * 0.37, w * 0.85, h * 0.65]} stroke={c} strokeWidth={1.5} opacity={0.6} />
+            {/* Cross brace */}
+            <Line points={[w * 0.2, h * 0.8, w * 0.8, h * 0.8]} stroke={c} strokeWidth={1} opacity={0.3} />
           </>
         );
       case 'sofa':
