@@ -7,16 +7,17 @@ import { stageStore } from '@/lib/stageRef';
 const GRID_SIZE = 20;
 const PIXELS_PER_UNIT = 20;
 
-function GridLayer({ width, height, zoom }: { width: number; height: number; zoom: number }) {
+function GridLayer({ width, height, zoom, isDark }: { width: number; height: number; zoom: number; isDark: boolean }) {
   const lines: React.ReactElement[] = [];
   const step = GRID_SIZE;
   const w = width / zoom + step;
   const h = height / zoom + step;
+  const gridColor = isDark ? 'hsl(225, 18%, 18%)' : 'hsl(220, 15%, 82%)';
   for (let i = 0; i <= w / step; i++) {
-    lines.push(<Line key={`v-${i}`} points={[i * step, 0, i * step, h]} stroke="hsl(220, 15%, 82%)" strokeWidth={0.5} opacity={0.4} />);
+    lines.push(<Line key={`v-${i}`} points={[i * step, 0, i * step, h]} stroke={gridColor} strokeWidth={0.5} opacity={0.5} />);
   }
   for (let i = 0; i <= h / step; i++) {
-    lines.push(<Line key={`h-${i}`} points={[0, i * step, w, i * step]} stroke="hsl(220, 15%, 82%)" strokeWidth={0.5} opacity={0.4} />);
+    lines.push(<Line key={`h-${i}`} points={[0, i * step, w, i * step]} stroke={gridColor} strokeWidth={0.5} opacity={0.5} />);
   }
   return <>{lines}</>;
 }
