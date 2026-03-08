@@ -108,6 +108,7 @@ export function SceneProvider({ children }: { children: ReactNode }) {
   const [objects, setObjects] = useState<SceneObject[]>([]);
   const [evidence, setEvidence] = useState<EvidenceItem[]>([]);
   const [measurements, setMeasurements] = useState<Measurement[]>([]);
+  const [walls, setWalls] = useState<WallSegment[]>([]);
   const [caseInfo, setCaseInfoState] = useState<CaseInfo>({
     caseNumber: '',
     investigator: '',
