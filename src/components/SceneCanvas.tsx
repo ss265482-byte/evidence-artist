@@ -284,42 +284,105 @@ function SceneObjectShape({ obj, isSelected, onSelect, allObjects, onSnapGuides 
         return (
           <>
             <Rect width={w} height={h} fill="transparent" stroke={c} strokeWidth={2} dash={[5, 3]} cornerRadius={4} />
-            <Circle x={w / 2} y={16} radius={13} stroke={c} strokeWidth={2} />
-            <Circle x={w / 2 - 3} y={14} radius={1.5} fill={c} />
-            <Circle x={w / 2 + 3} y={14} radius={1.5} fill={c} />
-            <Line points={[w / 2, 29, w / 2, 78]} stroke={c} strokeWidth={2} />
-            <Line points={[w / 2, 35, w / 2 - 20, 35]} stroke={c} strokeWidth={2} />
-            <Line points={[w / 2, 35, w / 2 + 20, 35]} stroke={c} strokeWidth={2} />
-            <Line points={[w / 2 - 20, 35, w / 2 - 25, 60]} stroke={c} strokeWidth={2} />
-            <Line points={[w / 2 + 20, 35, w / 2 + 25, 60]} stroke={c} strokeWidth={2} />
-            <Line points={[w / 2, 78, w / 2 - 15, 78]} stroke={c} strokeWidth={2} />
-            <Line points={[w / 2, 78, w / 2 + 15, 78]} stroke={c} strokeWidth={2} />
-            <Line points={[w / 2 - 15, 78, w / 2 - 18, h - 5]} stroke={c} strokeWidth={2} />
-            <Line points={[w / 2 + 15, 78, w / 2 + 18, h - 5]} stroke={c} strokeWidth={2} />
+            {/* Ground shadow */}
+            <Circle x={w / 2} y={h * 0.85} radius={w * 0.4} fill={c} opacity={0.05} />
+            {/* Head */}
+            <Circle x={w / 2} y={h * 0.12} radius={w * 0.2} stroke={c} strokeWidth={2} />
+            <Circle x={w / 2} y={h * 0.12} radius={w * 0.18} stroke={c} strokeWidth={0.5} opacity={0.2} />
+            {/* Eyes */}
+            <Circle x={w * 0.43} y={h * 0.1} radius={1.5} fill={c} opacity={0.6} />
+            <Circle x={w * 0.57} y={h * 0.1} radius={1.5} fill={c} opacity={0.6} />
+            {/* Mouth */}
+            <Line points={[w * 0.43, h * 0.14, w * 0.57, h * 0.14]} stroke={c} strokeWidth={0.8} opacity={0.3} />
+            {/* Neck */}
+            <Line points={[w / 2, h * 0.22, w / 2, h * 0.27]} stroke={c} strokeWidth={2} />
+            {/* Torso */}
+            <Line points={[w / 2, h * 0.27, w / 2, h * 0.6]} stroke={c} strokeWidth={2.5} />
+            {/* Shoulders */}
+            <Line points={[w * 0.15, h * 0.3, w * 0.85, h * 0.3]} stroke={c} strokeWidth={2} lineCap="round" />
+            {/* Arms */}
+            <Line points={[w * 0.15, h * 0.3, w * 0.08, h * 0.45]} stroke={c} strokeWidth={2} lineCap="round" />
+            <Line points={[w * 0.85, h * 0.3, w * 0.92, h * 0.45]} stroke={c} strokeWidth={2} lineCap="round" />
+            {/* Hands */}
+            <Circle x={w * 0.08} y={h * 0.46} radius={3} stroke={c} strokeWidth={1} opacity={0.5} />
+            <Circle x={w * 0.92} y={h * 0.46} radius={3} stroke={c} strokeWidth={1} opacity={0.5} />
+            {/* Hips */}
+            <Line points={[w * 0.3, h * 0.6, w * 0.7, h * 0.6]} stroke={c} strokeWidth={2} lineCap="round" />
+            {/* Legs */}
+            <Line points={[w * 0.3, h * 0.6, w * 0.22, h * 0.82]} stroke={c} strokeWidth={2} lineCap="round" />
+            <Line points={[w * 0.7, h * 0.6, w * 0.78, h * 0.82]} stroke={c} strokeWidth={2} lineCap="round" />
+            {/* Feet */}
+            <Line points={[w * 0.22, h * 0.82, w * 0.15, h * 0.9]} stroke={c} strokeWidth={2} lineCap="round" />
+            <Line points={[w * 0.78, h * 0.82, w * 0.85, h * 0.9]} stroke={c} strokeWidth={2} lineCap="round" />
+            {/* Cross marker */}
+            <Line points={[w / 2 - 4, h * 0.5, w / 2 + 4, h * 0.5]} stroke={c} strokeWidth={1} opacity={0.3} />
+            <Line points={[w / 2, h * 0.5 - 4, w / 2, h * 0.5 + 4]} stroke={c} strokeWidth={1} opacity={0.3} />
           </>
         );
       case 'body-standing':
         return (
           <>
             <Rect width={w} height={h} fill="transparent" />
-            <Circle x={w / 2} y={10} radius={9} stroke={c} strokeWidth={2} fill={c} opacity={0.2} />
-            <Line points={[w / 2, 19, w / 2, 50]} stroke={c} strokeWidth={2} />
-            <Line points={[w / 2, 28, 5, 42]} stroke={c} strokeWidth={2} />
-            <Line points={[w / 2, 28, w - 5, 42]} stroke={c} strokeWidth={2} />
-            <Line points={[w / 2, 50, 8, h - 2]} stroke={c} strokeWidth={2} />
-            <Line points={[w / 2, 50, w - 8, h - 2]} stroke={c} strokeWidth={2} />
+            {/* Shadow */}
+            <Circle x={w / 2} y={h * 0.95} radius={w * 0.3} fill={c} opacity={0.06} />
+            {/* Head */}
+            <Circle x={w / 2} y={h * 0.1} radius={w * 0.2} stroke={c} strokeWidth={2} fill={c} opacity={0.15} />
+            {/* Hair hint */}
+            <Line points={[w * 0.32, h * 0.06, w * 0.5, h * 0.03, w * 0.68, h * 0.06]} stroke={c} strokeWidth={1.5} tension={0.5} opacity={0.3} />
+            {/* Eyes */}
+            <Circle x={w * 0.42} y={h * 0.09} radius={1} fill={c} opacity={0.5} />
+            <Circle x={w * 0.58} y={h * 0.09} radius={1} fill={c} opacity={0.5} />
+            {/* Neck */}
+            <Line points={[w / 2, h * 0.2, w / 2, h * 0.25]} stroke={c} strokeWidth={2.5} />
+            {/* Torso */}
+            <Line points={[w / 2, h * 0.25, w / 2, h * 0.58]} stroke={c} strokeWidth={2.5} />
+            {/* Shoulders */}
+            <Line points={[w * 0.12, h * 0.28, w * 0.88, h * 0.28]} stroke={c} strokeWidth={2} lineCap="round" />
+            {/* Arms */}
+            <Line points={[w * 0.12, h * 0.28, w * 0.05, h * 0.48]} stroke={c} strokeWidth={2} lineCap="round" />
+            <Line points={[w * 0.88, h * 0.28, w * 0.95, h * 0.48]} stroke={c} strokeWidth={2} lineCap="round" />
+            {/* Hands */}
+            <Circle x={w * 0.05} y={h * 0.49} radius={2.5} stroke={c} strokeWidth={0.8} opacity={0.4} />
+            <Circle x={w * 0.95} y={h * 0.49} radius={2.5} stroke={c} strokeWidth={0.8} opacity={0.4} />
+            {/* Hips */}
+            <Line points={[w * 0.3, h * 0.58, w * 0.7, h * 0.58]} stroke={c} strokeWidth={2} />
+            {/* Legs */}
+            <Line points={[w * 0.3, h * 0.58, w * 0.25, h * 0.82]} stroke={c} strokeWidth={2} lineCap="round" />
+            <Line points={[w * 0.7, h * 0.58, w * 0.75, h * 0.82]} stroke={c} strokeWidth={2} lineCap="round" />
+            {/* Feet */}
+            <Line points={[w * 0.25, h * 0.82, w * 0.18, h * 0.95]} stroke={c} strokeWidth={2.5} lineCap="round" />
+            <Line points={[w * 0.75, h * 0.82, w * 0.82, h * 0.95]} stroke={c} strokeWidth={2.5} lineCap="round" />
           </>
         );
       case 'body-prone':
         return (
           <>
-            <Rect width={w} height={h} fill="transparent" stroke={c} strokeWidth={1.5} dash={[4, 4]} cornerRadius={8} opacity={0.5} />
-            <Circle x={15} y={h / 2} radius={10} stroke={c} strokeWidth={2} fill={c} opacity={0.15} />
-            <Line points={[25, h / 2, 70, h / 2]} stroke={c} strokeWidth={3} lineCap="round" />
-            <Line points={[35, h / 2, 30, h / 2 - 14]} stroke={c} strokeWidth={2} />
-            <Line points={[35, h / 2, 30, h / 2 + 14]} stroke={c} strokeWidth={2} />
-            <Line points={[70, h / 2, w - 5, h / 2 - 10]} stroke={c} strokeWidth={2} />
-            <Line points={[70, h / 2, w - 5, h / 2 + 10]} stroke={c} strokeWidth={2} />
+            <Rect width={w} height={h} fill="transparent" stroke={c} strokeWidth={1.5} dash={[4, 4]} cornerRadius={8} opacity={0.4} />
+            {/* Ground shadow */}
+            <Rect x={w * 0.05} y={h * 0.15} width={w * 0.9} height={h * 0.7} fill={c} opacity={0.04} cornerRadius={10} />
+            {/* Head */}
+            <Circle x={w * 0.1} y={h / 2} radius={h * 0.28} stroke={c} strokeWidth={2} fill={c} opacity={0.12} />
+            {/* Face down indicator */}
+            <Line points={[w * 0.07, h * 0.55, w * 0.13, h * 0.55]} stroke={c} strokeWidth={0.8} opacity={0.3} />
+            {/* Neck */}
+            <Line points={[w * 0.18, h / 2, w * 0.24, h / 2]} stroke={c} strokeWidth={2.5} />
+            {/* Torso */}
+            <Line points={[w * 0.24, h / 2, w * 0.58, h / 2]} stroke={c} strokeWidth={3.5} lineCap="round" />
+            {/* Torso width hint */}
+            <Line points={[w * 0.3, h * 0.3, w * 0.3, h * 0.7]} stroke={c} strokeWidth={1} opacity={0.15} />
+            <Line points={[w * 0.45, h * 0.28, w * 0.45, h * 0.72]} stroke={c} strokeWidth={1} opacity={0.15} />
+            {/* Arms */}
+            <Line points={[w * 0.28, h / 2, w * 0.22, h * 0.2]} stroke={c} strokeWidth={2} lineCap="round" />
+            <Line points={[w * 0.28, h / 2, w * 0.22, h * 0.8]} stroke={c} strokeWidth={2} lineCap="round" />
+            {/* Hands */}
+            <Circle x={w * 0.21} y={h * 0.18} radius={2.5} stroke={c} strokeWidth={0.8} opacity={0.4} />
+            <Circle x={w * 0.21} y={h * 0.82} radius={2.5} stroke={c} strokeWidth={0.8} opacity={0.4} />
+            {/* Legs */}
+            <Line points={[w * 0.58, h / 2, w * 0.85, h * 0.25]} stroke={c} strokeWidth={2} lineCap="round" />
+            <Line points={[w * 0.58, h / 2, w * 0.85, h * 0.75]} stroke={c} strokeWidth={2} lineCap="round" />
+            {/* Feet */}
+            <Line points={[w * 0.85, h * 0.25, w * 0.92, h * 0.2]} stroke={c} strokeWidth={2} lineCap="round" />
+            <Line points={[w * 0.85, h * 0.75, w * 0.92, h * 0.8]} stroke={c} strokeWidth={2} lineCap="round" />
           </>
         );
       case 'knife':
