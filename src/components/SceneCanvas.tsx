@@ -50,6 +50,41 @@ function MeasurementLine({ m, onRemove }: { m: Measurement; onRemove: () => void
   );
 }
 
+function WallLine({ w, onRemove }: { w: WallSegment; onRemove: () => void }) {
+  const dx = w.x2 - w.x1;
+  const dy = w.y2 - w.y1;
+  const dist = Math.sqrt(dx * dx + dy * dy);
+  const distUnits = (dist / PIXELS_PER_UNIT).toFixed(1);
+  const midX = (w.x1 + w.x2) / 2;
+  const midY = (w.y1 + w.y2) / 2;
+  const angle = Math.atan2(dy, dx) * (180 / Math.PI);
+  const len = dist || 1;
+  const perpX = (-dy / len) * 12;
+  const perpY = (dx / len) * 12;
+
+  return (
+    <Group>
+      {/* Main wall line */}
+      <Line points={[w.x1, w.y1, w.x2, w.y2]} stroke="#a3a3a3" strokeWidth={w.thickness} lineCap="round" />
+      {/* Wall edge lines */}
+      <Line points={[w.x1, w.y1, w.x2, w.y2]} stroke="#737373" strokeWidth={w.thickness + 2} opacity={0.3} lineCap="round" />
+      {/* Endpoint indicators */}
+      <Circle x={w.x1} y={w.y1} radius={3} fill="#d4d4d4" />
+      <Circle x={w.x2} y={w.y2} radius={3} fill="#d4d4d4" />
+      {/* Dimension label */}
+      <Group x={midX + perpX} y={midY + perpY}>
+        <Rect x={-24} y={-9} width={48} height={18} fill="hsl(225, 22%, 11%)" stroke="#737373" strokeWidth={0.5} cornerRadius={3} opacity={0.9} />
+        <Text x={-24} y={-7} width={48} text={`${distUnits}'`} fontSize={10} fontFamily="JetBrains Mono, monospace" fill="#d4d4d4" align="center" />
+      </Group>
+      {/* Delete button */}
+      <Group x={midX - perpX} y={midY - perpY} onClick={onRemove} onTap={onRemove}>
+        <Circle radius={6} fill="#ef4444" opacity={0.7} />
+        <Text x={-3} y={-5} text="×" fontSize={9} fill="#fff" fontStyle="bold" />
+      </Group>
+    </Group>
+  );
+}
+
 function CanvasLegend({ x, y }: { x: number; y: number }) {
   const { evidence, caseInfo } = useScene();
   if (evidence.length === 0 && !caseInfo.location) return null;
