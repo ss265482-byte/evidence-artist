@@ -33,6 +33,15 @@ export interface Measurement {
   y2: number;
 }
 
+export interface WallSegment {
+  id: string;
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+  thickness: number;
+}
+
 export interface EvidenceItem {
   id: string;
   letter: string;
