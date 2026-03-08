@@ -3,6 +3,7 @@ import { Stage, Layer, Rect, Text, Line, Circle, Group, Transformer, Arrow as Ko
 import { useScene, SceneObject, Measurement, WallSegment } from '@/store/SceneContext';
 import Konva from 'konva';
 import { stageStore } from '@/lib/stageRef';
+import { Trash2, Copy, Lock, Unlock, ArrowUpToLine, ArrowDownToLine, X } from 'lucide-react';
 
 const GRID_SIZE = 20;
 const PIXELS_PER_UNIT = 20;
