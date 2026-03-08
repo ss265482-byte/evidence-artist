@@ -25,6 +25,14 @@ export interface SceneObject {
   timeLogged?: string;
 }
 
+export interface Measurement {
+  id: string;
+  x1: number;
+  y1: number;
+  x2: number;
+  y2: number;
+}
+
 export interface EvidenceItem {
   id: string;
   objectId: string;
@@ -47,6 +55,7 @@ export type ToolType = 'select' | 'pan' | 'wall' | 'line' | 'arrow' | 'freehand'
 interface SceneState {
   objects: SceneObject[];
   evidence: EvidenceItem[];
+  measurements: Measurement[];
   caseInfo: CaseInfo;
   selectedObjectId: string | null;
   activeTool: ToolType;
@@ -66,16 +75,20 @@ interface SceneState {
   setCaseInfo: (info: Partial<CaseInfo>) => void;
   addEvidence: (objectId: string, description: string) => void;
   updateEvidence: (id: string, updates: Partial<EvidenceItem>) => void;
+  addMeasurement: (m: Omit<Measurement, 'id'>) => void;
+  removeMeasurement: (id: string) => void;
 }
 
 const SceneContext = createContext<SceneState | null>(null);
 
 let nextId = 1;
 let nextEvidence = 1;
+let nextMeasurement = 1;
 
 export function SceneProvider({ children }: { children: ReactNode }) {
   const [objects, setObjects] = useState<SceneObject[]>([]);
   const [evidence, setEvidence] = useState<EvidenceItem[]>([]);
+  const [measurements, setMeasurements] = useState<Measurement[]>([]);
   const [caseInfo, setCaseInfoState] = useState<CaseInfo>({
     caseNumber: '',
     investigator: '',
@@ -128,6 +141,15 @@ export function SceneProvider({ children }: { children: ReactNode }) {
     setEvidence(prev => prev.map(e => e.id === id ? { ...e, ...updates } : e));
   }, []);
 
+  const addMeasurement = useCallback((m: Omit<Measurement, 'id'>) => {
+    const id = `meas-${nextMeasurement++}`;
+    setMeasurements(prev => [...prev, { ...m, id }]);
+  }, []);
+
+  const removeMeasurement = useCallback((id: string) => {
+    setMeasurements(prev => prev.filter(m => m.id !== id));
+  }, []);
+
   const setCaseInfo = useCallback((info: Partial<CaseInfo>) => {
     setCaseInfoState(prev => ({ ...prev, ...info }));
   }, []);
@@ -140,6 +162,10 @@ export function SceneProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
+  const toggleGrid = useCallback(() => {
+    setShowGrid(p => !p);
+  }, []);
+
   // Initialize dark mode
   React.useEffect(() => {
     document.documentElement.classList.toggle('dark', isDark);
@@ -147,19 +173,16 @@ export function SceneProvider({ children }: { children: ReactNode }) {
 
   return (
     <SceneContext.Provider value={{
-      objects, evidence, caseInfo, selectedObjectId, activeTool,
+      objects, evidence, measurements, caseInfo, selectedObjectId, activeTool,
       showGrid, snapToGrid, zoom, isDark,
       addObject, updateObject, removeObject, selectObject,
       setTool: setActiveTool, toggleGrid, toggleSnap: () => setSnapToGrid(p => !p),
       setZoom, toggleDark, setCaseInfo, addEvidence, updateEvidence,
+      addMeasurement, removeMeasurement,
     }}>
       {children}
     </SceneContext.Provider>
   );
-
-  function toggleGrid() {
-    setShowGrid(p => !p);
-  }
 }
 
 export function useScene() {
