@@ -1,5 +1,6 @@
-import { useScene } from '@/store/SceneContext';
-import { Trash2, Tag, Ruler, Copy, RotateCw, Layers, Lock, Unlock, ChevronsUp, ChevronsDown, ArrowUp, ArrowDown, Eye } from 'lucide-react';
+import { useState } from 'react';
+import { useScene, EvidencePriority, EvidenceStatus } from '@/store/SceneContext';
+import { Trash2, Tag, Ruler, Copy, RotateCw, Layers, Lock, Unlock, ChevronsUp, ChevronsDown, ArrowUp, ArrowDown, Eye, Filter, AlertTriangle, CheckCircle2, Clock, FlaskConical, Camera } from 'lucide-react';
 
 const PIXELS_PER_UNIT = 20;
 
