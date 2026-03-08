@@ -46,6 +46,8 @@ export default function TopToolbar() {
     pdf.addImage(dataURL, 'PNG', 0, 0, w, h);
     pdf.save(`crime-scene${caseInfo.caseNumber ? `-${caseInfo.caseNumber}` : ''}.pdf`);
   };
+
+  return (
     <div className="h-11 bg-card border-b border-border flex items-center px-3 gap-2 shrink-0">
       {/* App brand */}
       <div className="flex items-center gap-2 mr-4 shrink-0">
