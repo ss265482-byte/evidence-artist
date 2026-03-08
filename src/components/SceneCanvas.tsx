@@ -7,16 +7,17 @@ import { stageStore } from '@/lib/stageRef';
 const GRID_SIZE = 20;
 const PIXELS_PER_UNIT = 20;
 
-function GridLayer({ width, height, zoom }: { width: number; height: number; zoom: number }) {
+function GridLayer({ width, height, zoom, isDark }: { width: number; height: number; zoom: number; isDark: boolean }) {
   const lines: React.ReactElement[] = [];
   const step = GRID_SIZE;
   const w = width / zoom + step;
   const h = height / zoom + step;
+  const gridColor = isDark ? 'hsl(225, 18%, 18%)' : 'hsl(220, 15%, 82%)';
   for (let i = 0; i <= w / step; i++) {
-    lines.push(<Line key={`v-${i}`} points={[i * step, 0, i * step, h]} stroke="hsl(220, 15%, 82%)" strokeWidth={0.5} opacity={0.4} />);
+    lines.push(<Line key={`v-${i}`} points={[i * step, 0, i * step, h]} stroke={gridColor} strokeWidth={0.5} opacity={0.5} />);
   }
   for (let i = 0; i <= h / step; i++) {
-    lines.push(<Line key={`h-${i}`} points={[0, i * step, w, i * step]} stroke="hsl(220, 15%, 82%)" strokeWidth={0.5} opacity={0.4} />);
+    lines.push(<Line key={`h-${i}`} points={[0, i * step, w, i * step]} stroke={gridColor} strokeWidth={0.5} opacity={0.5} />);
   }
   return <>{lines}</>;
 }
@@ -154,7 +155,7 @@ function CanvasLegend({ x, y }: { x: number; y: number }) {
 function SceneObjectShape({ obj, isSelected, onSelect }: {
   obj: SceneObject; isSelected: boolean; onSelect: () => void;
 }) {
-  const { updateObject, snapToGrid } = useScene();
+  const { updateObject, updateObjectSilent, snapToGrid } = useScene();
   const shapeRef = useRef<Konva.Group>(null);
   const trRef = useRef<Konva.Transformer>(null);
   const [hovered, setHovered] = useState(false);
@@ -169,6 +170,7 @@ function SceneObjectShape({ obj, isSelected, onSelect }: {
   const snapPos = (val: number) => snapToGrid ? Math.round(val / GRID_SIZE) * GRID_SIZE : val;
 
   const handleDragEnd = (e: Konva.KonvaEventObject<DragEvent>) => {
+    // Push undo once on drag completion (not during drag)
     updateObject(obj.id, { x: snapPos(e.target.x()), y: snapPos(e.target.y()) });
   };
 
@@ -179,6 +181,7 @@ function SceneObjectShape({ obj, isSelected, onSelect }: {
     const scaleY = node.scaleY();
     node.scaleX(1);
     node.scaleY(1);
+    // Push undo once on transform completion
     updateObject(obj.id, {
       x: snapPos(node.x()), y: snapPos(node.y()),
       width: Math.max(5, node.width() * scaleX),
@@ -590,47 +593,10 @@ function SceneObjectShape({ obj, isSelected, onSelect }: {
   );
 }
 
-// Compass rose for the canvas
-function CompassRose({ x, y }: { x: number; y: number }) {
-  const size = 22;
-  return (
-    <Group x={x} y={y}>
-      <Circle radius={size + 4} fill="hsl(225, 22%, 11%)" opacity={0.85} stroke="#475569" strokeWidth={0.5} />
-      {/* N arrow */}
-      <Line points={[0, -size, -5, -4, 0, -8, 5, -4]} fill="#ef4444" stroke="#ef4444" strokeWidth={1} closed />
-      {/* S arrow */}
-      <Line points={[0, size, -5, 4, 0, 8, 5, 4]} fill="#64748b" stroke="#64748b" strokeWidth={1} closed />
-      {/* E arrow */}
-      <Line points={[size, 0, 4, -5, 8, 0, 4, 5]} fill="#64748b" stroke="#64748b" strokeWidth={1} closed />
-      {/* W arrow */}
-      <Line points={[-size, 0, -4, -5, -8, 0, -4, 5]} fill="#64748b" stroke="#64748b" strokeWidth={1} closed />
-      {/* Labels */}
-      <Text text="N" x={-4} y={-size - 14} fontSize={9} fill="#ef4444" fontStyle="bold" fontFamily="JetBrains Mono, monospace" />
-      <Text text="S" x={-3} y={size + 5} fontSize={8} fill="#94a3b8" fontFamily="JetBrains Mono, monospace" />
-      <Text text="E" x={size + 5} y={-5} fontSize={8} fill="#94a3b8" fontFamily="JetBrains Mono, monospace" />
-      <Text text="W" x={-size - 14} y={-5} fontSize={8} fill="#94a3b8" fontFamily="JetBrains Mono, monospace" />
-    </Group>
-  );
-}
-
-// Scale bar
-function ScaleBar({ x, y, zoom }: { x: number; y: number; zoom: number }) {
-  const barPixels = 100;
-  const barUnits = (barPixels / PIXELS_PER_UNIT).toFixed(0);
-  return (
-    <Group x={x} y={y}>
-      <Rect x={0} y={0} width={barPixels + 20} height={28} fill="hsl(225, 22%, 11%)" opacity={0.85} cornerRadius={3} stroke="#475569" strokeWidth={0.5} />
-      <Line points={[10, 18, 10 + barPixels, 18]} stroke="#e2e8f0" strokeWidth={2} />
-      <Line points={[10, 14, 10, 22]} stroke="#e2e8f0" strokeWidth={1.5} />
-      <Line points={[10 + barPixels, 14, 10 + barPixels, 22]} stroke="#e2e8f0" strokeWidth={1.5} />
-      <Line points={[10 + barPixels / 2, 16, 10 + barPixels / 2, 20]} stroke="#e2e8f0" strokeWidth={1} />
-      <Text text={`${barUnits} ft`} x={10} y={3} width={barPixels} fontSize={9} fill="#94a3b8" align="center" fontFamily="JetBrains Mono, monospace" />
-    </Group>
-  );
-}
+// Compass and scale bar moved to HTML overlays for fixed positioning
 
 export default function SceneCanvas() {
-  const { objects, selectedObjectId, selectObject, removeObject, addEvidence, activeTool, setTool, showGrid, showLegend, zoom, setZoom, addObject, snapToGrid, measurements, addMeasurement, removeMeasurement, walls, addWall, removeWall, evidence } = useScene();
+  const { objects, selectedObjectId, selectObject, removeObject, addEvidence, activeTool, setTool, showGrid, showLegend, zoom, setZoom, addObject, snapToGrid, measurements, addMeasurement, removeMeasurement, walls, addWall, removeWall, evidence, isDark } = useScene();
   const containerRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<Konva.Stage>(null);
 
@@ -663,7 +629,8 @@ export default function SceneCanvas() {
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       if (e.key === 'Delete' || e.key === 'Backspace') {
-        if (selectedObjectId && document.activeElement?.tagName !== 'INPUT') {
+        const tag = document.activeElement?.tagName;
+        if (selectedObjectId && tag !== 'INPUT' && tag !== 'TEXTAREA') {
           e.preventDefault();
           removeObject(selectedObjectId);
         }
@@ -821,11 +788,7 @@ export default function SceneCanvas() {
   const legendX = (dims.width - stagePos.x) / zoom - 200;
   const legendY = 20 / zoom;
 
-  // Compass & scale bar positions (in canvas coordinates)
-  const compassX = (dims.width - stagePos.x) / zoom - 40;
-  const compassY = (dims.height - stagePos.y) / zoom - 50;
-  const scaleBarX = (60 - stagePos.x) / zoom;
-  const scaleBarY = (dims.height - stagePos.y) / zoom - 40;
+  const scaleBarFeet = Math.round(100 / PIXELS_PER_UNIT);
 
   return (
     <div
@@ -851,7 +814,7 @@ export default function SceneCanvas() {
         onDragEnd={(e) => { if (activeTool === 'pan') setStagePos({ x: e.target.x(), y: e.target.y() }); }}
       >
         <Layer>
-          {showGrid && <GridLayer width={dims.width} height={dims.height} zoom={zoom} />}
+          {showGrid && <GridLayer width={dims.width} height={dims.height} zoom={zoom} isDark={isDark} />}
           {objects.map(obj => (
             <SceneObjectShape key={obj.id} obj={obj} isSelected={selectedObjectId === obj.id} onSelect={() => selectObject(obj.id)} />
           ))}
@@ -874,24 +837,45 @@ export default function SceneCanvas() {
             <Circle x={measureStart.x} y={measureStart.y} radius={5} fill="#22d3ee" opacity={0.8} />
           )}
           {showLegend && <CanvasLegend x={legendX} y={legendY} />}
-          <CompassRose x={compassX} y={compassY} />
-          <ScaleBar x={scaleBarX} y={scaleBarY} zoom={zoom} />
         </Layer>
       </Stage>
+
+      {/* Compass rose overlay (fixed position) */}
+      <div className="absolute bottom-10 right-3 w-14 h-14 flex items-center justify-center">
+        <div className="relative w-12 h-12 bg-card/90 backdrop-blur-sm border border-border rounded-full flex items-center justify-center">
+          <span className="absolute -top-2.5 left-1/2 -translate-x-1/2 text-[8px] font-mono font-bold text-destructive">N</span>
+          <span className="absolute -bottom-2.5 left-1/2 -translate-x-1/2 text-[7px] font-mono text-muted-foreground">S</span>
+          <span className="absolute top-1/2 -right-2 -translate-y-1/2 text-[7px] font-mono text-muted-foreground">E</span>
+          <span className="absolute top-1/2 -left-2 -translate-y-1/2 text-[7px] font-mono text-muted-foreground">W</span>
+          {/* Arrow */}
+          <svg width="20" height="20" viewBox="0 0 20 20" className="text-destructive">
+            <polygon points="10,1 7,10 10,8 13,10" fill="currentColor" />
+            <polygon points="10,19 7,10 10,12 13,10" fill="currentColor" opacity="0.3" />
+          </svg>
+        </div>
+      </div>
+
+      {/* Scale bar overlay (fixed position) */}
+      <div className="absolute bottom-10 left-3 bg-card/90 backdrop-blur-sm border border-border rounded-md px-2.5 py-1.5 flex flex-col items-center gap-0.5">
+        <span className="text-[8px] font-mono text-muted-foreground">{scaleBarFeet} ft</span>
+        <div className="flex items-center">
+          <div className="w-px h-2 bg-foreground/60" />
+          <div className="w-[60px] h-0.5 bg-foreground/60" />
+          <div className="w-px h-2 bg-foreground/60" />
+        </div>
+      </div>
 
       {/* Status bar */}
       <div className="absolute bottom-0 left-0 right-0 h-7 bg-card/90 backdrop-blur-sm border-t border-border flex items-center px-3 gap-4 text-[10px] font-mono text-muted-foreground">
         <span>Zoom: {Math.round(zoom * 100)}%</span>
         <span className="h-3 w-px bg-border" />
-        <span>Cursor: ({mousePos.x}, {mousePos.y})</span>
+        <span>({mousePos.x}, {mousePos.y})</span>
         <span className="h-3 w-px bg-border" />
-        <span>Objects: {objects.length}</span>
+        <span>{objects.length} obj</span>
         <span className="h-3 w-px bg-border" />
-        <span>Walls: {walls.length}</span>
+        <span>{walls.length} walls</span>
         <span className="h-3 w-px bg-border" />
-        <span>Measurements: {measurements.length}</span>
-        <span className="h-3 w-px bg-border" />
-        <span>Evidence: {evidence.length}</span>
+        <span>{evidence.length} ev</span>
         <span className="flex-1" />
         <span className="text-muted-foreground/50">Grid: {showGrid ? 'ON' : 'OFF'} · Snap: {snapToGrid ? 'ON' : 'OFF'}</span>
       </div>
@@ -937,6 +921,7 @@ export default function SceneCanvas() {
         );
       })()}
 
+      {/* Tool hints */}
       {activeTool === 'measure' && (
         <div className="absolute top-3 left-1/2 -translate-x-1/2 bg-card/90 backdrop-blur-sm border border-border rounded-md px-4 py-2 text-xs text-foreground flex items-center gap-2">
           <span className="inline-block w-2 h-2 rounded-full bg-[#22d3ee]" />
@@ -949,7 +934,7 @@ export default function SceneCanvas() {
 
       {activeTool === 'wall' && (
         <div className="absolute top-3 left-1/2 -translate-x-1/2 bg-card/90 backdrop-blur-sm border border-border rounded-md px-4 py-2 text-xs text-foreground flex items-center gap-2">
-          <span className="inline-block w-2 h-2 rounded-full bg-[#a3a3a3]" />
+          <span className="inline-block w-2 h-2 rounded-full bg-muted-foreground" />
           {wallStart ? 'Click to place next wall point (walls chain automatically)' : 'Click to set wall start point'}
           {wallStart && (
             <button onClick={() => { setWallStart(null); setWallPreview(null); }} className="ml-2 text-[10px] text-destructive hover:underline">Finish</button>
@@ -957,8 +942,16 @@ export default function SceneCanvas() {
         </div>
       )}
 
+      {activeTool === 'text' && (
+        <div className="absolute top-3 left-1/2 -translate-x-1/2 bg-card/90 backdrop-blur-sm border border-border rounded-md px-4 py-2 text-xs text-foreground flex items-center gap-2">
+          <span className="inline-block w-2 h-2 rounded-full bg-muted-foreground" />
+          Click to place a text label
+        </div>
+      )}
+
       {activeTool === 'room-label' && (
-        <div className="absolute top-3 left-1/2 -translate-x-1/2 bg-card/90 backdrop-blur-sm border border-border rounded-md px-4 py-2 text-xs text-foreground">
+        <div className="absolute top-3 left-1/2 -translate-x-1/2 bg-card/90 backdrop-blur-sm border border-border rounded-md px-4 py-2 text-xs text-foreground flex items-center gap-2">
+          <span className="inline-block w-2 h-2 rounded-full bg-muted-foreground" />
           Click to place a room label
         </div>
       )}
