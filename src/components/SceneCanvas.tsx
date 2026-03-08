@@ -714,17 +714,41 @@ function SceneObjectShape({ obj, isSelected, onSelect, allObjects, onSnapGuides 
       case 'car':
         return (
           <>
-            <Rect x={2} y={h * 0.15} width={w - 4} height={h * 0.7} fill={c} opacity={0.2} stroke={c} strokeWidth={1.5} cornerRadius={6} />
-            <Rect x={w * 0.25} y={h * 0.05} width={w * 0.45} height={h * 0.9} fill={c} opacity={0.1} stroke={c} strokeWidth={1} cornerRadius={8} />
-            <Line points={[w * 0.25, h * 0.2, w * 0.35, h * 0.15, w * 0.35, h * 0.85, w * 0.25, h * 0.8]} stroke="#38bdf8" strokeWidth={1} opacity={0.5} />
-            <Line points={[w * 0.7, h * 0.2, w * 0.6, h * 0.15, w * 0.6, h * 0.85, w * 0.7, h * 0.8]} stroke="#38bdf8" strokeWidth={1} opacity={0.5} />
-            <Circle x={w * 0.18} y={h * 0.08} radius={5} fill="#1e293b" stroke="#475569" strokeWidth={1} />
-            <Circle x={w * 0.18} y={h * 0.92} radius={5} fill="#1e293b" stroke="#475569" strokeWidth={1} />
-            <Circle x={w * 0.82} y={h * 0.08} radius={5} fill="#1e293b" stroke="#475569" strokeWidth={1} />
-            <Circle x={w * 0.82} y={h * 0.92} radius={5} fill="#1e293b" stroke="#475569" strokeWidth={1} />
-            <Rect x={0} y={h * 0.25} width={4} height={h * 0.15} fill="#fbbf24" opacity={0.7} cornerRadius={1} />
-            <Rect x={0} y={h * 0.6} width={4} height={h * 0.15} fill="#fbbf24" opacity={0.7} cornerRadius={1} />
-            <Text text="CAR" x={0} y={h / 2 - 4} width={w} fontSize={8} fill={c} align="center" fontFamily="JetBrains Mono, monospace" opacity={0.6} />
+            {/* Body shell */}
+            <Rect x={2} y={h * 0.15} width={w - 4} height={h * 0.7} fill={c} opacity={0.18} stroke={c} strokeWidth={1.5} cornerRadius={8} />
+            {/* Cabin/roof */}
+            <Rect x={w * 0.25} y={h * 0.08} width={w * 0.45} height={h * 0.84} fill={c} opacity={0.1} stroke={c} strokeWidth={1} cornerRadius={10} />
+            {/* Windshield */}
+            <Line points={[w * 0.25, h * 0.2, w * 0.32, h * 0.12, w * 0.32, h * 0.88, w * 0.25, h * 0.8]} stroke="#38bdf8" strokeWidth={1.2} fill="#38bdf8" opacity={0.15} closed />
+            {/* Rear window */}
+            <Line points={[w * 0.7, h * 0.2, w * 0.63, h * 0.14, w * 0.63, h * 0.86, w * 0.7, h * 0.8]} stroke="#38bdf8" strokeWidth={1.2} fill="#38bdf8" opacity={0.12} closed />
+            {/* Side windows */}
+            <Rect x={w * 0.35} y={h * 0.15} width={w * 0.12} height={h * 0.3} fill="#38bdf8" opacity={0.1} stroke="#38bdf8" strokeWidth={0.8} cornerRadius={2} />
+            <Rect x={w * 0.35} y={h * 0.55} width={w * 0.12} height={h * 0.3} fill="#38bdf8" opacity={0.1} stroke="#38bdf8" strokeWidth={0.8} cornerRadius={2} />
+            <Rect x={w * 0.49} y={h * 0.15} width={w * 0.12} height={h * 0.3} fill="#38bdf8" opacity={0.1} stroke="#38bdf8" strokeWidth={0.8} cornerRadius={2} />
+            <Rect x={w * 0.49} y={h * 0.55} width={w * 0.12} height={h * 0.3} fill="#38bdf8" opacity={0.1} stroke="#38bdf8" strokeWidth={0.8} cornerRadius={2} />
+            {/* Door lines */}
+            <Line points={[w * 0.47, h * 0.12, w * 0.47, h * 0.88]} stroke={c} strokeWidth={0.6} opacity={0.3} />
+            {/* Wheels with detail */}
+            <Circle x={w * 0.15} y={h * 0.12} radius={6} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Circle x={w * 0.15} y={h * 0.12} radius={2.5} fill="#475569" />
+            <Circle x={w * 0.15} y={h * 0.88} radius={6} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Circle x={w * 0.15} y={h * 0.88} radius={2.5} fill="#475569" />
+            <Circle x={w * 0.85} y={h * 0.12} radius={6} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Circle x={w * 0.85} y={h * 0.12} radius={2.5} fill="#475569" />
+            <Circle x={w * 0.85} y={h * 0.88} radius={6} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Circle x={w * 0.85} y={h * 0.88} radius={2.5} fill="#475569" />
+            {/* Headlights */}
+            <Rect x={0} y={h * 0.2} width={4} height={h * 0.18} fill="#fbbf24" opacity={0.8} cornerRadius={2} />
+            <Rect x={0} y={h * 0.62} width={4} height={h * 0.18} fill="#fbbf24" opacity={0.8} cornerRadius={2} />
+            {/* Tail lights */}
+            <Rect x={w - 4} y={h * 0.2} width={4} height={h * 0.12} fill="#ef4444" opacity={0.6} cornerRadius={2} />
+            <Rect x={w - 4} y={h * 0.68} width={4} height={h * 0.12} fill="#ef4444" opacity={0.6} cornerRadius={2} />
+            {/* Side mirrors */}
+            <Rect x={w * 0.22} y={h * 0.02} width={5} height={4} fill={c} opacity={0.4} cornerRadius={1} />
+            <Rect x={w * 0.22} y={h * 0.94} width={5} height={4} fill={c} opacity={0.4} cornerRadius={1} />
+            {/* Hood line */}
+            <Line points={[w * 0.12, h * 0.5, w * 0.22, h * 0.5]} stroke={c} strokeWidth={0.5} opacity={0.25} />
           </>
         );
       case 'motorcycle':
