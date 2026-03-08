@@ -157,6 +157,7 @@ function SceneObjectShape({ obj, isSelected, onSelect }: {
   const { updateObject, snapToGrid } = useScene();
   const shapeRef = useRef<Konva.Group>(null);
   const trRef = useRef<Konva.Transformer>(null);
+  const [hovered, setHovered] = useState(false);
 
   useEffect(() => {
     if (isSelected && trRef.current && shapeRef.current) {
@@ -187,65 +188,356 @@ function SceneObjectShape({ obj, isSelected, onSelect }: {
   };
 
   const c = obj.color || '#3b82f6';
+  const w = obj.width;
+  const h = obj.height;
 
   const renderShape = () => {
     switch (obj.type) {
+      // === BODIES ===
       case 'body-outline':
         return (
           <>
-            <Rect width={obj.width} height={obj.height} fill="transparent" stroke={c} strokeWidth={2} dash={[5, 3]} cornerRadius={4} />
-            <Circle x={obj.width / 2} y={15} radius={12} stroke={c} strokeWidth={2} />
-            <Line points={[obj.width / 2, 27, obj.width / 2, 75]} stroke={c} strokeWidth={2} />
-            <Line points={[10, 45, obj.width - 10, 45]} stroke={c} strokeWidth={2} />
-            <Line points={[obj.width / 2, 75, 15, obj.height - 5]} stroke={c} strokeWidth={2} />
-            <Line points={[obj.width / 2, 75, obj.width - 15, obj.height - 5]} stroke={c} strokeWidth={2} />
+            <Rect width={w} height={h} fill="transparent" stroke={c} strokeWidth={2} dash={[5, 3]} cornerRadius={4} />
+            {/* Head */}
+            <Circle x={w / 2} y={16} radius={13} stroke={c} strokeWidth={2} />
+            <Circle x={w / 2 - 3} y={14} radius={1.5} fill={c} />
+            <Circle x={w / 2 + 3} y={14} radius={1.5} fill={c} />
+            {/* Torso */}
+            <Line points={[w / 2, 29, w / 2, 78]} stroke={c} strokeWidth={2} />
+            {/* Shoulders */}
+            <Line points={[w / 2, 35, w / 2 - 20, 35]} stroke={c} strokeWidth={2} />
+            <Line points={[w / 2, 35, w / 2 + 20, 35]} stroke={c} strokeWidth={2} />
+            {/* Arms */}
+            <Line points={[w / 2 - 20, 35, w / 2 - 25, 60]} stroke={c} strokeWidth={2} />
+            <Line points={[w / 2 + 20, 35, w / 2 + 25, 60]} stroke={c} strokeWidth={2} />
+            {/* Hips */}
+            <Line points={[w / 2, 78, w / 2 - 15, 78]} stroke={c} strokeWidth={2} />
+            <Line points={[w / 2, 78, w / 2 + 15, 78]} stroke={c} strokeWidth={2} />
+            {/* Legs */}
+            <Line points={[w / 2 - 15, 78, w / 2 - 18, h - 5]} stroke={c} strokeWidth={2} />
+            <Line points={[w / 2 + 15, 78, w / 2 + 18, h - 5]} stroke={c} strokeWidth={2} />
           </>
         );
+      case 'body-standing':
+        return (
+          <>
+            <Rect width={w} height={h} fill="transparent" />
+            <Circle x={w / 2} y={10} radius={9} stroke={c} strokeWidth={2} fill={c} opacity={0.2} />
+            <Line points={[w / 2, 19, w / 2, 50]} stroke={c} strokeWidth={2} />
+            <Line points={[w / 2, 28, 5, 42]} stroke={c} strokeWidth={2} />
+            <Line points={[w / 2, 28, w - 5, 42]} stroke={c} strokeWidth={2} />
+            <Line points={[w / 2, 50, 8, h - 2]} stroke={c} strokeWidth={2} />
+            <Line points={[w / 2, 50, w - 8, h - 2]} stroke={c} strokeWidth={2} />
+          </>
+        );
+      case 'body-prone':
+        return (
+          <>
+            <Rect width={w} height={h} fill="transparent" stroke={c} strokeWidth={1.5} dash={[4, 4]} cornerRadius={8} opacity={0.5} />
+            {/* Head */}
+            <Circle x={15} y={h / 2} radius={10} stroke={c} strokeWidth={2} fill={c} opacity={0.15} />
+            {/* Torso */}
+            <Line points={[25, h / 2, 70, h / 2]} stroke={c} strokeWidth={3} lineCap="round" />
+            {/* Arms */}
+            <Line points={[35, h / 2, 30, h / 2 - 14]} stroke={c} strokeWidth={2} />
+            <Line points={[35, h / 2, 30, h / 2 + 14]} stroke={c} strokeWidth={2} />
+            {/* Legs */}
+            <Line points={[70, h / 2, w - 5, h / 2 - 10]} stroke={c} strokeWidth={2} />
+            <Line points={[70, h / 2, w - 5, h / 2 + 10]} stroke={c} strokeWidth={2} />
+          </>
+        );
+
+      // === WEAPONS ===
+      case 'knife':
+        return (
+          <>
+            <Rect width={w} height={h} fill="transparent" />
+            {/* Blade */}
+            <Line points={[2, h / 2, w * 0.65, h / 2 - 2, w * 0.65, h / 2 + 3, 2, h / 2]} stroke="#94a3b8" strokeWidth={1} fill="#cbd5e1" closed />
+            {/* Handle */}
+            <Rect x={w * 0.65} y={h / 2 - 4} width={w * 0.32} height={8} fill="#78350f" stroke="#451a03" strokeWidth={0.5} cornerRadius={2} />
+            {/* Guard */}
+            <Rect x={w * 0.63} y={h / 2 - 5} width={3} height={10} fill="#a3a3a3" />
+          </>
+        );
+      case 'gun':
+        return (
+          <>
+            <Rect width={w} height={h} fill="transparent" />
+            {/* Barrel */}
+            <Rect x={w * 0.35} y={h * 0.2} width={w * 0.65} height={h * 0.25} fill="#374151" stroke="#1f2937" strokeWidth={1} cornerRadius={2} />
+            {/* Body */}
+            <Rect x={w * 0.1} y={h * 0.15} width={w * 0.45} height={h * 0.35} fill="#4b5563" stroke="#1f2937" strokeWidth={1} cornerRadius={3} />
+            {/* Grip */}
+            <Line points={[w * 0.15, h * 0.5, w * 0.1, h * 0.9, w * 0.35, h * 0.9, w * 0.4, h * 0.5]} fill="#78350f" stroke="#451a03" strokeWidth={1} closed />
+            {/* Trigger guard */}
+            <Line points={[w * 0.35, h * 0.5, w * 0.35, h * 0.7, w * 0.5, h * 0.7, w * 0.5, h * 0.45]} stroke="#374151" strokeWidth={1.5} />
+            {/* Trigger */}
+            <Line points={[w * 0.42, h * 0.5, w * 0.42, h * 0.65]} stroke="#1f2937" strokeWidth={1.5} />
+            {/* Front sight */}
+            <Rect x={w * 0.95} y={h * 0.12} width={3} height={5} fill="#374151" />
+          </>
+        );
+      case 'bullet-casing':
+        return (
+          <>
+            <Circle x={w / 2} y={h / 2} radius={w / 2} fill={c} stroke="#b45309" strokeWidth={1} />
+            <Circle x={w / 2} y={h / 2} radius={w / 4} stroke="#92400e" strokeWidth={0.8} />
+            <Circle x={w / 2} y={h / 2} radius={1} fill="#92400e" />
+          </>
+        );
+      case 'bullet-hole':
+        return (
+          <>
+            <Circle x={w / 2} y={h / 2} radius={w / 2} fill="#0f172a" stroke="#334155" strokeWidth={1} />
+            {/* Crack lines */}
+            <Line points={[w / 2, 0, w / 2, h / 2 - 3]} stroke="#475569" strokeWidth={0.8} />
+            <Line points={[w / 2, h, w / 2, h / 2 + 3]} stroke="#475569" strokeWidth={0.8} />
+            <Line points={[0, h / 2, w / 2 - 3, h / 2]} stroke="#475569" strokeWidth={0.8} />
+            <Line points={[w, h / 2, w / 2 + 3, h / 2]} stroke="#475569" strokeWidth={0.8} />
+            <Line points={[2, 2, w / 2 - 2, h / 2 - 2]} stroke="#475569" strokeWidth={0.5} />
+            <Line points={[w - 2, h - 2, w / 2 + 2, h / 2 + 2]} stroke="#475569" strokeWidth={0.5} />
+          </>
+        );
+
+      // === EVIDENCE ===
       case 'evidence-marker':
         return (
           <>
-            <Rect width={obj.width} height={obj.height} fill={c} cornerRadius={3} />
-            <Text text={obj.evidenceId || '#'} x={0} y={6} width={obj.width} align="center" fontSize={14} fontStyle="bold" fill="#000" />
+            {/* Tent-style marker */}
+            <Line points={[w / 2, 0, w, h, 0, h]} fill={c} stroke="#a16207" strokeWidth={1} closed />
+            <Line points={[w / 2, 0, w / 2, h * 0.35]} stroke="#a16207" strokeWidth={0.5} />
+            <Text text={obj.evidenceId || '#'} x={0} y={h * 0.35} width={w} align="center" fontSize={Math.min(16, w * 0.5)} fontStyle="bold" fill="#000" fontFamily="JetBrains Mono, monospace" />
           </>
         );
+      case 'blood-stain':
+        return (
+          <>
+            {/* Irregular blood pool */}
+            <Circle x={w * 0.45} y={h * 0.5} radius={Math.min(w, h) * 0.4} fill={c} opacity={0.8} />
+            <Circle x={w * 0.6} y={h * 0.4} radius={Math.min(w, h) * 0.25} fill={c} opacity={0.6} />
+            <Circle x={w * 0.35} y={h * 0.65} radius={Math.min(w, h) * 0.15} fill={c} opacity={0.5} />
+            {/* Splatter dots */}
+            <Circle x={w * 0.8} y={h * 0.3} radius={2} fill={c} opacity={0.7} />
+            <Circle x={w * 0.15} y={h * 0.2} radius={1.5} fill={c} opacity={0.6} />
+            <Circle x={w * 0.75} y={h * 0.75} radius={2.5} fill={c} opacity={0.5} />
+          </>
+        );
+      case 'footprint':
+        return (
+          <>
+            <Rect width={w} height={h} fill="transparent" />
+            {/* Sole */}
+            <Line points={[w * 0.3, h * 0.05, w * 0.7, h * 0.05, w * 0.75, h * 0.6, w * 0.7, h * 0.72, w * 0.65, h * 0.68, w * 0.6, h * 0.72, w * 0.5, h * 0.72, w * 0.4, h * 0.72, w * 0.35, h * 0.68, w * 0.3, h * 0.72, w * 0.25, h * 0.6]} fill={c} opacity={0.6} closed stroke={c} strokeWidth={1} />
+            {/* Heel */}
+            <Line points={[w * 0.3, h * 0.78, w * 0.7, h * 0.78, w * 0.68, h * 0.95, w * 0.32, h * 0.95]} fill={c} opacity={0.7} closed stroke={c} strokeWidth={1} />
+            {/* Tread lines */}
+            <Line points={[w * 0.35, h * 0.2, w * 0.65, h * 0.2]} stroke="#a3a3a3" strokeWidth={0.8} />
+            <Line points={[w * 0.33, h * 0.35, w * 0.67, h * 0.35]} stroke="#a3a3a3" strokeWidth={0.8} />
+            <Line points={[w * 0.32, h * 0.5, w * 0.68, h * 0.5]} stroke="#a3a3a3" strokeWidth={0.8} />
+          </>
+        );
+      case 'tire-mark':
+        return (
+          <>
+            <Rect width={w} height={h} fill="transparent" />
+            {/* Double track lines */}
+            <Line points={[0, h * 0.3, w, h * 0.3]} stroke={c} strokeWidth={3} opacity={0.7} />
+            <Line points={[0, h * 0.7, w, h * 0.7]} stroke={c} strokeWidth={3} opacity={0.7} />
+            {/* Tread pattern */}
+            {Array.from({ length: Math.floor(w / 12) }).map((_, i) => (
+              <Line key={i} points={[i * 12 + 4, h * 0.2, i * 12 + 4, h * 0.8]} stroke={c} strokeWidth={1.5} opacity={0.4} />
+            ))}
+          </>
+        );
+
+      // === FURNITURE ===
+      case 'bed':
+        return (
+          <>
+            <Rect width={w} height={h} fill={c} opacity={0.15} stroke={c} strokeWidth={1.5} cornerRadius={4} />
+            {/* Headboard */}
+            <Rect x={0} y={0} width={w} height={8} fill={c} opacity={0.5} cornerRadius={[4, 4, 0, 0]} />
+            {/* Pillow */}
+            <Rect x={w * 0.15} y={12} width={w * 0.3} height={12} fill={c} opacity={0.3} cornerRadius={4} stroke={c} strokeWidth={0.5} />
+            <Rect x={w * 0.55} y={12} width={w * 0.3} height={12} fill={c} opacity={0.3} cornerRadius={4} stroke={c} strokeWidth={0.5} />
+            {/* Blanket fold */}
+            <Line points={[w * 0.1, h * 0.55, w * 0.9, h * 0.55]} stroke={c} strokeWidth={1} opacity={0.4} />
+            <Text text="BED" x={0} y={h / 2 + 2} width={w} fontSize={9} fill={c} align="center" fontFamily="JetBrains Mono, monospace" opacity={0.7} />
+          </>
+        );
+      case 'table':
+        return (
+          <>
+            <Rect width={w} height={h} fill={c} opacity={0.2} stroke={c} strokeWidth={1.5} cornerRadius={2} />
+            {/* Table surface lines */}
+            <Line points={[4, 4, w - 4, 4, w - 4, h - 4, 4, h - 4, 4, 4]} stroke={c} strokeWidth={0.8} opacity={0.5} />
+            <Text text="TABLE" x={0} y={h / 2 - 5} width={w} fontSize={9} fill={c} align="center" fontFamily="JetBrains Mono, monospace" opacity={0.7} />
+          </>
+        );
+      case 'chair':
+        return (
+          <>
+            <Rect width={w} height={h} fill={c} opacity={0.2} stroke={c} strokeWidth={1.5} cornerRadius={2} />
+            {/* Seat */}
+            <Rect x={4} y={h * 0.35} width={w - 8} height={h * 0.55} fill={c} opacity={0.15} cornerRadius={2} />
+            {/* Backrest */}
+            <Rect x={4} y={2} width={w - 8} height={h * 0.3} fill={c} opacity={0.25} cornerRadius={[4, 4, 0, 0]} />
+          </>
+        );
+      case 'sofa':
+        return (
+          <>
+            <Rect width={w} height={h} fill={c} opacity={0.15} stroke={c} strokeWidth={1.5} cornerRadius={4} />
+            {/* Backrest */}
+            <Rect x={0} y={0} width={w} height={h * 0.3} fill={c} opacity={0.3} cornerRadius={[4, 4, 0, 0]} />
+            {/* Cushions */}
+            <Rect x={4} y={h * 0.35} width={w * 0.3} height={h * 0.55} fill={c} opacity={0.15} cornerRadius={3} stroke={c} strokeWidth={0.5} />
+            <Rect x={w * 0.35} y={h * 0.35} width={w * 0.3} height={h * 0.55} fill={c} opacity={0.15} cornerRadius={3} stroke={c} strokeWidth={0.5} />
+            <Rect x={w * 0.67} y={h * 0.35} width={w * 0.3} height={h * 0.55} fill={c} opacity={0.15} cornerRadius={3} stroke={c} strokeWidth={0.5} />
+            {/* Armrests */}
+            <Rect x={0} y={h * 0.25} width={6} height={h * 0.7} fill={c} opacity={0.3} cornerRadius={3} />
+            <Rect x={w - 6} y={h * 0.25} width={6} height={h * 0.7} fill={c} opacity={0.3} cornerRadius={3} />
+            <Text text="SOFA" x={0} y={h / 2 - 3} width={w} fontSize={9} fill={c} align="center" fontFamily="JetBrains Mono, monospace" opacity={0.5} />
+          </>
+        );
+      case 'cabinet':
+        return (
+          <>
+            <Rect width={w} height={h} fill={c} opacity={0.2} stroke={c} strokeWidth={1.5} />
+            {/* Doors */}
+            <Line points={[w / 2, 2, w / 2, h - 2]} stroke={c} strokeWidth={1} opacity={0.5} />
+            {/* Handles */}
+            <Rect x={w / 2 - 6} y={h / 2 - 3} width={4} height={6} fill={c} opacity={0.5} cornerRadius={1} />
+            <Rect x={w / 2 + 2} y={h / 2 - 3} width={4} height={6} fill={c} opacity={0.5} cornerRadius={1} />
+          </>
+        );
+
+      // === STRUCTURES ===
       case 'wall':
-        return <Rect width={obj.width} height={obj.height} fill={c} />;
+        return <Rect width={w} height={h} fill={c} stroke="#1e293b" strokeWidth={0.5} />;
       case 'door':
         return (
           <>
-            <Rect width={obj.width} height={obj.height} fill={c} />
-            <Line points={[0, obj.height, 0, obj.height + 30]} stroke={c} strokeWidth={2} dash={[4, 4]} />
+            {/* Door frame */}
+            <Rect width={w} height={h} fill={c} stroke="#78350f" strokeWidth={1} />
+            {/* Swing arc */}
+            <Line points={[0, h, 0, h + w * 0.5]} stroke={c} strokeWidth={1.5} dash={[3, 3]} opacity={0.6} />
+            <Line points={[0, h + w * 0.5, w * 0.35, h + w * 0.35]} stroke={c} strokeWidth={1.5} dash={[3, 3]} opacity={0.6} />
+            {/* Arc quarter-circle approximation */}
+            <Line points={[0, h, w * 0.15, h + w * 0.4, w * 0.35, h + w * 0.35]} stroke={c} strokeWidth={1} dash={[2, 4]} opacity={0.4} tension={0.5} />
           </>
         );
       case 'window':
         return (
           <>
-            <Rect width={obj.width} height={obj.height} fill={c} opacity={0.5} />
-            <Line points={[0, obj.height / 2, obj.width, obj.height / 2]} stroke={c} strokeWidth={1} />
+            <Rect width={w} height={h} fill="#38bdf8" opacity={0.15} stroke="#38bdf8" strokeWidth={1.5} />
+            {/* Glass panes */}
+            <Line points={[w * 0.33, 0, w * 0.33, h]} stroke="#38bdf8" strokeWidth={0.8} opacity={0.5} />
+            <Line points={[w * 0.66, 0, w * 0.66, h]} stroke="#38bdf8" strokeWidth={0.8} opacity={0.5} />
+            {/* Cross lines indicating glass */}
+            <Line points={[0, 0, w * 0.33, h]} stroke="#38bdf8" strokeWidth={0.3} opacity={0.3} />
+            <Line points={[w * 0.33, 0, w * 0.66, h]} stroke="#38bdf8" strokeWidth={0.3} opacity={0.3} />
+            <Line points={[w * 0.66, 0, w, h]} stroke="#38bdf8" strokeWidth={0.3} opacity={0.3} />
           </>
         );
-      case 'blood-stain':
-        return <Circle x={obj.width / 2} y={obj.height / 2} radius={Math.min(obj.width, obj.height) / 2} fill={c} opacity={0.7} />;
-      case 'bullet-casing':
-      case 'bullet-hole':
-        return <Circle x={obj.width / 2} y={obj.height / 2} radius={Math.min(obj.width, obj.height) / 2} fill={c} stroke="#000" strokeWidth={1} />;
+      case 'stairs':
+        return (
+          <>
+            <Rect width={w} height={h} fill={c} opacity={0.1} stroke={c} strokeWidth={1.5} />
+            {/* Stair treads */}
+            {Array.from({ length: 6 }).map((_, i) => (
+              <React.Fragment key={i}>
+                <Line points={[0, (i + 1) * (h / 7), w, (i + 1) * (h / 7)]} stroke={c} strokeWidth={1} opacity={0.6} />
+              </React.Fragment>
+            ))}
+            {/* Direction arrow */}
+            <Line points={[w / 2, h * 0.85, w / 2, h * 0.15]} stroke={c} strokeWidth={1.5} opacity={0.5} />
+            <Line points={[w / 2 - 6, h * 0.25, w / 2, h * 0.15, w / 2 + 6, h * 0.25]} stroke={c} strokeWidth={1.5} opacity={0.5} />
+            <Text text="UP" x={0} y={h * 0.4} width={w} fontSize={8} fill={c} align="center" fontFamily="JetBrains Mono, monospace" opacity={0.5} />
+          </>
+        );
+
+      // === VEHICLES ===
+      case 'car':
+        return (
+          <>
+            {/* Body */}
+            <Rect x={2} y={h * 0.15} width={w - 4} height={h * 0.7} fill={c} opacity={0.2} stroke={c} strokeWidth={1.5} cornerRadius={6} />
+            {/* Roof / cabin */}
+            <Rect x={w * 0.25} y={h * 0.05} width={w * 0.45} height={h * 0.9} fill={c} opacity={0.1} stroke={c} strokeWidth={1} cornerRadius={8} />
+            {/* Windshield */}
+            <Line points={[w * 0.25, h * 0.2, w * 0.35, h * 0.15, w * 0.35, h * 0.85, w * 0.25, h * 0.8]} stroke="#38bdf8" strokeWidth={1} opacity={0.5} />
+            {/* Rear window */}
+            <Line points={[w * 0.7, h * 0.2, w * 0.6, h * 0.15, w * 0.6, h * 0.85, w * 0.7, h * 0.8]} stroke="#38bdf8" strokeWidth={1} opacity={0.5} />
+            {/* Wheels */}
+            <Circle x={w * 0.18} y={h * 0.08} radius={5} fill="#1e293b" stroke="#475569" strokeWidth={1} />
+            <Circle x={w * 0.18} y={h * 0.92} radius={5} fill="#1e293b" stroke="#475569" strokeWidth={1} />
+            <Circle x={w * 0.82} y={h * 0.08} radius={5} fill="#1e293b" stroke="#475569" strokeWidth={1} />
+            <Circle x={w * 0.82} y={h * 0.92} radius={5} fill="#1e293b" stroke="#475569" strokeWidth={1} />
+            {/* Headlights */}
+            <Rect x={0} y={h * 0.25} width={4} height={h * 0.15} fill="#fbbf24" opacity={0.7} cornerRadius={1} />
+            <Rect x={0} y={h * 0.6} width={4} height={h * 0.15} fill="#fbbf24" opacity={0.7} cornerRadius={1} />
+            <Text text="CAR" x={0} y={h / 2 - 4} width={w} fontSize={8} fill={c} align="center" fontFamily="JetBrains Mono, monospace" opacity={0.6} />
+          </>
+        );
+      case 'motorcycle':
+        return (
+          <>
+            <Rect width={w} height={h} fill="transparent" />
+            {/* Frame */}
+            <Line points={[w * 0.2, h * 0.4, w * 0.5, h * 0.3, w * 0.8, h * 0.4]} stroke={c} strokeWidth={2} />
+            <Line points={[w * 0.5, h * 0.3, w * 0.45, h * 0.15]} stroke={c} strokeWidth={2} />
+            {/* Wheels */}
+            <Circle x={w * 0.18} y={h * 0.6} radius={h * 0.3} stroke="#475569" strokeWidth={2} />
+            <Circle x={w * 0.82} y={h * 0.6} radius={h * 0.3} stroke="#475569" strokeWidth={2} />
+            <Circle x={w * 0.18} y={h * 0.6} radius={2} fill="#475569" />
+            <Circle x={w * 0.82} y={h * 0.6} radius={2} fill="#475569" />
+            {/* Seat */}
+            <Line points={[w * 0.35, h * 0.28, w * 0.65, h * 0.28]} stroke={c} strokeWidth={4} lineCap="round" />
+          </>
+        );
+      case 'bicycle':
+        return (
+          <>
+            <Rect width={w} height={h} fill="transparent" />
+            {/* Wheels */}
+            <Circle x={w * 0.2} y={h * 0.6} radius={h * 0.3} stroke={c} strokeWidth={1.5} />
+            <Circle x={w * 0.8} y={h * 0.6} radius={h * 0.3} stroke={c} strokeWidth={1.5} />
+            <Circle x={w * 0.2} y={h * 0.6} radius={1.5} fill={c} />
+            <Circle x={w * 0.8} y={h * 0.6} radius={1.5} fill={c} />
+            {/* Frame */}
+            <Line points={[w * 0.2, h * 0.6, w * 0.5, h * 0.3, w * 0.8, h * 0.6, w * 0.5, h * 0.6, w * 0.2, h * 0.6]} stroke={c} strokeWidth={1.5} />
+            <Line points={[w * 0.5, h * 0.3, w * 0.5, h * 0.6]} stroke={c} strokeWidth={1.5} />
+            {/* Handlebars */}
+            <Line points={[w * 0.75, h * 0.2, w * 0.8, h * 0.35]} stroke={c} strokeWidth={1.5} />
+            {/* Seat */}
+            <Line points={[w * 0.45, h * 0.25, w * 0.55, h * 0.25]} stroke={c} strokeWidth={3} lineCap="round" />
+          </>
+        );
+
+      // === ANNOTATIONS ===
       case 'room-label':
         return (
-          <Text
-            text={obj.label}
-            fontSize={14}
-            fontStyle="bold"
-            fill="#94a3b8"
-            fontFamily="Inter, sans-serif"
-            width={obj.width}
-            align="center"
-          />
+          <>
+            <Rect width={w} height={h + 4} fill="transparent" />
+            <Line points={[0, h + 2, w, h + 2]} stroke="#475569" strokeWidth={0.5} dash={[4, 4]} opacity={0.4} />
+            <Text
+              text={obj.label}
+              fontSize={14}
+              fontStyle="bold"
+              fill="#94a3b8"
+              fontFamily="Inter, sans-serif"
+              width={w}
+              align="center"
+            />
+          </>
         );
       default:
         return (
           <>
-            <Rect width={obj.width} height={obj.height} fill={c} opacity={0.6} stroke={c} strokeWidth={1} cornerRadius={3} />
-            <Text text={obj.label} x={2} y={obj.height / 2 - 6} width={obj.width - 4} fontSize={11} fill="#fff" align="center" />
+            <Rect width={w} height={h} fill={c} opacity={0.15} stroke={c} strokeWidth={1.5} cornerRadius={3} />
+            <Text text={obj.label} x={2} y={h / 2 - 6} width={w - 4} fontSize={10} fill={c} align="center" fontFamily="JetBrains Mono, monospace" />
           </>
         );
     }
@@ -263,13 +555,24 @@ function SceneObjectShape({ obj, isSelected, onSelect }: {
         onTap={onSelect}
         onDragEnd={handleDragEnd}
         onTransformEnd={handleTransformEnd}
+        onMouseEnter={() => setHovered(true)}
+        onMouseLeave={() => setHovered(false)}
       >
+        {/* Hover glow */}
+        {hovered && !isSelected && (
+          <Rect x={-3} y={-3} width={w + 6} height={h + 6} stroke="#3b82f6" strokeWidth={1.5} cornerRadius={4} opacity={0.4} dash={[4, 3]} />
+        )}
         {renderShape()}
+        {/* Evidence badge */}
         {obj.evidenceId && obj.type !== 'evidence-marker' && (
-          <Group x={obj.width + 5} y={-5}>
-            <Circle radius={12} fill="#eab308" stroke="#000" strokeWidth={1} />
+          <Group x={w + 5} y={-5}>
+            <Circle radius={12} fill="#eab308" stroke="#a16207" strokeWidth={1.5} />
             <Text text={obj.evidenceId} x={-10} y={-7} fontSize={13} fontStyle="bold" fill="#000" width={20} align="center" fontFamily="JetBrains Mono, monospace" />
           </Group>
+        )}
+        {/* Label below object (for non-annotation types) */}
+        {obj.type !== 'room-label' && obj.type !== 'text-label' && obj.type !== 'evidence-marker' && (
+          <Text text={obj.label} x={0} y={h + 4} width={w} fontSize={9} fill="#64748b" align="center" fontFamily="JetBrains Mono, monospace" />
         )}
       </Group>
       {isSelected && (
