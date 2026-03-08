@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { objectLibrary } from '@/lib/sceneObjects';
-import { ChevronDown, ChevronRight, Search, Skull, Crosshair, Fingerprint, Sofa, Building, Car } from 'lucide-react';
+import { ChevronDown, ChevronRight, Search, Skull, Crosshair, Fingerprint, Sofa, Building, Car, Trees } from 'lucide-react';
 
 const categoryIcons: Record<string, React.ElementType> = {
   'Bodies': Skull,
