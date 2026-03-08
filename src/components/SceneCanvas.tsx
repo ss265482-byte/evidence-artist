@@ -886,14 +886,29 @@ function SceneObjectShape({ obj, isSelected, onSelect, allObjects, onSnapGuides 
       case 'sofa':
         return (
           <>
-            <Rect width={w} height={h} fill={c} opacity={0.15} stroke={c} strokeWidth={1.5} cornerRadius={4} />
-            <Rect x={0} y={0} width={w} height={h * 0.3} fill={c} opacity={0.3} cornerRadius={[4, 4, 0, 0]} />
-            <Rect x={4} y={h * 0.35} width={w * 0.3} height={h * 0.55} fill={c} opacity={0.15} cornerRadius={3} stroke={c} strokeWidth={0.5} />
-            <Rect x={w * 0.35} y={h * 0.35} width={w * 0.3} height={h * 0.55} fill={c} opacity={0.15} cornerRadius={3} stroke={c} strokeWidth={0.5} />
-            <Rect x={w * 0.67} y={h * 0.35} width={w * 0.3} height={h * 0.55} fill={c} opacity={0.15} cornerRadius={3} stroke={c} strokeWidth={0.5} />
-            <Rect x={0} y={h * 0.25} width={6} height={h * 0.7} fill={c} opacity={0.3} cornerRadius={3} />
-            <Rect x={w - 6} y={h * 0.25} width={6} height={h * 0.7} fill={c} opacity={0.3} cornerRadius={3} />
-            <Text text="SOFA" x={0} y={h / 2 - 3} width={w} fontSize={9} fill={c} align="center" fontFamily="JetBrains Mono, monospace" opacity={0.5} />
+            {/* Frame */}
+            <Rect width={w} height={h} fill={c} opacity={0.1} stroke={c} strokeWidth={1.5} cornerRadius={5} />
+            {/* Backrest */}
+            <Rect x={0} y={0} width={w} height={h * 0.28} fill={c} opacity={0.28} cornerRadius={[5, 5, 0, 0]} stroke={c} strokeWidth={0.5} />
+            {/* Backrest cushion lines */}
+            <Line points={[w * 0.33, h * 0.04, w * 0.33, h * 0.26]} stroke={c} strokeWidth={0.5} opacity={0.2} />
+            <Line points={[w * 0.66, h * 0.04, w * 0.66, h * 0.26]} stroke={c} strokeWidth={0.5} opacity={0.2} />
+            {/* Seat cushions */}
+            <Rect x={8} y={h * 0.33} width={w * 0.3} height={h * 0.55} fill={c} opacity={0.12} cornerRadius={4} stroke={c} strokeWidth={0.5} />
+            <Rect x={w * 0.34} y={h * 0.33} width={w * 0.32} height={h * 0.55} fill={c} opacity={0.12} cornerRadius={4} stroke={c} strokeWidth={0.5} />
+            <Rect x={w * 0.68} y={h * 0.33} width={w * 0.28} height={h * 0.55} fill={c} opacity={0.12} cornerRadius={4} stroke={c} strokeWidth={0.5} />
+            {/* Cushion indent */}
+            <Circle x={w * 0.18} y={h * 0.55} radius={5} stroke={c} strokeWidth={0.3} opacity={0.12} />
+            <Circle x={w * 0.5} y={h * 0.55} radius={5} stroke={c} strokeWidth={0.3} opacity={0.12} />
+            <Circle x={w * 0.82} y={h * 0.55} radius={5} stroke={c} strokeWidth={0.3} opacity={0.12} />
+            {/* Armrests */}
+            <Rect x={0} y={h * 0.22} width={8} height={h * 0.72} fill={c} opacity={0.28} cornerRadius={[0, 3, 3, 3]} />
+            <Rect x={w - 8} y={h * 0.22} width={8} height={h * 0.72} fill={c} opacity={0.28} cornerRadius={[3, 0, 3, 3]} />
+            {/* Legs */}
+            <Circle x={5} y={h - 2} radius={2.5} fill={c} opacity={0.25} />
+            <Circle x={w - 5} y={h - 2} radius={2.5} fill={c} opacity={0.25} />
+            <Circle x={w * 0.35} y={h - 2} radius={2} fill={c} opacity={0.15} />
+            <Circle x={w * 0.65} y={h - 2} radius={2} fill={c} opacity={0.15} />
           </>
         );
       case 'cabinet':
@@ -933,33 +948,69 @@ function SceneObjectShape({ obj, isSelected, onSelect, allObjects, onSnapGuides 
       case 'door':
         return (
           <>
-            <Rect width={w} height={h} fill={c} stroke="#78350f" strokeWidth={1} />
-            <Line points={[0, h, 0, h + w * 0.5]} stroke={c} strokeWidth={1.5} dash={[3, 3]} opacity={0.6} />
-            <Line points={[0, h + w * 0.5, w * 0.35, h + w * 0.35]} stroke={c} strokeWidth={1.5} dash={[3, 3]} opacity={0.6} />
-            <Line points={[0, h, w * 0.15, h + w * 0.4, w * 0.35, h + w * 0.35]} stroke={c} strokeWidth={1} dash={[2, 4]} opacity={0.4} tension={0.5} />
+            {/* Door panel */}
+            <Rect width={w} height={h} fill={c} opacity={0.5} stroke="#78350f" strokeWidth={1.5} cornerRadius={1} />
+            {/* Wood grain */}
+            <Line points={[w * 0.2, 0, w * 0.2, h]} stroke="#451a03" strokeWidth={0.3} opacity={0.15} />
+            <Line points={[w * 0.5, 0, w * 0.5, h]} stroke="#451a03" strokeWidth={0.3} opacity={0.15} />
+            <Line points={[w * 0.8, 0, w * 0.8, h]} stroke="#451a03" strokeWidth={0.3} opacity={0.15} />
+            {/* Handle */}
+            <Circle x={w * 0.85} y={h / 2} radius={2.5} fill="#d4a574" stroke="#b8956a" strokeWidth={0.8} />
+            {/* Swing arc */}
+            <Line points={[0, h, 0, h + w * 0.55]} stroke={c} strokeWidth={1.5} dash={[3, 3]} opacity={0.5} />
+            <Line points={[0, h + w * 0.55, w * 0.4, h + w * 0.35]} stroke={c} strokeWidth={1.5} dash={[3, 3]} opacity={0.5} />
+            {/* Arc curve */}
+            <Line points={[0, h, w * 0.08, h + w * 0.22, w * 0.2, h + w * 0.38, w * 0.4, h + w * 0.35]} stroke={c} strokeWidth={1} dash={[2, 4]} opacity={0.3} tension={0.5} />
+            {/* Threshold */}
+            <Rect x={0} y={h - 1} width={w} height={2} fill={c} opacity={0.3} />
           </>
         );
       case 'window':
         return (
           <>
-            <Rect width={w} height={h} fill="#38bdf8" opacity={0.15} stroke="#38bdf8" strokeWidth={1.5} />
-            <Line points={[w * 0.33, 0, w * 0.33, h]} stroke="#38bdf8" strokeWidth={0.8} opacity={0.5} />
-            <Line points={[w * 0.66, 0, w * 0.66, h]} stroke="#38bdf8" strokeWidth={0.8} opacity={0.5} />
-            <Line points={[0, 0, w * 0.33, h]} stroke="#38bdf8" strokeWidth={0.3} opacity={0.3} />
-            <Line points={[w * 0.33, 0, w * 0.66, h]} stroke="#38bdf8" strokeWidth={0.3} opacity={0.3} />
-            <Line points={[w * 0.66, 0, w, h]} stroke="#38bdf8" strokeWidth={0.3} opacity={0.3} />
+            {/* Frame outer */}
+            <Rect width={w} height={h} fill="#38bdf8" opacity={0.1} stroke="#64748b" strokeWidth={2} />
+            {/* Frame inner */}
+            <Rect x={2} y={1} width={w - 4} height={h - 2} stroke="#64748b" strokeWidth={0.5} opacity={0.4} fill="transparent" />
+            {/* Mullions */}
+            <Line points={[w * 0.33, 0, w * 0.33, h]} stroke="#64748b" strokeWidth={1.5} />
+            <Line points={[w * 0.66, 0, w * 0.66, h]} stroke="#64748b" strokeWidth={1.5} />
+            {/* Glass reflections */}
+            <Line points={[w * 0.05, h * 0.2, w * 0.28, 0]} stroke="#38bdf8" strokeWidth={0.5} opacity={0.35} />
+            <Line points={[w * 0.38, h * 0.2, w * 0.61, 0]} stroke="#38bdf8" strokeWidth={0.5} opacity={0.3} />
+            <Line points={[w * 0.71, h * 0.2, w * 0.94, 0]} stroke="#38bdf8" strokeWidth={0.5} opacity={0.25} />
+            {/* Glass fill */}
+            <Rect x={3} y={1} width={w * 0.33 - 4} height={h - 2} fill="#38bdf8" opacity={0.06} />
+            <Rect x={w * 0.33 + 1} y={1} width={w * 0.33 - 2} height={h - 2} fill="#38bdf8" opacity={0.06} />
+            <Rect x={w * 0.66 + 1} y={1} width={w * 0.33 - 2} height={h - 2} fill="#38bdf8" opacity={0.06} />
+            {/* Sill */}
+            <Rect x={-2} y={h - 1} width={w + 4} height={3} fill="#64748b" opacity={0.3} cornerRadius={1} />
           </>
         );
       case 'stairs':
         return (
           <>
-            <Rect width={w} height={h} fill={c} opacity={0.1} stroke={c} strokeWidth={1.5} />
-            {Array.from({ length: 6 }).map((_, i) => (
-              <Line key={i} points={[0, (i + 1) * (h / 7), w, (i + 1) * (h / 7)]} stroke={c} strokeWidth={1} opacity={0.6} />
-            ))}
-            <Line points={[w / 2, h * 0.85, w / 2, h * 0.15]} stroke={c} strokeWidth={1.5} opacity={0.5} />
-            <Line points={[w / 2 - 6, h * 0.25, w / 2, h * 0.15, w / 2 + 6, h * 0.25]} stroke={c} strokeWidth={1.5} opacity={0.5} />
-            <Text text="UP" x={0} y={h * 0.4} width={w} fontSize={8} fill={c} align="center" fontFamily="JetBrains Mono, monospace" opacity={0.5} />
+            <Rect width={w} height={h} fill={c} opacity={0.08} stroke={c} strokeWidth={1.5} cornerRadius={2} />
+            {/* Steps with 3D effect */}
+            {Array.from({ length: 7 }).map((_, i) => {
+              const sy = (i + 1) * (h / 8);
+              return (
+                <React.Fragment key={i}>
+                  <Line points={[0, sy, w, sy]} stroke={c} strokeWidth={1.2} opacity={0.5} />
+                  <Rect x={0} y={sy - h / 16} width={w} height={h / 16} fill={c} opacity={0.03 + i * 0.015} />
+                </React.Fragment>
+              );
+            })}
+            {/* Handrail */}
+            <Line points={[w * 0.08, h * 0.92, w * 0.08, h * 0.08]} stroke={c} strokeWidth={2} opacity={0.4} lineCap="round" />
+            <Line points={[w * 0.92, h * 0.92, w * 0.92, h * 0.08]} stroke={c} strokeWidth={2} opacity={0.4} lineCap="round" />
+            {/* Direction arrow */}
+            <Line points={[w / 2, h * 0.85, w / 2, h * 0.12]} stroke={c} strokeWidth={1.5} opacity={0.4} />
+            <Line points={[w / 2 - 7, h * 0.22, w / 2, h * 0.12, w / 2 + 7, h * 0.22]} stroke={c} strokeWidth={1.5} opacity={0.4} />
+            <Text text="UP" x={0} y={h * 0.42} width={w} fontSize={9} fill={c} align="center" fontFamily="JetBrains Mono, monospace" opacity={0.4} fontStyle="bold" />
+            {/* Step numbers hint */}
+            <Text text="1" x={2} y={h * 0.82} fontSize={6} fill={c} opacity={0.2} fontFamily="JetBrains Mono, monospace" />
+            <Text text="7" x={2} y={h * 0.12} fontSize={6} fill={c} opacity={0.2} fontFamily="JetBrains Mono, monospace" />
           </>
         );
       case 'car':
