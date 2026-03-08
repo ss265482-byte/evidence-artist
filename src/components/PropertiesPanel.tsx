@@ -220,6 +220,26 @@ export default function PropertiesPanel() {
             <span className="text-[9px] font-mono bg-accent text-accent-foreground px-1.5 py-0.5 rounded-full font-bold">{evidence.length}</span>
           )}
         </div>
+
+        {/* Filter bar */}
+        {evidence.length > 0 && (
+          <div className="flex gap-1 mb-2 flex-wrap">
+            <button
+              onClick={() => setEvidenceFilter('all')}
+              className={`text-[9px] px-1.5 py-0.5 rounded border transition-colors ${evidenceFilter === 'all' ? 'bg-primary text-primary-foreground border-primary' : 'bg-secondary text-muted-foreground border-border hover:text-foreground'}`}
+            >All</button>
+            {(['critical', 'high', 'medium', 'low'] as EvidencePriority[]).map(p => {
+              const count = evidence.filter(e => e.priority === p).length;
+              if (count === 0) return null;
+              return (
+                <button key={p} onClick={() => setEvidenceFilter(p)}
+                  className={`text-[9px] px-1.5 py-0.5 rounded border transition-colors ${evidenceFilter === p ? `${priorityConfig[p].bg} ${priorityConfig[p].color}` : 'bg-secondary text-muted-foreground border-border hover:text-foreground'}`}
+                >{priorityConfig[p].label} ({count})</button>
+              );
+            })}
+          </div>
+        )}
+
         {evidence.length === 0 ? (
           <div className="text-center py-4">
             <p className="text-xs text-muted-foreground">No evidence logged</p>
@@ -227,31 +247,78 @@ export default function PropertiesPanel() {
           </div>
         ) : (
           <div className="space-y-2">
-            {evidence.map(ev => (
-              <button key={ev.id} onClick={() => selectObject(ev.objectId)}
-                className={`w-full text-left p-2 rounded-md border transition-all ${
-                  selectedObjectId === ev.objectId
-                    ? 'border-primary bg-primary/10 shadow-sm'
-                    : 'border-border bg-secondary/30 hover:bg-secondary/60 hover:shadow-sm'
-                }`}>
-                <div className="flex items-center gap-2 mb-1">
-                  <span className="text-xs font-mono font-bold bg-accent text-accent-foreground w-6 h-6 flex items-center justify-center rounded">{ev.letter}</span>
-                  <span className="text-xs font-medium text-foreground truncate flex-1">{ev.description}</span>
-                </div>
-                <div className="text-[10px] text-muted-foreground flex items-center gap-1.5">
-                  <span>{ev.location}</span>
-                  <span className="text-muted-foreground/30">·</span>
-                  <span>{ev.timeLogged}</span>
-                </div>
-                <input
-                  className="mt-1.5 w-full bg-secondary/50 text-foreground text-[10px] rounded px-1.5 py-1 border border-border focus:outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground"
-                  placeholder="Add notes..."
-                  value={ev.notes}
-                  onClick={e => e.stopPropagation()}
-                  onChange={e => updateEvidence(ev.id, { notes: e.target.value })}
-                />
-              </button>
-            ))}
+            {evidence
+              .filter(ev => evidenceFilter === 'all' || ev.priority === evidenceFilter)
+              .map(ev => {
+              const prio = priorityConfig[ev.priority];
+              const stat = statusConfig[ev.status];
+              const StatusIcon = stat.icon;
+              return (
+                <button key={ev.id} onClick={() => selectObject(ev.objectId)}
+                  className={`w-full text-left p-2 rounded-md border transition-all ${
+                    selectedObjectId === ev.objectId
+                      ? 'border-primary bg-primary/10 shadow-sm'
+                      : 'border-border bg-secondary/30 hover:bg-secondary/60 hover:shadow-sm'
+                  }`}>
+                  <div className="flex items-center gap-2 mb-1">
+                    <span className="text-xs font-mono font-bold bg-accent text-accent-foreground w-6 h-6 flex items-center justify-center rounded">{ev.letter}</span>
+                    <span className="text-xs font-medium text-foreground truncate flex-1">{ev.description}</span>
+                    <span className={`text-[8px] font-mono font-bold px-1 py-0.5 rounded border ${prio.bg} ${prio.color}`}>{prio.label}</span>
+                  </div>
+
+                  {/* Status row */}
+                  <div className="flex items-center gap-1.5 mb-1">
+                    <StatusIcon className={`h-3 w-3 ${stat.color}`} />
+                    <select
+                      value={ev.status}
+                      onClick={e => e.stopPropagation()}
+                      onChange={e => { e.stopPropagation(); updateEvidence(ev.id, { status: e.target.value as EvidenceStatus }); }}
+                      className="text-[10px] bg-secondary border border-border rounded px-1 py-0.5 text-foreground focus:outline-none focus:ring-1 focus:ring-ring cursor-pointer"
+                    >
+                      {Object.entries(statusConfig).map(([key, val]) => (
+                        <option key={key} value={key}>{val.label}</option>
+                      ))}
+                    </select>
+                    <select
+                      value={ev.priority}
+                      onClick={e => e.stopPropagation()}
+                      onChange={e => { e.stopPropagation(); updateEvidence(ev.id, { priority: e.target.value as EvidencePriority }); }}
+                      className="text-[10px] bg-secondary border border-border rounded px-1 py-0.5 text-foreground focus:outline-none focus:ring-1 focus:ring-ring cursor-pointer"
+                    >
+                      {Object.entries(priorityConfig).map(([key, val]) => (
+                        <option key={key} value={key}>{val.label}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div className="text-[10px] text-muted-foreground flex items-center gap-1.5">
+                    <span>{ev.location}</span>
+                    <span className="text-muted-foreground/30">·</span>
+                    <span>{ev.timeLogged}</span>
+                    {ev.collectedBy && (
+                      <>
+                        <span className="text-muted-foreground/30">·</span>
+                        <span>by {ev.collectedBy}</span>
+                      </>
+                    )}
+                  </div>
+                  <input
+                    className="mt-1.5 w-full bg-secondary/50 text-foreground text-[10px] rounded px-1.5 py-1 border border-border focus:outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground"
+                    placeholder="Add notes..."
+                    value={ev.notes}
+                    onClick={e => e.stopPropagation()}
+                    onChange={e => updateEvidence(ev.id, { notes: e.target.value })}
+                  />
+                  <input
+                    className="mt-1 w-full bg-secondary/50 text-foreground text-[10px] rounded px-1.5 py-1 border border-border focus:outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground"
+                    placeholder="Collected by..."
+                    value={ev.collectedBy}
+                    onClick={e => e.stopPropagation()}
+                    onChange={e => updateEvidence(ev.id, { collectedBy: e.target.value })}
+                  />
+                </button>
+              );
+            })}
           </div>
         )}
       </div>
