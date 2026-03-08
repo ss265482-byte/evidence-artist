@@ -7,7 +7,7 @@ export type SceneObjectType =
   | 'bed' | 'table' | 'chair' | 'sofa' | 'cabinet'
   | 'door' | 'window' | 'wall' | 'stairs'
   | 'car' | 'motorcycle' | 'bicycle'
-  | 'text-label' | 'arrow' | 'line' | 'freehand';
+  | 'text-label' | 'arrow' | 'line' | 'freehand' | 'room-label';
 
 export interface SceneObject {
   id: string;
@@ -35,6 +35,7 @@ export interface Measurement {
 
 export interface EvidenceItem {
   id: string;
+  letter: string;
   objectId: string;
   description: string;
   notes: string;
@@ -48,9 +49,11 @@ export interface CaseInfo {
   location: string;
   dateTime: string;
   sceneType: 'indoor' | 'outdoor';
+  incident: string;
+  sketchBy: string;
 }
 
-export type ToolType = 'select' | 'pan' | 'wall' | 'line' | 'arrow' | 'freehand' | 'text' | 'measure';
+export type ToolType = 'select' | 'pan' | 'wall' | 'line' | 'arrow' | 'freehand' | 'text' | 'measure' | 'room-label';
 
 interface SceneState {
   objects: SceneObject[];
@@ -61,6 +64,7 @@ interface SceneState {
   activeTool: ToolType;
   showGrid: boolean;
   snapToGrid: boolean;
+  showLegend: boolean;
   zoom: number;
   isDark: boolean;
   addObject: (obj: Omit<SceneObject, 'id'>) => string;
@@ -70,6 +74,7 @@ interface SceneState {
   setTool: (tool: ToolType) => void;
   toggleGrid: () => void;
   toggleSnap: () => void;
+  toggleLegend: () => void;
   setZoom: (z: number) => void;
   toggleDark: () => void;
   setCaseInfo: (info: Partial<CaseInfo>) => void;
@@ -82,8 +87,9 @@ interface SceneState {
 const SceneContext = createContext<SceneState | null>(null);
 
 let nextId = 1;
-let nextEvidence = 1;
 let nextMeasurement = 1;
+
+const LETTERS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
 export function SceneProvider({ children }: { children: ReactNode }) {
   const [objects, setObjects] = useState<SceneObject[]>([]);
@@ -95,11 +101,14 @@ export function SceneProvider({ children }: { children: ReactNode }) {
     location: '',
     dateTime: new Date().toISOString().slice(0, 16),
     sceneType: 'indoor',
+    incident: '',
+    sketchBy: '',
   });
   const [selectedObjectId, setSelectedObjectId] = useState<string | null>(null);
   const [activeTool, setActiveTool] = useState<ToolType>('select');
   const [showGrid, setShowGrid] = useState(true);
   const [snapToGrid, setSnapToGrid] = useState(true);
+  const [showLegend, setShowLegend] = useState(true);
   const [zoom, setZoom] = useState(1);
   const [isDark, setIsDark] = useState(true);
 
@@ -124,17 +133,23 @@ export function SceneProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const addEvidence = useCallback((objectId: string, description: string) => {
-    const id = `EV-${String(nextEvidence++).padStart(3, '0')}`;
-    const obj = objects.find(o => o.id === objectId);
-    setEvidence(prev => [...prev, {
-      id,
-      objectId,
-      description,
-      notes: '',
-      location: obj ? `(${Math.round(obj.x)}, ${Math.round(obj.y)})` : '',
-      timeLogged: new Date().toLocaleTimeString(),
-    }]);
-    setObjects(prev => prev.map(o => o.id === objectId ? { ...o, evidenceId: id } : o));
+    setEvidence(prev => {
+      const letterIndex = prev.length;
+      const letter = letterIndex < 26 ? LETTERS[letterIndex] : `${LETTERS[Math.floor(letterIndex / 26) - 1]}${LETTERS[letterIndex % 26]}`;
+      const obj = objects.find(o => o.id === objectId);
+      const newEvidence: EvidenceItem = {
+        id: `ev-${objectId}`,
+        letter,
+        objectId,
+        description,
+        notes: '',
+        location: obj ? `(${Math.round(obj.x)}, ${Math.round(obj.y)})` : '',
+        timeLogged: new Date().toLocaleTimeString(),
+      };
+      // Also update the object's evidenceId
+      setObjects(objs => objs.map(o => o.id === objectId ? { ...o, evidenceId: letter } : o));
+      return [...prev, newEvidence];
+    });
   }, [objects]);
 
   const updateEvidence = useCallback((id: string, updates: Partial<EvidenceItem>) => {
@@ -162,11 +177,9 @@ export function SceneProvider({ children }: { children: ReactNode }) {
     });
   }, []);
 
-  const toggleGrid = useCallback(() => {
-    setShowGrid(p => !p);
-  }, []);
+  const toggleGrid = useCallback(() => setShowGrid(p => !p), []);
+  const toggleLegend = useCallback(() => setShowLegend(p => !p), []);
 
-  // Initialize dark mode
   React.useEffect(() => {
     document.documentElement.classList.toggle('dark', isDark);
   }, []);
@@ -174,10 +187,10 @@ export function SceneProvider({ children }: { children: ReactNode }) {
   return (
     <SceneContext.Provider value={{
       objects, evidence, measurements, caseInfo, selectedObjectId, activeTool,
-      showGrid, snapToGrid, zoom, isDark,
+      showGrid, snapToGrid, showLegend, zoom, isDark,
       addObject, updateObject, removeObject, selectObject,
       setTool: setActiveTool, toggleGrid, toggleSnap: () => setSnapToGrid(p => !p),
-      setZoom, toggleDark, setCaseInfo, addEvidence, updateEvidence,
+      toggleLegend, setZoom, toggleDark, setCaseInfo, addEvidence, updateEvidence,
       addMeasurement, removeMeasurement,
     }}>
       {children}

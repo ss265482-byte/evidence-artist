@@ -25,61 +25,37 @@ export default function PropertiesPanel() {
             <div className="grid grid-cols-2 gap-2">
               <div>
                 <label className="text-[10px] text-muted-foreground uppercase">X</label>
-                <input
-                  type="number"
-                  className="w-full bg-secondary text-foreground text-xs rounded-md px-2 py-1.5 border border-border focus:outline-none focus:ring-1 focus:ring-ring font-mono"
-                  value={Math.round(selectedObj.x)}
-                  onChange={e => updateObject(selectedObj.id, { x: +e.target.value })}
-                />
+                <input type="number" className="w-full bg-secondary text-foreground text-xs rounded-md px-2 py-1.5 border border-border focus:outline-none focus:ring-1 focus:ring-ring font-mono"
+                  value={Math.round(selectedObj.x)} onChange={e => updateObject(selectedObj.id, { x: +e.target.value })} />
               </div>
               <div>
                 <label className="text-[10px] text-muted-foreground uppercase">Y</label>
-                <input
-                  type="number"
-                  className="w-full bg-secondary text-foreground text-xs rounded-md px-2 py-1.5 border border-border focus:outline-none focus:ring-1 focus:ring-ring font-mono"
-                  value={Math.round(selectedObj.y)}
-                  onChange={e => updateObject(selectedObj.id, { y: +e.target.value })}
-                />
+                <input type="number" className="w-full bg-secondary text-foreground text-xs rounded-md px-2 py-1.5 border border-border focus:outline-none focus:ring-1 focus:ring-ring font-mono"
+                  value={Math.round(selectedObj.y)} onChange={e => updateObject(selectedObj.id, { y: +e.target.value })} />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-2">
               <div>
                 <label className="text-[10px] text-muted-foreground uppercase">W</label>
-                <input
-                  type="number"
-                  className="w-full bg-secondary text-foreground text-xs rounded-md px-2 py-1.5 border border-border focus:outline-none focus:ring-1 focus:ring-ring font-mono"
-                  value={Math.round(selectedObj.width)}
-                  onChange={e => updateObject(selectedObj.id, { width: +e.target.value })}
-                />
+                <input type="number" className="w-full bg-secondary text-foreground text-xs rounded-md px-2 py-1.5 border border-border focus:outline-none focus:ring-1 focus:ring-ring font-mono"
+                  value={Math.round(selectedObj.width)} onChange={e => updateObject(selectedObj.id, { width: +e.target.value })} />
               </div>
               <div>
                 <label className="text-[10px] text-muted-foreground uppercase">H</label>
-                <input
-                  type="number"
-                  className="w-full bg-secondary text-foreground text-xs rounded-md px-2 py-1.5 border border-border focus:outline-none focus:ring-1 focus:ring-ring font-mono"
-                  value={Math.round(selectedObj.height)}
-                  onChange={e => updateObject(selectedObj.id, { height: +e.target.value })}
-                />
+                <input type="number" className="w-full bg-secondary text-foreground text-xs rounded-md px-2 py-1.5 border border-border focus:outline-none focus:ring-1 focus:ring-ring font-mono"
+                  value={Math.round(selectedObj.height)} onChange={e => updateObject(selectedObj.id, { height: +e.target.value })} />
               </div>
             </div>
             <div className="grid grid-cols-2 gap-2">
               <div>
                 <label className="text-[10px] text-muted-foreground uppercase">Rotation</label>
-                <input
-                  type="number"
-                  className="w-full bg-secondary text-foreground text-xs rounded-md px-2 py-1.5 border border-border focus:outline-none focus:ring-1 focus:ring-ring font-mono"
-                  value={Math.round(selectedObj.rotation)}
-                  onChange={e => updateObject(selectedObj.id, { rotation: +e.target.value })}
-                />
+                <input type="number" className="w-full bg-secondary text-foreground text-xs rounded-md px-2 py-1.5 border border-border focus:outline-none focus:ring-1 focus:ring-ring font-mono"
+                  value={Math.round(selectedObj.rotation)} onChange={e => updateObject(selectedObj.id, { rotation: +e.target.value })} />
               </div>
               <div>
                 <label className="text-[10px] text-muted-foreground uppercase">Color</label>
-                <input
-                  type="color"
-                  className="w-full h-7 rounded-md border border-border cursor-pointer"
-                  value={selectedObj.color}
-                  onChange={e => updateObject(selectedObj.id, { color: e.target.value })}
-                />
+                <input type="color" className="w-full h-7 rounded-md border border-border cursor-pointer"
+                  value={selectedObj.color} onChange={e => updateObject(selectedObj.id, { color: e.target.value })} />
               </div>
             </div>
             <div className="flex gap-2 pt-1">
@@ -90,6 +66,12 @@ export default function PropertiesPanel() {
                 >
                   <Tag className="h-3 w-3" /> Mark Evidence
                 </button>
+              )}
+              {selectedObj.evidenceId && (
+                <div className="flex-1 flex items-center gap-1 text-xs text-foreground bg-secondary rounded-md py-1.5 px-2 font-mono">
+                  <span className="font-bold text-evidence-marker">{selectedObj.evidenceId}</span>
+                  <span className="text-muted-foreground">— Evidence</span>
+                </div>
               )}
               <button
                 onClick={() => removeObject(selectedObj.id)}
@@ -114,9 +96,7 @@ export default function PropertiesPanel() {
             {evidence.map(ev => (
               <button
                 key={ev.id}
-                onClick={() => {
-                  selectObject(ev.objectId);
-                }}
+                onClick={() => selectObject(ev.objectId)}
                 className={`w-full text-left p-2 rounded-md border transition-colors ${
                   selectedObjectId === ev.objectId
                     ? 'border-primary bg-primary/10'
@@ -124,12 +104,19 @@ export default function PropertiesPanel() {
                 }`}
               >
                 <div className="flex items-center gap-2 mb-1">
-                  <span className="text-[10px] font-mono font-bold bg-evidence-marker text-accent-foreground px-1.5 py-0.5 rounded">{ev.id}</span>
+                  <span className="text-xs font-mono font-bold bg-evidence-marker text-accent-foreground w-6 h-6 flex items-center justify-center rounded">{ev.letter}</span>
                   <span className="text-xs font-medium text-foreground truncate">{ev.description}</span>
                 </div>
                 <div className="text-[10px] text-muted-foreground">
                   {ev.location} · {ev.timeLogged}
                 </div>
+                <input
+                  className="mt-1 w-full bg-secondary/50 text-foreground text-[10px] rounded px-1.5 py-1 border border-border focus:outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground"
+                  placeholder="Add notes..."
+                  value={ev.notes}
+                  onClick={e => e.stopPropagation()}
+                  onChange={e => updateEvidence(ev.id, { notes: e.target.value })}
+                />
               </button>
             ))}
           </div>
@@ -148,7 +135,7 @@ export default function PropertiesPanel() {
               return (
                 <div key={m.id} className="flex items-center justify-between p-1.5 rounded bg-secondary/30 border border-border">
                   <div>
-                    <span className="text-xs font-mono text-[#22d3ee] font-medium">{dist} ft</span>
+                    <span className="text-xs font-mono text-[#22d3ee] font-medium">{dist}'</span>
                     <span className="text-[10px] text-muted-foreground ml-2">
                       ({Math.round(m.x1)},{Math.round(m.y1)}) → ({Math.round(m.x2)},{Math.round(m.y2)})
                     </span>
