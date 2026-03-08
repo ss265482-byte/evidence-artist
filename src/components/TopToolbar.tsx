@@ -276,22 +276,7 @@ export default function TopToolbar() {
           </PopoverContent>
         </Popover>
 
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button onClick={handleExportPNG} className="h-7 w-7 flex items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
-              <Download className="h-3.5 w-3.5" />
-            </button>
-          </TooltipTrigger>
-          <TooltipContent side="bottom" className="text-xs">Export PNG</TooltipContent>
-        </Tooltip>
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button onClick={handleExportPDF} className="h-7 w-7 flex items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
-              <FileText className="h-3.5 w-3.5" />
-            </button>
-          </TooltipTrigger>
-          <TooltipContent side="bottom" className="text-xs">Export PDF</TooltipContent>
-        </Tooltip>
+        <ExportDialog />
         <Tooltip>
           <TooltipTrigger asChild>
             <button onClick={toggleDark} className="h-7 w-7 flex items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
