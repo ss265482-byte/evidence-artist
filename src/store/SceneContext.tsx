@@ -310,7 +310,7 @@ export function SceneProvider({ children }: { children: ReactNode }) {
       showGrid, snapToGrid, showLegend, zoom, isDark,
       canUndo: undoStack.current.length > 0,
       canRedo: redoStack.current.length > 0,
-      addObject, updateObject, removeObject, selectObject,
+      addObject, updateObject, updateObjectSilent, removeObject, selectObject,
       setTool: setActiveTool, toggleGrid, toggleSnap: () => setSnapToGrid(p => !p),
       toggleLegend, setZoom, toggleDark, setCaseInfo, addEvidence, updateEvidence,
       addMeasurement, removeMeasurement, addWall, removeWall,
