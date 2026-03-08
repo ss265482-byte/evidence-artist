@@ -20,8 +20,8 @@ export interface SceneObject {
   label: string;
   color: string;
   category: string;
-  opacity: number;
-  locked: boolean;
+  opacity?: number;
+  locked?: boolean;
   evidenceId?: string;
   notes?: string;
   timeLogged?: string;
