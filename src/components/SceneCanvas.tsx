@@ -648,10 +648,24 @@ function SceneObjectShape({ obj, isSelected, onSelect, allObjects, onSnapGuides 
       case 'cabinet':
         return (
           <>
-            <Rect width={w} height={h} fill={c} opacity={0.2} stroke={c} strokeWidth={1.5} />
-            <Line points={[w / 2, 2, w / 2, h - 2]} stroke={c} strokeWidth={1} opacity={0.5} />
-            <Rect x={w / 2 - 6} y={h / 2 - 3} width={4} height={6} fill={c} opacity={0.5} cornerRadius={1} />
-            <Rect x={w / 2 + 2} y={h / 2 - 3} width={4} height={6} fill={c} opacity={0.5} cornerRadius={1} />
+            {/* Body */}
+            <Rect width={w} height={h} fill={c} opacity={0.15} stroke={c} strokeWidth={1.5} cornerRadius={2} />
+            {/* Top surface */}
+            <Rect x={0} y={0} width={w} height={h * 0.12} fill={c} opacity={0.3} cornerRadius={[2, 2, 0, 0]} />
+            {/* Center divider */}
+            <Line points={[w / 2, h * 0.14, w / 2, h - 3]} stroke={c} strokeWidth={1} opacity={0.5} />
+            {/* Left door panel */}
+            <Rect x={3} y={h * 0.15} width={w / 2 - 5} height={h * 0.8} stroke={c} strokeWidth={0.5} opacity={0.25} cornerRadius={1} fill="transparent" />
+            {/* Right door panel */}
+            <Rect x={w / 2 + 2} y={h * 0.15} width={w / 2 - 5} height={h * 0.8} stroke={c} strokeWidth={0.5} opacity={0.25} cornerRadius={1} fill="transparent" />
+            {/* Door handles */}
+            <Rect x={w / 2 - 7} y={h * 0.45} width={3} height={h * 0.15} fill={c} opacity={0.5} cornerRadius={2} />
+            <Rect x={w / 2 + 4} y={h * 0.45} width={3} height={h * 0.15} fill={c} opacity={0.5} cornerRadius={2} />
+            {/* Shelf line hint */}
+            <Line points={[5, h * 0.55, w / 2 - 3, h * 0.55]} stroke={c} strokeWidth={0.5} opacity={0.2} />
+            <Line points={[w / 2 + 3, h * 0.55, w - 5, h * 0.55]} stroke={c} strokeWidth={0.5} opacity={0.2} />
+            {/* Base */}
+            <Rect x={2} y={h * 0.92} width={w - 4} height={h * 0.06} fill={c} opacity={0.2} cornerRadius={1} />
           </>
         );
       case 'wall':
