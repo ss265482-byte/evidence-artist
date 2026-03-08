@@ -154,7 +154,7 @@ function CanvasLegend({ x, y }: { x: number; y: number }) {
 function SceneObjectShape({ obj, isSelected, onSelect }: {
   obj: SceneObject; isSelected: boolean; onSelect: () => void;
 }) {
-  const { updateObject, snapToGrid } = useScene();
+  const { updateObject, updateObjectSilent, snapToGrid } = useScene();
   const shapeRef = useRef<Konva.Group>(null);
   const trRef = useRef<Konva.Transformer>(null);
   const [hovered, setHovered] = useState(false);
@@ -169,6 +169,7 @@ function SceneObjectShape({ obj, isSelected, onSelect }: {
   const snapPos = (val: number) => snapToGrid ? Math.round(val / GRID_SIZE) * GRID_SIZE : val;
 
   const handleDragEnd = (e: Konva.KonvaEventObject<DragEvent>) => {
+    // Push undo once on drag completion (not during drag)
     updateObject(obj.id, { x: snapPos(e.target.x()), y: snapPos(e.target.y()) });
   };
 
@@ -179,6 +180,7 @@ function SceneObjectShape({ obj, isSelected, onSelect }: {
     const scaleY = node.scaleY();
     node.scaleX(1);
     node.scaleY(1);
+    // Push undo once on transform completion
     updateObject(obj.id, {
       x: snapPos(node.x()), y: snapPos(node.y()),
       width: Math.max(5, node.width() * scaleX),
