@@ -349,12 +349,36 @@ function SceneObjectShape({ obj, isSelected, onSelect, allObjects, onSnapGuides 
         return (
           <>
             <Rect width={w} height={h} fill="transparent" />
-            <Rect x={w * 0.35} y={h * 0.2} width={w * 0.65} height={h * 0.25} fill="#374151" stroke="#1f2937" strokeWidth={1} cornerRadius={2} />
-            <Rect x={w * 0.1} y={h * 0.15} width={w * 0.45} height={h * 0.35} fill="#4b5563" stroke="#1f2937" strokeWidth={1} cornerRadius={3} />
-            <Line points={[w * 0.15, h * 0.5, w * 0.1, h * 0.9, w * 0.35, h * 0.9, w * 0.4, h * 0.5]} fill="#78350f" stroke="#451a03" strokeWidth={1} closed />
-            <Line points={[w * 0.35, h * 0.5, w * 0.35, h * 0.7, w * 0.5, h * 0.7, w * 0.5, h * 0.45]} stroke="#374151" strokeWidth={1.5} />
-            <Line points={[w * 0.42, h * 0.5, w * 0.42, h * 0.65]} stroke="#1f2937" strokeWidth={1.5} />
-            <Rect x={w * 0.95} y={h * 0.12} width={3} height={5} fill="#374151" />
+            {/* Barrel */}
+            <Rect x={w * 0.5} y={h * 0.18} width={w * 0.48} height={h * 0.18} fill="#374151" stroke="#1f2937" strokeWidth={1} cornerRadius={[1, 3, 3, 1]} />
+            {/* Barrel bore */}
+            <Circle x={w * 0.98} y={h * 0.27} radius={2} fill="#111827" stroke="#1f2937" strokeWidth={0.5} />
+            {/* Slide */}
+            <Rect x={w * 0.15} y={h * 0.12} width={w * 0.55} height={h * 0.3} fill="#4b5563" stroke="#1f2937" strokeWidth={1} cornerRadius={3} />
+            {/* Slide serrations */}
+            {Array.from({ length: 5 }).map((_, i) => (
+              <Line key={i} points={[w * 0.2 + i * 6, h * 0.14, w * 0.2 + i * 6, h * 0.4]} stroke="#374151" strokeWidth={0.8} opacity={0.5} />
+            ))}
+            {/* Ejection port */}
+            <Rect x={w * 0.4} y={h * 0.15} width={w * 0.1} height={h * 0.12} fill="#1f2937" stroke="#111827" strokeWidth={0.5} cornerRadius={1} />
+            {/* Frame */}
+            <Rect x={w * 0.15} y={h * 0.38} width={w * 0.42} height={h * 0.15} fill="#6b7280" stroke="#4b5563" strokeWidth={0.8} />
+            {/* Trigger guard */}
+            <Line points={[w * 0.32, h * 0.5, w * 0.32, h * 0.72, w * 0.48, h * 0.72, w * 0.48, h * 0.5]} stroke="#4b5563" strokeWidth={1.5} fill="#1f2937" opacity={0.3} />
+            {/* Trigger */}
+            <Line points={[w * 0.4, h * 0.52, w * 0.38, h * 0.66]} stroke="#374151" strokeWidth={2} lineCap="round" />
+            {/* Grip */}
+            <Line points={[w * 0.15, h * 0.5, w * 0.08, h * 0.92, w * 0.32, h * 0.95, w * 0.38, h * 0.5]} fill="#78350f" stroke="#451a03" strokeWidth={1} closed />
+            {/* Grip texture */}
+            <Line points={[w * 0.14, h * 0.6, w * 0.3, h * 0.6]} stroke="#451a03" strokeWidth={0.5} opacity={0.4} />
+            <Line points={[w * 0.12, h * 0.7, w * 0.31, h * 0.7]} stroke="#451a03" strokeWidth={0.5} opacity={0.4} />
+            <Line points={[w * 0.1, h * 0.8, w * 0.32, h * 0.8]} stroke="#451a03" strokeWidth={0.5} opacity={0.4} />
+            {/* Magazine base */}
+            <Rect x={w * 0.1} y={h * 0.9} width={w * 0.2} height={h * 0.08} fill="#6b7280" stroke="#4b5563" strokeWidth={0.5} cornerRadius={1} />
+            {/* Front sight */}
+            <Rect x={w * 0.92} y={h * 0.1} width={3} height={h * 0.08} fill="#374151" />
+            {/* Rear sight */}
+            <Rect x={w * 0.18} y={h * 0.1} width={5} height={h * 0.05} fill="#374151" />
           </>
         );
       case 'bullet-casing':
