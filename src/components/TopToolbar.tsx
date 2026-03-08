@@ -5,10 +5,11 @@ import { jsPDF } from 'jspdf';
 import {
   MousePointer2, Hand, Minus, ArrowRight, Pencil, Type, Ruler,
   Grid3X3, Magnet, Sun, Moon, Download, FileText, LayoutList, Square,
-  Undo2, Redo2, Maximize, Info, Keyboard, ChevronDown
+  Undo2, Redo2, Maximize, Info, Keyboard, ChevronDown, Trash2
 } from 'lucide-react';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
+import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
 
 const tools: { type: ToolType; icon: React.ElementType; label: string; shortcut: string }[] = [
   { type: 'select', icon: MousePointer2, label: 'Select', shortcut: 'V' },
