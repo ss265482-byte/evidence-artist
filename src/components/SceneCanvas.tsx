@@ -636,11 +636,19 @@ function SceneObjectShape({ obj, isSelected, onSelect }: {
         <Transformer
           ref={trRef}
           rotateEnabled
-          enabledAnchors={['top-left', 'top-right', 'bottom-left', 'bottom-right']}
+          enabledAnchors={['top-left', 'top-right', 'bottom-left', 'bottom-right', 'middle-left', 'middle-right', 'top-center', 'bottom-center']}
           borderStroke="hsl(215, 80%, 55%)"
           anchorFill="hsl(215, 80%, 55%)"
           anchorStroke="#fff"
           anchorSize={8}
+          keepRatio={false}
+          centeredScaling={false}
+          boundBoxFunc={(oldBox, newBox) => {
+            if (Math.abs(newBox.width) < 5 || Math.abs(newBox.height) < 5) {
+              return oldBox;
+            }
+            return newBox;
+          }}
         />
       )}
     </>
