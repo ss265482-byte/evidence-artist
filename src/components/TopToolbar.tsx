@@ -149,6 +149,29 @@ export default function TopToolbar() {
           <TooltipContent side="bottom" className="text-xs">Redo <kbd className="ml-1.5 px-1 py-0.5 bg-secondary rounded text-[10px] font-mono">⌘⇧Z</kbd></TooltipContent>
         </Tooltip>
 
+        <AlertDialog>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <AlertDialogTrigger asChild>
+                <button disabled={objects.length === 0 && walls.length === 0 && measurements.length === 0} className={`h-7 w-7 flex items-center justify-center rounded transition-colors ${objects.length > 0 || walls.length > 0 || measurements.length > 0 ? 'text-destructive hover:bg-destructive/10' : 'text-muted-foreground/30 cursor-not-allowed'}`}>
+                  <Trash2 className="h-3.5 w-3.5" />
+                </button>
+              </AlertDialogTrigger>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="text-xs">Clear All</TooltipContent>
+          </Tooltip>
+          <AlertDialogContent>
+            <AlertDialogHeader>
+              <AlertDialogTitle>Clear entire scene?</AlertDialogTitle>
+              <AlertDialogDescription>This will remove all objects, walls, and measurements. This action can be undone.</AlertDialogDescription>
+            </AlertDialogHeader>
+            <AlertDialogFooter>
+              <AlertDialogCancel>Cancel</AlertDialogCancel>
+              <AlertDialogAction onClick={clearAll} className="bg-destructive text-destructive-foreground hover:bg-destructive/90">Clear All</AlertDialogAction>
+            </AlertDialogFooter>
+          </AlertDialogContent>
+        </AlertDialog>
+
         <div className="h-5 w-px bg-border" />
 
         <Tooltip>
