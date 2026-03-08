@@ -837,8 +837,6 @@ export default function SceneCanvas() {
             <Circle x={measureStart.x} y={measureStart.y} radius={5} fill="#22d3ee" opacity={0.8} />
           )}
           {showLegend && <CanvasLegend x={legendX} y={legendY} />}
-          <CompassRose x={compassX} y={compassY} />
-          <ScaleBar x={scaleBarX} y={scaleBarY} zoom={zoom} />
         </Layer>
       </Stage>
 
