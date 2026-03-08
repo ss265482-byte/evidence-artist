@@ -257,10 +257,10 @@ export function SceneProvider({ children }: { children: ReactNode }) {
     });
   }, [pushUndo]);
 
+  // Evidence note updates don't push undo (too granular)
   const updateEvidence = useCallback((id: string, updates: Partial<EvidenceItem>) => {
-    pushUndo();
     setEvidence(prev => prev.map(e => e.id === id ? { ...e, ...updates } : e));
-  }, [pushUndo]);
+  }, []);
 
   const addMeasurement = useCallback((m: Omit<Measurement, 'id'>) => {
     pushUndo();
