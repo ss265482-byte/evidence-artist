@@ -132,8 +132,17 @@ function CanvasLegend({ x, y }: { x: number; y: number }) {
   );
 }
 
-function SceneObjectShape({ obj, isSelected, onSelect }: {
+const SNAP_THRESHOLD = 5;
+
+interface SnapGuide {
+  orientation: 'h' | 'v';
+  pos: number;
+}
+
+function SceneObjectShape({ obj, isSelected, onSelect, allObjects, onSnapGuides }: {
   obj: SceneObject; isSelected: boolean; onSelect: () => void;
+  allObjects: SceneObject[];
+  onSnapGuides: (guides: SnapGuide[]) => void;
 }) {
   const { updateObject, updateObjectSilent, snapToGrid } = useScene();
   const shapeRef = useRef<Konva.Group>(null);
@@ -149,8 +158,94 @@ function SceneObjectShape({ obj, isSelected, onSelect }: {
 
   const snapPos = (val: number) => snapToGrid ? Math.round(val / GRID_SIZE) * GRID_SIZE : val;
 
+  const getSnapEdges = (o: SceneObject) => ({
+    left: o.x,
+    right: o.x + o.width,
+    centerX: o.x + o.width / 2,
+    top: o.y,
+    bottom: o.y + o.height,
+    centerY: o.y + o.height / 2,
+  });
+
+  const handleDragMove = (e: Konva.KonvaEventObject<DragEvent>) => {
+    if (obj.locked) return;
+    const node = e.target;
+    const others = allObjects.filter(o => o.id !== obj.id);
+    if (others.length === 0) return;
+
+    let dx = node.x();
+    let dy = node.y();
+    const dragW = obj.width;
+    const dragH = obj.height;
+
+    const dragEdges = {
+      left: dx, right: dx + dragW, centerX: dx + dragW / 2,
+      top: dy, bottom: dy + dragH, centerY: dy + dragH / 2,
+    };
+
+    const guides: SnapGuide[] = [];
+    let snappedX = false;
+    let snappedY = false;
+
+    for (const other of others) {
+      const e2 = getSnapEdges(other);
+
+      // Vertical guides (snap X)
+      if (!snappedX) {
+        const xChecks = [
+          { drag: dragEdges.left, target: e2.left },
+          { drag: dragEdges.left, target: e2.right },
+          { drag: dragEdges.left, target: e2.centerX },
+          { drag: dragEdges.right, target: e2.left },
+          { drag: dragEdges.right, target: e2.right },
+          { drag: dragEdges.right, target: e2.centerX },
+          { drag: dragEdges.centerX, target: e2.centerX },
+          { drag: dragEdges.centerX, target: e2.left },
+          { drag: dragEdges.centerX, target: e2.right },
+        ];
+        for (const check of xChecks) {
+          if (Math.abs(check.drag - check.target) < SNAP_THRESHOLD) {
+            dx += check.target - check.drag;
+            guides.push({ orientation: 'v', pos: check.target });
+            snappedX = true;
+            break;
+          }
+        }
+      }
+
+      // Horizontal guides (snap Y)
+      if (!snappedY) {
+        const yChecks = [
+          { drag: dragEdges.top, target: e2.top },
+          { drag: dragEdges.top, target: e2.bottom },
+          { drag: dragEdges.top, target: e2.centerY },
+          { drag: dragEdges.bottom, target: e2.top },
+          { drag: dragEdges.bottom, target: e2.bottom },
+          { drag: dragEdges.bottom, target: e2.centerY },
+          { drag: dragEdges.centerY, target: e2.centerY },
+          { drag: dragEdges.centerY, target: e2.top },
+          { drag: dragEdges.centerY, target: e2.bottom },
+        ];
+        for (const check of yChecks) {
+          if (Math.abs(check.drag - check.target) < SNAP_THRESHOLD) {
+            dy += check.target - check.drag;
+            guides.push({ orientation: 'h', pos: check.target });
+            snappedY = true;
+            break;
+          }
+        }
+      }
+
+      if (snappedX && snappedY) break;
+    }
+
+    node.position({ x: dx, y: dy });
+    onSnapGuides(guides);
+  };
+
   const handleDragEnd = (e: Konva.KonvaEventObject<DragEvent>) => {
     if (obj.locked) { e.target.position({ x: obj.x, y: obj.y }); return; }
+    onSnapGuides([]);
     updateObject(obj.id, { x: snapPos(e.target.x()), y: snapPos(e.target.y()) });
   };
 
