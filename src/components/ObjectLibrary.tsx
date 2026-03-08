@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { objectLibrary } from '@/lib/sceneObjects';
-import { ChevronDown, ChevronRight, Search, Skull, Crosshair, Fingerprint, Sofa, Building, Car } from 'lucide-react';
+import { ChevronDown, ChevronRight, Search, Skull, Crosshair, Fingerprint, Sofa, Building, Car, Trees } from 'lucide-react';
 
 const categoryIcons: Record<string, React.ElementType> = {
   'Bodies': Skull,
@@ -9,6 +9,7 @@ const categoryIcons: Record<string, React.ElementType> = {
   'Furniture': Sofa,
   'Structures': Building,
   'Vehicles': Car,
+  'Outdoor': Trees,
 };
 
 const categoryColors: Record<string, string> = {
@@ -18,6 +19,7 @@ const categoryColors: Record<string, string> = {
   'Furniture': 'text-violet-400',
   'Structures': 'text-blue-400',
   'Vehicles': 'text-emerald-400',
+  'Outdoor': 'text-green-400',
 };
 
 export default function ObjectLibrary() {

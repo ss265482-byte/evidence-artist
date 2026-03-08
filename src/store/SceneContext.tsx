@@ -10,6 +10,8 @@ export type SceneObjectType =
   | 'bed' | 'table' | 'chair' | 'sofa' | 'cabinet'
   | 'door' | 'window' | 'wall' | 'stairs'
   | 'car' | 'motorcycle' | 'bicycle'
+  | 'tree' | 'bush' | 'fence' | 'streetlight' | 'fire-hydrant' | 'dumpster'
+  | 'bench' | 'sidewalk' | 'road' | 'mailbox' | 'manhole' | 'trash-can'
   | 'text-label' | 'arrow' | 'line' | 'freehand' | 'room-label';
 
 export interface SceneObject {
