@@ -669,7 +669,16 @@ function SceneObjectShape({ obj, isSelected, onSelect, allObjects, onSnapGuides 
           </>
         );
       case 'wall':
-        return <Rect width={w} height={h} fill={c} stroke="#1e293b" strokeWidth={0.5} />;
+        return (
+          <>
+            <Rect width={w} height={h} fill={c} opacity={0.85} stroke="#1e293b" strokeWidth={1} />
+            {/* Wall hatch pattern */}
+            {Array.from({ length: Math.max(1, Math.floor(w / 8)) }).map((_, i) => (
+              <Line key={i} points={[i * 8, 0, i * 8 + h, h]} stroke="#1e293b" strokeWidth={0.4} opacity={0.25} />
+            ))}
+            <Line points={[0, h / 2, w, h / 2]} stroke="#0f172a" strokeWidth={0.3} opacity={0.2} />
+          </>
+        );
       case 'door':
         return (
           <>
