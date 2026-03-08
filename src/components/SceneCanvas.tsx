@@ -564,12 +564,31 @@ function SceneObjectShape({ obj, isSelected, onSelect, allObjects, onSnapGuides 
       case 'bed':
         return (
           <>
-            <Rect width={w} height={h} fill={c} opacity={0.15} stroke={c} strokeWidth={1.5} cornerRadius={4} />
-            <Rect x={0} y={0} width={w} height={8} fill={c} opacity={0.5} cornerRadius={[4, 4, 0, 0]} />
-            <Rect x={w * 0.15} y={12} width={w * 0.3} height={12} fill={c} opacity={0.3} cornerRadius={4} stroke={c} strokeWidth={0.5} />
-            <Rect x={w * 0.55} y={12} width={w * 0.3} height={12} fill={c} opacity={0.3} cornerRadius={4} stroke={c} strokeWidth={0.5} />
-            <Line points={[w * 0.1, h * 0.55, w * 0.9, h * 0.55]} stroke={c} strokeWidth={1} opacity={0.4} />
-            <Text text="BED" x={0} y={h / 2 + 2} width={w} fontSize={9} fill={c} align="center" fontFamily="JetBrains Mono, monospace" opacity={0.7} />
+            {/* Frame */}
+            <Rect width={w} height={h} fill={c} opacity={0.08} stroke={c} strokeWidth={2} cornerRadius={4} />
+            {/* Headboard */}
+            <Rect x={0} y={0} width={w} height={h * 0.12} fill={c} opacity={0.45} cornerRadius={[4, 4, 0, 0]} stroke={c} strokeWidth={1} />
+            <Line points={[w * 0.2, h * 0.03, w * 0.2, h * 0.1]} stroke={c} strokeWidth={0.8} opacity={0.3} />
+            <Line points={[w * 0.5, h * 0.03, w * 0.5, h * 0.1]} stroke={c} strokeWidth={0.8} opacity={0.3} />
+            <Line points={[w * 0.8, h * 0.03, w * 0.8, h * 0.1]} stroke={c} strokeWidth={0.8} opacity={0.3} />
+            {/* Pillows */}
+            <Rect x={w * 0.08} y={h * 0.16} width={w * 0.35} height={h * 0.18} fill={c} opacity={0.25} cornerRadius={6} stroke={c} strokeWidth={0.8} />
+            <Rect x={w * 0.57} y={h * 0.16} width={w * 0.35} height={h * 0.18} fill={c} opacity={0.25} cornerRadius={6} stroke={c} strokeWidth={0.8} />
+            {/* Pillow indent */}
+            <Circle x={w * 0.25} y={h * 0.25} radius={4} stroke={c} strokeWidth={0.5} opacity={0.2} />
+            <Circle x={w * 0.75} y={h * 0.25} radius={4} stroke={c} strokeWidth={0.5} opacity={0.2} />
+            {/* Blanket fold line */}
+            <Line points={[w * 0.05, h * 0.4, w * 0.95, h * 0.4]} stroke={c} strokeWidth={1.2} opacity={0.35} />
+            {/* Blanket texture */}
+            <Line points={[w * 0.05, h * 0.55, w * 0.95, h * 0.55]} stroke={c} strokeWidth={0.5} opacity={0.15} />
+            <Line points={[w * 0.05, h * 0.7, w * 0.95, h * 0.7]} stroke={c} strokeWidth={0.5} opacity={0.15} />
+            {/* Footboard */}
+            <Rect x={0} y={h * 0.92} width={w} height={h * 0.08} fill={c} opacity={0.3} cornerRadius={[0, 0, 4, 4]} stroke={c} strokeWidth={0.8} />
+            {/* Legs */}
+            <Circle x={4} y={h - 2} radius={3} fill={c} opacity={0.25} />
+            <Circle x={w - 4} y={h - 2} radius={3} fill={c} opacity={0.25} />
+            <Circle x={4} y={4} radius={3} fill={c} opacity={0.25} />
+            <Circle x={w - 4} y={4} radius={3} fill={c} opacity={0.25} />
           </>
         );
       case 'table':
