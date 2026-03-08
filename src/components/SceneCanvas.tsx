@@ -656,64 +656,160 @@ function SceneObjectShape({ obj, isSelected, onSelect, allObjects, onSnapGuides 
         return (
           <>
             <Rect width={w} height={h} fill="transparent" />
-            <Line points={[w * 0.1, h * 0.5, w * 0.3, h * 0.1, w * 0.6, h * 0.2, w * 0.9, h * 0.4, w * 0.7, h * 0.9, w * 0.3, h * 0.8]} fill={c} opacity={0.2} closed stroke={c} strokeWidth={1} />
-            <Line points={[w * 0.3, h * 0.1, w * 0.5, h * 0.5]} stroke={c} strokeWidth={0.5} opacity={0.4} />
-            <Line points={[w * 0.6, h * 0.2, w * 0.4, h * 0.7]} stroke={c} strokeWidth={0.5} opacity={0.4} />
+            {/* Main shard */}
+            <Line points={[w * 0.08, h * 0.5, w * 0.25, h * 0.08, w * 0.55, h * 0.12, w * 0.92, h * 0.38, w * 0.75, h * 0.88, w * 0.35, h * 0.85]} fill={c} opacity={0.12} closed stroke={c} strokeWidth={1.2} />
+            {/* Crack lines */}
+            <Line points={[w * 0.25, h * 0.08, w * 0.48, h * 0.45]} stroke={c} strokeWidth={0.6} opacity={0.5} />
+            <Line points={[w * 0.55, h * 0.12, w * 0.42, h * 0.55]} stroke={c} strokeWidth={0.6} opacity={0.45} />
+            <Line points={[w * 0.92, h * 0.38, w * 0.58, h * 0.52]} stroke={c} strokeWidth={0.5} opacity={0.35} />
+            <Line points={[w * 0.48, h * 0.45, w * 0.35, h * 0.85]} stroke={c} strokeWidth={0.4} opacity={0.3} />
+            {/* Reflection highlights */}
+            <Line points={[w * 0.3, h * 0.2, w * 0.4, h * 0.15, w * 0.5, h * 0.2]} stroke="#f8fafc" strokeWidth={0.8} opacity={0.3} />
+            <Line points={[w * 0.6, h * 0.35, w * 0.7, h * 0.3]} stroke="#f8fafc" strokeWidth={0.5} opacity={0.25} />
+            {/* Secondary shard */}
+            <Line points={[w * 0.7, h * 0.65, w * 0.85, h * 0.6, w * 0.9, h * 0.75, w * 0.78, h * 0.8]} fill={c} opacity={0.08} closed stroke={c} strokeWidth={0.8} />
+            {/* Tiny fragment */}
+            <Line points={[w * 0.15, h * 0.7, w * 0.22, h * 0.65, w * 0.25, h * 0.75]} fill={c} opacity={0.1} closed stroke={c} strokeWidth={0.6} />
           </>
         );
       case 'shell-casing':
         return (
           <>
-            <Rect x={w * 0.15} y={0} width={w * 0.7} height={h} fill={c} opacity={0.3} stroke={c} strokeWidth={1} cornerRadius={[3, 3, 1, 1]} />
-            <Line points={[w * 0.15, h * 0.2, w * 0.85, h * 0.2]} stroke={c} strokeWidth={1} opacity={0.6} />
-            <Circle x={w / 2} y={h * 0.1} radius={w * 0.2} stroke={c} strokeWidth={0.8} opacity={0.5} />
-            <Circle x={w / 2} y={h * 0.1} radius={1} fill={c} />
+            {/* Cylindrical body */}
+            <Rect x={w * 0.12} y={h * 0.18} width={w * 0.76} height={h * 0.82} fill={c} opacity={0.25} stroke={c} strokeWidth={1.2} cornerRadius={[0, 0, 2, 2]} />
+            {/* Rim */}
+            <Rect x={w * 0.08} y={h * 0.15} width={w * 0.84} height={h * 0.08} fill={c} opacity={0.4} stroke={c} strokeWidth={1} cornerRadius={1} />
+            {/* Primer */}
+            <Circle x={w / 2} y={h * 0.08} radius={w * 0.22} fill={c} opacity={0.3} stroke={c} strokeWidth={1} />
+            <Circle x={w / 2} y={h * 0.08} radius={w * 0.1} fill={c} opacity={0.5} />
+            <Circle x={w / 2} y={h * 0.08} radius={1} fill="#d97706" />
+            {/* Neck taper */}
+            <Line points={[w * 0.2, h * 0.78, w * 0.25, h * 0.95, w * 0.75, h * 0.95, w * 0.8, h * 0.78]} stroke={c} strokeWidth={0.8} opacity={0.4} />
+            {/* Brass shine */}
+            <Line points={[w * 0.3, h * 0.25, w * 0.3, h * 0.75]} stroke="#fde047" strokeWidth={0.5} opacity={0.2} />
+            {/* Headstamp text hint */}
+            <Text text="●" x={0} y={h * 0.02} width={w} fontSize={5} fill={c} align="center" opacity={0.3} />
           </>
         );
       case 'dna-sample':
         return (
           <>
-            <Circle x={w / 2} y={h / 2} radius={Math.min(w, h) * 0.45} fill="#22c55e" opacity={0.1} stroke={c} strokeWidth={1} />
-            <Line points={[w * 0.3, h * 0.2, w * 0.7, h * 0.4, w * 0.3, h * 0.6, w * 0.7, h * 0.8]} stroke={c} strokeWidth={1.5} tension={0.5} />
-            <Line points={[w * 0.7, h * 0.2, w * 0.3, h * 0.4, w * 0.7, h * 0.6, w * 0.3, h * 0.8]} stroke={c} strokeWidth={1.5} tension={0.5} />
+            {/* Test tube outline */}
+            <Circle x={w / 2} y={h / 2} radius={Math.min(w, h) * 0.46} fill="#22c55e" opacity={0.06} stroke={c} strokeWidth={1} />
+            {/* Double helix - strand 1 */}
+            <Line points={[w * 0.3, h * 0.1, w * 0.7, h * 0.25, w * 0.3, h * 0.4, w * 0.7, h * 0.55, w * 0.3, h * 0.7, w * 0.7, h * 0.9]} stroke={c} strokeWidth={1.8} tension={0.5} />
+            {/* Double helix - strand 2 */}
+            <Line points={[w * 0.7, h * 0.1, w * 0.3, h * 0.25, w * 0.7, h * 0.4, w * 0.3, h * 0.55, w * 0.7, h * 0.7, w * 0.3, h * 0.9]} stroke={c} strokeWidth={1.8} tension={0.5} opacity={0.6} />
+            {/* Base pair rungs */}
+            <Line points={[w * 0.38, h * 0.17, w * 0.62, h * 0.17]} stroke={c} strokeWidth={1} opacity={0.4} />
+            <Line points={[w * 0.35, h * 0.33, w * 0.65, h * 0.33]} stroke={c} strokeWidth={1} opacity={0.4} />
+            <Line points={[w * 0.38, h * 0.48, w * 0.62, h * 0.48]} stroke={c} strokeWidth={1} opacity={0.4} />
+            <Line points={[w * 0.35, h * 0.63, w * 0.65, h * 0.63]} stroke={c} strokeWidth={1} opacity={0.4} />
+            <Line points={[w * 0.38, h * 0.8, w * 0.62, h * 0.8]} stroke={c} strokeWidth={1} opacity={0.4} />
+            {/* Nucleotide dots */}
+            <Circle x={w * 0.38} y={h * 0.17} radius={1.5} fill="#ef4444" opacity={0.5} />
+            <Circle x={w * 0.62} y={h * 0.17} radius={1.5} fill="#3b82f6" opacity={0.5} />
+            <Circle x={w * 0.35} y={h * 0.33} radius={1.5} fill="#22c55e" opacity={0.5} />
+            <Circle x={w * 0.65} y={h * 0.33} radius={1.5} fill="#eab308" opacity={0.5} />
           </>
         );
       case 'phone':
         return (
           <>
-            <Rect width={w} height={h} fill={c} opacity={0.2} stroke={c} strokeWidth={1.5} cornerRadius={3} />
-            <Rect x={w * 0.1} y={h * 0.08} width={w * 0.8} height={h * 0.75} fill="#1e293b" opacity={0.4} cornerRadius={2} />
-            <Circle x={w / 2} y={h * 0.92} radius={2.5} stroke={c} strokeWidth={1} opacity={0.5} />
-            <Line points={[w * 0.35, h * 0.04, w * 0.65, h * 0.04]} stroke={c} strokeWidth={1} opacity={0.4} lineCap="round" />
+            {/* Body */}
+            <Rect width={w} height={h} fill={c} opacity={0.15} stroke={c} strokeWidth={1.5} cornerRadius={4} />
+            {/* Screen */}
+            <Rect x={w * 0.08} y={h * 0.1} width={w * 0.84} height={h * 0.72} fill="#0f172a" opacity={0.5} cornerRadius={2} />
+            {/* Screen content hint */}
+            <Rect x={w * 0.15} y={h * 0.14} width={w * 0.7} height={h * 0.08} fill={c} opacity={0.08} cornerRadius={1} />
+            <Rect x={w * 0.15} y={h * 0.26} width={w * 0.5} height={h * 0.04} fill={c} opacity={0.06} cornerRadius={1} />
+            <Rect x={w * 0.15} y={h * 0.34} width={w * 0.65} height={h * 0.04} fill={c} opacity={0.06} cornerRadius={1} />
+            {/* Notch/speaker */}
+            <Rect x={w * 0.3} y={h * 0.03} width={w * 0.4} height={h * 0.02} fill={c} opacity={0.3} cornerRadius={2} />
+            {/* Front camera */}
+            <Circle x={w * 0.75} y={h * 0.04} radius={1.5} fill={c} opacity={0.3} />
+            {/* Home button/bar */}
+            <Rect x={w * 0.3} y={h * 0.9} width={w * 0.4} height={h * 0.02} fill={c} opacity={0.25} cornerRadius={2} />
+            {/* Side buttons */}
+            <Rect x={-1} y={h * 0.3} width={2} height={h * 0.08} fill={c} opacity={0.3} cornerRadius={1} />
+            <Rect x={w - 1} y={h * 0.25} width={2} height={h * 0.06} fill={c} opacity={0.3} cornerRadius={1} />
+            <Rect x={w - 1} y={h * 0.35} width={2} height={h * 0.12} fill={c} opacity={0.3} cornerRadius={1} />
           </>
         );
       case 'camera':
         return (
           <>
-            <Rect x={0} y={h * 0.2} width={w} height={h * 0.7} fill={c} opacity={0.2} stroke={c} strokeWidth={1.5} cornerRadius={3} />
-            <Rect x={w * 0.3} y={0} width={w * 0.3} height={h * 0.25} fill={c} opacity={0.15} stroke={c} strokeWidth={1} cornerRadius={[2, 2, 0, 0]} />
-            <Circle x={w * 0.5} y={h * 0.55} radius={Math.min(w, h) * 0.22} stroke={c} strokeWidth={1.5} />
-            <Circle x={w * 0.5} y={h * 0.55} radius={Math.min(w, h) * 0.12} fill={c} opacity={0.3} />
-            <Circle x={w * 0.8} y={h * 0.3} radius={2} fill="#ef4444" opacity={0.7} />
+            {/* Body */}
+            <Rect x={0} y={h * 0.2} width={w} height={h * 0.72} fill={c} opacity={0.15} stroke={c} strokeWidth={1.5} cornerRadius={4} />
+            {/* Viewfinder hump */}
+            <Rect x={w * 0.28} y={0} width={w * 0.35} height={h * 0.28} fill={c} opacity={0.12} stroke={c} strokeWidth={1} cornerRadius={[3, 3, 0, 0]} />
+            {/* Viewfinder window */}
+            <Rect x={w * 0.38} y={h * 0.05} width={w * 0.15} height={h * 0.1} fill="#0f172a" opacity={0.4} cornerRadius={1} />
+            {/* Main lens ring */}
+            <Circle x={w * 0.5} y={h * 0.56} radius={Math.min(w, h) * 0.25} stroke={c} strokeWidth={2} />
+            <Circle x={w * 0.5} y={h * 0.56} radius={Math.min(w, h) * 0.2} stroke={c} strokeWidth={0.8} opacity={0.4} />
+            <Circle x={w * 0.5} y={h * 0.56} radius={Math.min(w, h) * 0.14} fill="#0f172a" opacity={0.4} stroke={c} strokeWidth={0.5} />
+            {/* Lens reflection */}
+            <Circle x={w * 0.45} y={h * 0.5} radius={Math.min(w, h) * 0.05} fill="#f8fafc" opacity={0.15} />
+            {/* Flash */}
+            <Rect x={w * 0.72} y={h * 0.25} width={w * 0.12} height={h * 0.08} fill="#fbbf24" opacity={0.3} cornerRadius={1} stroke={c} strokeWidth={0.5} />
+            {/* Record indicator */}
+            <Circle x={w * 0.85} y={h * 0.3} radius={2.5} fill="#ef4444" opacity={0.7} />
+            {/* Mode dial */}
+            <Circle x={w * 0.15} y={h * 0.3} radius={4} stroke={c} strokeWidth={0.8} opacity={0.4} />
+            <Circle x={w * 0.15} y={h * 0.3} radius={1} fill={c} opacity={0.4} />
+            {/* Grip texture */}
+            <Rect x={w * 0.82} y={h * 0.45} width={w * 0.12} height={h * 0.4} fill={c} opacity={0.1} cornerRadius={2} />
+            <Line points={[w * 0.85, h * 0.5, w * 0.85, h * 0.8]} stroke={c} strokeWidth={0.5} opacity={0.15} />
+            <Line points={[w * 0.9, h * 0.5, w * 0.9, h * 0.8]} stroke={c} strokeWidth={0.5} opacity={0.15} />
           </>
         );
       case 'id-card':
         return (
           <>
-            <Rect width={w} height={h} fill={c} opacity={0.1} stroke={c} strokeWidth={1} cornerRadius={2} />
-            <Rect x={3} y={3} width={w * 0.3} height={h * 0.6} fill={c} opacity={0.15} stroke={c} strokeWidth={0.5} cornerRadius={1} />
-            <Line points={[w * 0.4, h * 0.25, w - 4, h * 0.25]} stroke={c} strokeWidth={0.8} opacity={0.4} />
-            <Line points={[w * 0.4, h * 0.5, w - 4, h * 0.5]} stroke={c} strokeWidth={0.8} opacity={0.4} />
-            <Line points={[w * 0.4, h * 0.75, w * 0.7, h * 0.75]} stroke={c} strokeWidth={0.8} opacity={0.4} />
+            {/* Card body */}
+            <Rect width={w} height={h} fill={c} opacity={0.08} stroke={c} strokeWidth={1.2} cornerRadius={2} />
+            {/* Header stripe */}
+            <Rect x={0} y={0} width={w} height={h * 0.18} fill={c} opacity={0.2} cornerRadius={[2, 2, 0, 0]} />
+            {/* Photo placeholder */}
+            <Rect x={w * 0.05} y={h * 0.25} width={w * 0.28} height={h * 0.5} fill={c} opacity={0.12} stroke={c} strokeWidth={0.5} cornerRadius={2} />
+            {/* Person silhouette in photo */}
+            <Circle x={w * 0.19} y={h * 0.38} radius={3} fill={c} opacity={0.15} />
+            <Line points={[w * 0.13, h * 0.65, w * 0.19, h * 0.5, w * 0.25, h * 0.65]} fill={c} opacity={0.1} closed />
+            {/* Text lines */}
+            <Line points={[w * 0.4, h * 0.3, w * 0.92, h * 0.3]} stroke={c} strokeWidth={1} opacity={0.5} />
+            <Line points={[w * 0.4, h * 0.42, w * 0.85, h * 0.42]} stroke={c} strokeWidth={0.6} opacity={0.3} />
+            <Line points={[w * 0.4, h * 0.52, w * 0.78, h * 0.52]} stroke={c} strokeWidth={0.6} opacity={0.3} />
+            <Line points={[w * 0.4, h * 0.62, w * 0.7, h * 0.62]} stroke={c} strokeWidth={0.6} opacity={0.3} />
+            {/* Barcode */}
+            {Array.from({ length: 12 }).map((_, i) => (
+              <Line key={i} points={[w * 0.4 + i * 3, h * 0.75, w * 0.4 + i * 3, h * 0.88]} stroke={c} strokeWidth={i % 3 === 0 ? 1.5 : 0.8} opacity={0.3} />
+            ))}
+            {/* Chip */}
+            <Rect x={w * 0.06} y={h * 0.8} width={w * 0.12} height={h * 0.12} fill="#d4a574" opacity={0.3} stroke="#b8956a" strokeWidth={0.5} cornerRadius={1} />
           </>
         );
       case 'bag':
         return (
           <>
-            <Rect x={w * 0.1} y={h * 0.3} width={w * 0.8} height={h * 0.65} fill={c} opacity={0.15} stroke={c} strokeWidth={1.5} cornerRadius={[0, 0, 4, 4]} />
-            <Rect x={w * 0.05} y={h * 0.25} width={w * 0.9} height={h * 0.1} fill={c} opacity={0.25} stroke={c} strokeWidth={1} />
-            <Line points={[w * 0.3, h * 0.25, w * 0.3, h * 0.05, w * 0.7, h * 0.05, w * 0.7, h * 0.25]} stroke={c} strokeWidth={1.5} lineCap="round" />
-            <Circle x={w * 0.5} y={h * 0.45} radius={3} stroke={c} strokeWidth={1} opacity={0.5} />
+            {/* Main body */}
+            <Line points={[w * 0.08, h * 0.3, w * 0.92, h * 0.3, w * 0.88, h * 0.95, w * 0.12, h * 0.95]} fill={c} opacity={0.12} closed stroke={c} strokeWidth={1.5} />
+            {/* Top flap */}
+            <Rect x={w * 0.05} y={h * 0.24} width={w * 0.9} height={h * 0.1} fill={c} opacity={0.2} stroke={c} strokeWidth={1} cornerRadius={[3, 3, 0, 0]} />
+            {/* Handles */}
+            <Line points={[w * 0.25, h * 0.24, w * 0.25, h * 0.08, w * 0.42, h * 0.05, w * 0.42, h * 0.24]} stroke={c} strokeWidth={2} lineCap="round" />
+            <Line points={[w * 0.58, h * 0.24, w * 0.58, h * 0.08, w * 0.75, h * 0.05, w * 0.75, h * 0.24]} stroke={c} strokeWidth={2} lineCap="round" />
+            {/* Front pocket */}
+            <Rect x={w * 0.2} y={h * 0.5} width={w * 0.6} height={h * 0.25} stroke={c} strokeWidth={0.8} opacity={0.25} cornerRadius={2} fill="transparent" />
+            {/* Zipper */}
+            <Line points={[w * 0.2, h * 0.5, w * 0.8, h * 0.5]} stroke={c} strokeWidth={0.8} opacity={0.35} />
+            <Circle x={w * 0.78} y={h * 0.5} radius={2} stroke={c} strokeWidth={0.5} opacity={0.4} />
+            {/* Clasp */}
+            <Circle x={w * 0.5} y={h * 0.38} radius={3} stroke={c} strokeWidth={1} opacity={0.4} />
+            <Circle x={w * 0.5} y={h * 0.38} radius={1.2} fill={c} opacity={0.3} />
+            {/* Stitching hints */}
+            <Line points={[w * 0.12, h * 0.35, w * 0.12, h * 0.9]} stroke={c} strokeWidth={0.4} opacity={0.15} dash={[2, 2]} />
+            <Line points={[w * 0.88, h * 0.35, w * 0.88, h * 0.9]} stroke={c} strokeWidth={0.4} opacity={0.15} dash={[2, 2]} />
           </>
         );
       case 'bed':
