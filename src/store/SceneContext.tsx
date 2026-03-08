@@ -92,6 +92,8 @@ interface SceneState {
   updateEvidence: (id: string, updates: Partial<EvidenceItem>) => void;
   addMeasurement: (m: Omit<Measurement, 'id'>) => void;
   removeMeasurement: (id: string) => void;
+  addWall: (w: Omit<WallSegment, 'id'>) => void;
+  removeWall: (id: string) => void;
 }
 
 const SceneContext = createContext<SceneState | null>(null);
