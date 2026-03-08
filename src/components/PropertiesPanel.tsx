@@ -4,12 +4,28 @@ import { Trash2, Tag, Ruler, Copy, RotateCw, Layers, Lock, Unlock, ChevronsUp, C
 
 const PIXELS_PER_UNIT = 20;
 
+const priorityConfig: Record<EvidencePriority, { label: string; color: string; bg: string }> = {
+  critical: { label: 'CRIT', color: 'text-red-400', bg: 'bg-red-500/20 border-red-500/30' },
+  high: { label: 'HIGH', color: 'text-orange-400', bg: 'bg-orange-500/20 border-orange-500/30' },
+  medium: { label: 'MED', color: 'text-yellow-400', bg: 'bg-yellow-500/20 border-yellow-500/30' },
+  low: { label: 'LOW', color: 'text-green-400', bg: 'bg-green-500/20 border-green-500/30' },
+};
+
+const statusConfig: Record<EvidenceStatus, { label: string; icon: React.ElementType; color: string }> = {
+  'identified': { label: 'Identified', icon: AlertTriangle, color: 'text-yellow-400' },
+  'photographed': { label: 'Photographed', icon: Camera, color: 'text-blue-400' },
+  'collected': { label: 'Collected', icon: CheckCircle2, color: 'text-green-400' },
+  'processed': { label: 'Processed', icon: Clock, color: 'text-purple-400' },
+  'sent-to-lab': { label: 'Sent to Lab', icon: FlaskConical, color: 'text-cyan-400' },
+};
+
 export default function PropertiesPanel() {
   const {
     objects, selectedObjectId, updateObject, removeObject, addObject, evidence,
     addEvidence, updateEvidence, selectObject, measurements, removeMeasurement, walls,
     bringToFront, sendToBack, moveLayerUp, moveLayerDown,
   } = useScene();
+  const [evidenceFilter, setEvidenceFilter] = useState<'all' | EvidencePriority>('all');
   const selectedObj = objects.find(o => o.id === selectedObjectId);
   const selectedIndex = objects.findIndex(o => o.id === selectedObjectId);
 
