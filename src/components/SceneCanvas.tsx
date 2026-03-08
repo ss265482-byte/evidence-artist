@@ -441,6 +441,15 @@ export default function SceneCanvas() {
           {measurements.map(m => (
             <MeasurementLine key={m.id} m={m} onRemove={() => removeMeasurement(m.id)} />
           ))}
+          {walls.map(w => (
+            <WallLine key={w.id} w={w} onRemove={() => removeWall(w.id)} />
+          ))}
+          {wallStart && wallPreview && (
+            <WallLine w={{ id: 'wall-preview', x1: wallStart.x, y1: wallStart.y, x2: wallPreview.x, y2: wallPreview.y, thickness: 6 }} onRemove={() => { setWallStart(null); setWallPreview(null); }} />
+          )}
+          {wallStart && !wallPreview && (
+            <Circle x={wallStart.x} y={wallStart.y} radius={5} fill="#a3a3a3" opacity={0.8} />
+          )}
           {measureStart && measurePreview && (
             <MeasurementLine m={{ id: 'preview', x1: measureStart.x, y1: measureStart.y, x2: measurePreview.x, y2: measurePreview.y }} onRemove={() => { setMeasureStart(null); setMeasurePreview(null); }} />
           )}
