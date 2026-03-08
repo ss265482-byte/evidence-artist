@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { Stage, Layer, Rect, Text, Line, Circle, Group, Transformer } from 'react-konva';
-import { useScene, SceneObject, Measurement } from '@/store/SceneContext';
+import { useScene, SceneObject, Measurement, WallSegment } from '@/store/SceneContext';
 import Konva from 'konva';
 
 const GRID_SIZE = 20;
