@@ -1,7 +1,7 @@
 import { useScene, ToolType } from '@/store/SceneContext';
 import {
   MousePointer2, Hand, Minus, ArrowRight, Pencil, Type, Ruler,
-  Grid3X3, Magnet, Sun, Moon, Download, FileText
+  Grid3X3, Magnet, Sun, Moon, Download, FileText, LayoutList, Square
 } from 'lucide-react';
 
 const tools: { type: ToolType; icon: React.ElementType; label: string }[] = [
@@ -11,11 +11,12 @@ const tools: { type: ToolType; icon: React.ElementType; label: string }[] = [
   { type: 'arrow', icon: ArrowRight, label: 'Arrow' },
   { type: 'freehand', icon: Pencil, label: 'Draw' },
   { type: 'text', icon: Type, label: 'Text' },
+  { type: 'room-label', icon: Square, label: 'Room Label' },
   { type: 'measure', icon: Ruler, label: 'Measure' },
 ];
 
 export default function TopToolbar() {
-  const { activeTool, setTool, showGrid, toggleGrid, snapToGrid, toggleSnap, isDark, toggleDark, caseInfo, setCaseInfo, zoom, setZoom } = useScene();
+  const { activeTool, setTool, showGrid, toggleGrid, snapToGrid, toggleSnap, showLegend, toggleLegend, isDark, toggleDark, caseInfo, setCaseInfo, zoom, setZoom } = useScene();
 
   return (
     <div className="h-11 bg-card border-b border-border flex items-center px-3 gap-2 shrink-0">
@@ -27,7 +28,6 @@ export default function TopToolbar() {
         <span className="text-sm font-semibold text-foreground hidden sm:inline">Crime Scene Sketcher</span>
       </div>
 
-      {/* Divider */}
       <div className="h-5 w-px bg-border" />
 
       {/* Drawing tools */}
@@ -50,12 +50,15 @@ export default function TopToolbar() {
 
       <div className="h-5 w-px bg-border" />
 
-      {/* Grid & snap */}
+      {/* Grid, snap, legend */}
       <button onClick={toggleGrid} title="Toggle Grid" className={`h-7 w-7 flex items-center justify-center rounded transition-colors ${showGrid ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:text-foreground hover:bg-secondary'}`}>
         <Grid3X3 className="h-3.5 w-3.5" />
       </button>
       <button onClick={toggleSnap} title="Snap to Grid" className={`h-7 w-7 flex items-center justify-center rounded transition-colors ${snapToGrid ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:text-foreground hover:bg-secondary'}`}>
         <Magnet className="h-3.5 w-3.5" />
+      </button>
+      <button onClick={toggleLegend} title="Toggle Legend" className={`h-7 w-7 flex items-center justify-center rounded transition-colors ${showLegend ? 'bg-secondary text-foreground' : 'text-muted-foreground hover:text-foreground hover:bg-secondary'}`}>
+        <LayoutList className="h-3.5 w-3.5" />
       </button>
 
       <div className="h-5 w-px bg-border" />
@@ -67,34 +70,22 @@ export default function TopToolbar() {
         <button onClick={() => setZoom(Math.min(5, zoom + 0.1))} className="h-7 w-7 flex items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors text-xs font-bold">+</button>
       </div>
 
-      {/* Spacer */}
       <div className="flex-1" />
 
       {/* Case info */}
       <div className="hidden lg:flex items-center gap-2">
-        <input
-          placeholder="Case #"
-          value={caseInfo.caseNumber}
-          onChange={e => setCaseInfo({ caseNumber: e.target.value })}
-          className="w-24 bg-secondary text-foreground text-[11px] rounded px-2 py-1 border border-border focus:outline-none focus:ring-1 focus:ring-ring font-mono placeholder:text-muted-foreground"
-        />
-        <input
-          placeholder="Investigator"
-          value={caseInfo.investigator}
-          onChange={e => setCaseInfo({ investigator: e.target.value })}
-          className="w-28 bg-secondary text-foreground text-[11px] rounded px-2 py-1 border border-border focus:outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground"
-        />
-        <input
-          placeholder="Location"
-          value={caseInfo.location}
-          onChange={e => setCaseInfo({ location: e.target.value })}
-          className="w-28 bg-secondary text-foreground text-[11px] rounded px-2 py-1 border border-border focus:outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground"
-        />
+        <input placeholder="Case #" value={caseInfo.caseNumber} onChange={e => setCaseInfo({ caseNumber: e.target.value })}
+          className="w-20 bg-secondary text-foreground text-[11px] rounded px-2 py-1 border border-border focus:outline-none focus:ring-1 focus:ring-ring font-mono placeholder:text-muted-foreground" />
+        <input placeholder="Location" value={caseInfo.location} onChange={e => setCaseInfo({ location: e.target.value })}
+          className="w-24 bg-secondary text-foreground text-[11px] rounded px-2 py-1 border border-border focus:outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground" />
+        <input placeholder="Incident" value={caseInfo.incident} onChange={e => setCaseInfo({ incident: e.target.value })}
+          className="w-24 bg-secondary text-foreground text-[11px] rounded px-2 py-1 border border-border focus:outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground" />
+        <input placeholder="Sketch by" value={caseInfo.sketchBy} onChange={e => setCaseInfo({ sketchBy: e.target.value })}
+          className="w-24 bg-secondary text-foreground text-[11px] rounded px-2 py-1 border border-border focus:outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground" />
       </div>
 
       <div className="h-5 w-px bg-border" />
 
-      {/* Export & theme */}
       <button title="Export PNG" className="h-7 w-7 flex items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
         <Download className="h-3.5 w-3.5" />
       </button>
