@@ -79,6 +79,14 @@ export interface CaseInfo {
 
 export type ToolType = 'select' | 'pan' | 'wall' | 'line' | 'arrow' | 'freehand' | 'text' | 'measure' | 'room-label';
 
+export interface BackgroundImage {
+  url: string;
+  opacity: number;
+  visible: boolean;
+  width?: number;
+  height?: number;
+}
+
 interface SceneSnapshot {
   objects: SceneObject[];
   evidence: EvidenceItem[];
