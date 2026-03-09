@@ -55,6 +55,12 @@ export const objectLibrary: Record<string, ObjectTemplate[]> = {
   ],
   'Vehicles': [
     { type: 'car', label: 'Car', icon: '🚗', width: 100, height: 50, color: '#3b82f6', category: 'Vehicles' },
+    { type: 'pickup-truck', label: 'Pickup Truck', icon: '🛻', width: 120, height: 55, color: '#78716c', category: 'Vehicles' },
+    { type: 'suv', label: 'SUV', icon: '🚙', width: 110, height: 55, color: '#1e3a5f', category: 'Vehicles' },
+    { type: 'van', label: 'Van', icon: '🚐', width: 120, height: 55, color: '#f5f5f4', category: 'Vehicles' },
+    { type: 'bus', label: 'Bus', icon: '🚌', width: 180, height: 55, color: '#eab308', category: 'Vehicles' },
+    { type: 'semi-truck', label: 'Semi Truck', icon: '🚛', width: 200, height: 60, color: '#dc2626', category: 'Vehicles' },
+    { type: 'police-car', label: 'Police Car', icon: '🚓', width: 100, height: 50, color: '#1e293b', category: 'Vehicles' },
     { type: 'motorcycle', label: 'Motorcycle', icon: '🏍️', width: 60, height: 30, color: '#1e293b', category: 'Vehicles' },
     { type: 'bicycle', label: 'Bicycle', icon: '🚲', width: 50, height: 30, color: '#059669', category: 'Vehicles' },
   ],

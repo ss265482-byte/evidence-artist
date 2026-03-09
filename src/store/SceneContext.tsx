@@ -10,7 +10,7 @@ export type SceneObjectType =
   | 'phone' | 'camera' | 'id-card' | 'bag'
   | 'bed' | 'table' | 'chair' | 'sofa' | 'cabinet'
   | 'door' | 'window' | 'wall' | 'stairs'
-  | 'car' | 'motorcycle' | 'bicycle'
+  | 'car' | 'motorcycle' | 'bicycle' | 'pickup-truck' | 'suv' | 'van' | 'bus' | 'semi-truck' | 'police-car'
   | 'tree' | 'bush' | 'fence' | 'streetlight' | 'fire-hydrant' | 'dumpster'
   | 'bench' | 'sidewalk' | 'road' | 'mailbox' | 'manhole' | 'trash-can'
   | 'text-label' | 'arrow' | 'line' | 'freehand' | 'room-label';
