@@ -2574,8 +2574,8 @@ export default function SceneCanvas() {
           )}
           {measurements.map(m => {
             if (m.type === 'angle') return <AngleMeasurement key={m.id} m={m} isSelected={selectedMeasurementId === m.id} onSelect={() => selectMeasurement(m.id)} onRemove={() => removeMeasurement(m.id)} />;
-            if (m.type === 'arc') return <ArcMeasurement key={m.id} m={m} isSelected={selectedMeasurementId === m.id} onSelect={() => selectMeasurement(m.id)} onRemove={() => removeMeasurement(m.id)} />;
-            return <MeasurementLine key={m.id} m={m} isSelected={selectedMeasurementId === m.id} onSelect={() => selectMeasurement(m.id)} onRemove={() => removeMeasurement(m.id)} />;
+            if (m.type === 'arc') return <ArcMeasurement key={m.id} m={m} isSelected={selectedMeasurementId === m.id} onSelect={() => selectMeasurement(m.id)} onRemove={() => removeMeasurement(m.id)} unitConfig={unitCfg} />;
+            return <MeasurementLine key={m.id} m={m} isSelected={selectedMeasurementId === m.id} onSelect={() => selectMeasurement(m.id)} onRemove={() => removeMeasurement(m.id)} unitConfig={unitCfg} />;
           })}
           {walls.map(w => (
             <WallLine key={w.id} w={w} isSelected={selectedWallId === w.id} onSelect={() => selectWall(w.id)} onRemove={() => removeWall(w.id)} />
@@ -2588,7 +2588,7 @@ export default function SceneCanvas() {
           )}
           {/* Distance measure preview */}
           {activeTool === 'measure' && measureStart && measurePreview && (
-            <MeasurementLine m={{ id: 'preview', type: 'distance', x1: measureStart.x, y1: measureStart.y, x2: measurePreview.x, y2: measurePreview.y }} onRemove={() => { setMeasureStart(null); setMeasurePreview(null); }} />
+            <MeasurementLine m={{ id: 'preview', type: 'distance', x1: measureStart.x, y1: measureStart.y, x2: measurePreview.x, y2: measurePreview.y }} onRemove={() => { setMeasureStart(null); setMeasurePreview(null); }} unitConfig={unitCfg} />
           )}
           {/* Angle measure preview */}
           {activeTool === 'measure-angle' && measureStart && measurePreview && !measureMid && (
@@ -2602,7 +2602,7 @@ export default function SceneCanvas() {
             <Line points={[measureStart.x, measureStart.y, measurePreview.x, measurePreview.y]} stroke="#a855f7" strokeWidth={1.5} dash={[6, 3]} opacity={0.7} />
           )}
           {activeTool === 'measure-arc' && measureStart && measureMid && measurePreview && (
-            <ArcMeasurement m={{ id: 'preview', type: 'arc', x1: measureStart.x, y1: measureStart.y, x2: measureMid.x, y2: measureMid.y, x3: measurePreview.x, y3: measurePreview.y }} onRemove={() => { setMeasureStart(null); setMeasureMid(null); setMeasurePreview(null); }} />
+            <ArcMeasurement m={{ id: 'preview', type: 'arc', x1: measureStart.x, y1: measureStart.y, x2: measureMid.x, y2: measureMid.y, x3: measurePreview.x, y3: measurePreview.y }} onRemove={() => { setMeasureStart(null); setMeasureMid(null); setMeasurePreview(null); }} unitConfig={unitCfg} />
           )}
           {(activeTool === 'measure' || activeTool === 'measure-angle' || activeTool === 'measure-arc') && measureStart && !measurePreview && (
             <Circle x={measureStart.x} y={measureStart.y} radius={5} fill={activeTool === 'measure-angle' ? '#f97316' : activeTool === 'measure-arc' ? '#a855f7' : '#22d3ee'} opacity={0.8} />
