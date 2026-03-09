@@ -559,8 +559,7 @@ function SceneObjectShape({ obj, isSelected, onSelect, allObjects, onSnapGuides 
           </>
         );
       case 'blood-stain':
-        {
-          return (
+        return (
             <>
               {/* Main pooling - organic shape */}
               <Line points={[
@@ -581,21 +580,19 @@ function SceneObjectShape({ obj, isSelected, onSelect, allObjects, onSnapGuides 
               ]} fill="#450a0a" opacity={0.5} closed tension={0.3} />
               {/* Surface reflection */}
               <Line points={[w * 0.42, h * 0.38, w * 0.5, h * 0.36, w * 0.54, h * 0.4]} stroke="#fca5a5" strokeWidth={0.8} opacity={0.15} tension={0.3} />
-              {/* Coagulation edge detail */}
+              {/* Coagulation edge */}
               <Line points={[
                 w * 0.2, h * 0.35, w * 0.25, h * 0.2, w * 0.4, h * 0.12, w * 0.6, h * 0.15,
                 w * 0.75, h * 0.25, w * 0.82, h * 0.4, w * 0.8, h * 0.6, w * 0.72, h * 0.75,
                 w * 0.55, h * 0.82, w * 0.35, h * 0.8, w * 0.2, h * 0.7, w * 0.15, h * 0.5
               ]} stroke="#7f1d1d" strokeWidth={1.2} opacity={0.4} closed tension={0.35} />
-              {/* Satellite spatter - cast-off pattern */}
+              {/* Satellite spatter */}
               <Circle x={w * 0.88} y={h * 0.2} radius={r * 0.04} fill={c} opacity={0.6} />
               <Circle x={w * 0.92} y={h * 0.15} radius={r * 0.025} fill={c} opacity={0.5} />
               <Circle x={w * 0.95} y={h * 0.12} radius={r * 0.015} fill={c} opacity={0.4} />
-              {/* Secondary spatter trail */}
               <Circle x={w * 0.1} y={h * 0.15} radius={r * 0.035} fill={c} opacity={0.5} />
               <Circle x={w * 0.05} y={h * 0.1} radius={r * 0.02} fill={c} opacity={0.4} />
               <Circle x={w * 0.08} y={h * 0.22} radius={r * 0.015} fill={c} opacity={0.35} />
-              {/* Bottom spatter */}
               <Circle x={w * 0.82} y={h * 0.82} radius={r * 0.03} fill={c} opacity={0.5} />
               <Circle x={w * 0.88} y={h * 0.88} radius={r * 0.018} fill={c} opacity={0.4} />
               <Circle x={w * 0.18} y={h * 0.88} radius={r * 0.025} fill={c} opacity={0.45} />
@@ -605,14 +602,13 @@ function SceneObjectShape({ obj, isSelected, onSelect, allObjects, onSnapGuides 
               {/* Drag/smear trail */}
               <Line points={[w * 0.7, h * 0.55, w * 0.85, h * 0.5, w * 0.92, h * 0.48]} stroke={c} strokeWidth={3} opacity={0.2} lineCap="round" tension={0.3} />
               <Line points={[w * 0.72, h * 0.58, w * 0.88, h * 0.53, w * 0.95, h * 0.52]} stroke={c} strokeWidth={1.5} opacity={0.12} lineCap="round" tension={0.3} />
-              {/* Transfer pattern (shoe print in blood) */}
+              {/* Transfer pattern */}
               <Line points={[w * 0.35, h * 0.85, w * 0.42, h * 0.86]} stroke="#7f1d1d" strokeWidth={0.6} opacity={0.2} />
               <Line points={[w * 0.36, h * 0.87, w * 0.41, h * 0.88]} stroke="#7f1d1d" strokeWidth={0.6} opacity={0.2} />
-              {/* Void pattern (object was here) */}
+              {/* Void pattern */}
               <Circle x={w * 0.48} y={h * 0.48} radius={r * 0.06} stroke="#450a0a" strokeWidth={0.5} opacity={0.15} dash={[2, 2]} />
             </>
-          );
-        }
+        );
       case 'footprint':
         return (
           <>
