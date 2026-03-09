@@ -2225,7 +2225,8 @@ function Minimap({ objects, walls, dims, stagePos, zoom }: {
 }
 
 export default function SceneCanvas() {
-  const { objects, selectedObjectId, selectedWallId, selectedMeasurementId, selectObject, selectWall, selectMeasurement, removeObject, updateObject, updateObjectSilent, addEvidence, activeTool, setTool, showGrid, showLegend, zoom, setZoom, addObject, snapToGrid, measurements, addMeasurement, removeMeasurement, walls, addWall, removeWall, evidence, isDark, bringToFront, sendToBack, backgroundImage, caseInfo } = useScene();
+  const { objects, selectedObjectId, selectedWallId, selectedMeasurementId, selectObject, selectWall, selectMeasurement, removeObject, updateObject, updateObjectSilent, addEvidence, activeTool, setTool, showGrid, showLegend, zoom, setZoom, addObject, snapToGrid, measurements, addMeasurement, removeMeasurement, walls, addWall, removeWall, evidence, isDark, bringToFront, sendToBack, backgroundImage, caseInfo, measurementUnit } = useScene();
+  const unitCfg = UNIT_CONFIG[measurementUnit];
   const containerRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<Konva.Stage>(null);
 
