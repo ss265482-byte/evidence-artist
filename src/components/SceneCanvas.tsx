@@ -1498,6 +1498,144 @@ function SceneObjectShape({ obj, isSelected, onSelect, allObjects, onSnapGuides,
             <Line points={[w * 0.2, h * 0.6, w * 0.5, h * 0.6]} stroke={c} strokeWidth={0.5} opacity={0.2} dash={[2, 2]} />
           </>
         );
+      case 'pickup-truck':
+        return (
+          <>
+            <Rect x={w * 0.55} y={h * 0.12} width={w * 0.42} height={h * 0.76} fill={c} opacity={0.1} stroke={c} strokeWidth={1.2} cornerRadius={3} />
+            <Line points={[w * 0.55, h * 0.18, w * 0.55, h * 0.82]} stroke={c} strokeWidth={1} opacity={0.4} />
+            <Rect x={w * 0.08} y={h * 0.1} width={w * 0.48} height={h * 0.8} fill={c} opacity={0.18} stroke={c} strokeWidth={1.5} cornerRadius={8} />
+            <Rect x={w * 0.2} y={h * 0.05} width={w * 0.3} height={h * 0.9} fill={c} opacity={0.1} stroke={c} strokeWidth={1} cornerRadius={8} />
+            <Line points={[w * 0.2, h * 0.2, w * 0.26, h * 0.1, w * 0.26, h * 0.9, w * 0.2, h * 0.8]} stroke="#38bdf8" strokeWidth={1} fill="#38bdf8" opacity={0.15} closed />
+            <Circle x={w * 0.15} y={h * 0.1} radius={7} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Circle x={w * 0.15} y={h * 0.9} radius={7} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Circle x={w * 0.82} y={h * 0.1} radius={7} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Circle x={w * 0.82} y={h * 0.9} radius={7} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Rect x={0} y={h * 0.2} width={4} height={h * 0.18} fill="#fbbf24" opacity={0.8} cornerRadius={2} />
+            <Rect x={0} y={h * 0.62} width={4} height={h * 0.18} fill="#fbbf24" opacity={0.8} cornerRadius={2} />
+            <Rect x={w - 4} y={h * 0.2} width={4} height={h * 0.12} fill="#ef4444" opacity={0.6} cornerRadius={2} />
+            <Rect x={w - 4} y={h * 0.68} width={4} height={h * 0.12} fill="#ef4444" opacity={0.6} cornerRadius={2} />
+          </>
+        );
+      case 'suv':
+        return (
+          <>
+            <Rect x={2} y={h * 0.12} width={w - 4} height={h * 0.76} fill={c} opacity={0.18} stroke={c} strokeWidth={1.5} cornerRadius={6} />
+            <Rect x={w * 0.18} y={h * 0.04} width={w * 0.6} height={h * 0.92} fill={c} opacity={0.1} stroke={c} strokeWidth={1} cornerRadius={8} />
+            <Line points={[w * 0.18, h * 0.18, w * 0.24, h * 0.08, w * 0.24, h * 0.92, w * 0.18, h * 0.82]} stroke="#38bdf8" strokeWidth={1.2} fill="#38bdf8" opacity={0.15} closed />
+            <Rect x={w * 0.28} y={h * 0.12} width={w * 0.18} height={h * 0.34} fill="#38bdf8" opacity={0.1} stroke="#38bdf8" strokeWidth={0.8} cornerRadius={2} />
+            <Rect x={w * 0.28} y={h * 0.54} width={w * 0.18} height={h * 0.34} fill="#38bdf8" opacity={0.1} stroke="#38bdf8" strokeWidth={0.8} cornerRadius={2} />
+            <Rect x={w * 0.5} y={h * 0.12} width={w * 0.18} height={h * 0.34} fill="#38bdf8" opacity={0.1} stroke="#38bdf8" strokeWidth={0.8} cornerRadius={2} />
+            <Rect x={w * 0.5} y={h * 0.54} width={w * 0.18} height={h * 0.34} fill="#38bdf8" opacity={0.1} stroke="#38bdf8" strokeWidth={0.8} cornerRadius={2} />
+            <Circle x={w * 0.14} y={h * 0.1} radius={7} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Circle x={w * 0.14} y={h * 0.9} radius={7} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Circle x={w * 0.86} y={h * 0.1} radius={7} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Circle x={w * 0.86} y={h * 0.9} radius={7} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Rect x={0} y={h * 0.2} width={4} height={h * 0.18} fill="#fbbf24" opacity={0.8} cornerRadius={2} />
+            <Rect x={0} y={h * 0.62} width={4} height={h * 0.18} fill="#fbbf24" opacity={0.8} cornerRadius={2} />
+            <Rect x={w - 4} y={h * 0.2} width={4} height={h * 0.12} fill="#ef4444" opacity={0.6} cornerRadius={2} />
+            <Rect x={w - 4} y={h * 0.68} width={4} height={h * 0.12} fill="#ef4444" opacity={0.6} cornerRadius={2} />
+            <Line points={[w * 0.3, h * 0.03, w * 0.65, h * 0.03]} stroke={c} strokeWidth={1} opacity={0.2} />
+            <Line points={[w * 0.3, h * 0.97, w * 0.65, h * 0.97]} stroke={c} strokeWidth={1} opacity={0.2} />
+          </>
+        );
+      case 'van':
+        return (
+          <>
+            <Rect x={2} y={h * 0.08} width={w - 4} height={h * 0.84} fill={c} opacity={0.15} stroke={c} strokeWidth={1.5} cornerRadius={4} />
+            <Line points={[w * 0.12, h * 0.18, w * 0.18, h * 0.1, w * 0.18, h * 0.9, w * 0.12, h * 0.82]} stroke="#38bdf8" strokeWidth={1.2} fill="#38bdf8" opacity={0.15} closed />
+            <Rect x={w * 0.22} y={h * 0.14} width={w * 0.14} height={h * 0.3} fill="#38bdf8" opacity={0.1} stroke="#38bdf8" strokeWidth={0.8} cornerRadius={2} />
+            <Rect x={w * 0.22} y={h * 0.56} width={w * 0.14} height={h * 0.3} fill="#38bdf8" opacity={0.1} stroke="#38bdf8" strokeWidth={0.8} cornerRadius={2} />
+            <Line points={[w * 0.38, h * 0.1, w * 0.38, h * 0.9]} stroke={c} strokeWidth={0.8} opacity={0.3} />
+            <Line points={[w * 0.55, h * 0.1, w * 0.55, h * 0.9]} stroke={c} strokeWidth={0.5} opacity={0.2} />
+            <Circle x={w * 0.14} y={h * 0.08} radius={7} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Circle x={w * 0.14} y={h * 0.92} radius={7} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Circle x={w * 0.82} y={h * 0.08} radius={7} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Circle x={w * 0.82} y={h * 0.92} radius={7} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Rect x={0} y={h * 0.22} width={4} height={h * 0.15} fill="#fbbf24" opacity={0.8} cornerRadius={2} />
+            <Rect x={0} y={h * 0.63} width={4} height={h * 0.15} fill="#fbbf24" opacity={0.8} cornerRadius={2} />
+            <Rect x={w - 4} y={h * 0.18} width={4} height={h * 0.12} fill="#ef4444" opacity={0.6} cornerRadius={2} />
+            <Rect x={w - 4} y={h * 0.7} width={4} height={h * 0.12} fill="#ef4444" opacity={0.6} cornerRadius={2} />
+          </>
+        );
+      case 'bus':
+        return (
+          <>
+            <Rect x={2} y={h * 0.08} width={w - 4} height={h * 0.84} fill={c} opacity={0.15} stroke={c} strokeWidth={1.5} cornerRadius={4} />
+            <Rect x={4} y={h * 0.4} width={w - 8} height={h * 0.2} fill={c} opacity={0.12} />
+            <Line points={[w * 0.04, h * 0.15, w * 0.08, h * 0.1, w * 0.08, h * 0.9, w * 0.04, h * 0.85]} stroke="#38bdf8" strokeWidth={1.2} fill="#38bdf8" opacity={0.15} closed />
+            {Array.from({ length: 7 }, (_, i) => (
+              <Rect key={`bw-t-${i}`} x={w * 0.12 + i * w * 0.11} y={h * 0.14} width={w * 0.08} height={h * 0.28} fill="#38bdf8" opacity={0.1} stroke="#38bdf8" strokeWidth={0.6} cornerRadius={1} />
+            ))}
+            {Array.from({ length: 7 }, (_, i) => (
+              <Rect key={`bw-b-${i}`} x={w * 0.12 + i * w * 0.11} y={h * 0.58} width={w * 0.08} height={h * 0.28} fill="#38bdf8" opacity={0.1} stroke="#38bdf8" strokeWidth={0.6} cornerRadius={1} />
+            ))}
+            <Circle x={w * 0.1} y={h * 0.06} radius={7} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Circle x={w * 0.1} y={h * 0.94} radius={7} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Circle x={w * 0.85} y={h * 0.06} radius={7} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Circle x={w * 0.85} y={h * 0.94} radius={7} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Circle x={w * 0.78} y={h * 0.06} radius={7} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Circle x={w * 0.78} y={h * 0.94} radius={7} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Rect x={0} y={h * 0.2} width={4} height={h * 0.15} fill="#fbbf24" opacity={0.8} cornerRadius={2} />
+            <Rect x={0} y={h * 0.65} width={4} height={h * 0.15} fill="#fbbf24" opacity={0.8} cornerRadius={2} />
+            <Rect x={w - 4} y={h * 0.18} width={4} height={h * 0.15} fill="#ef4444" opacity={0.6} cornerRadius={2} />
+            <Rect x={w - 4} y={h * 0.67} width={4} height={h * 0.15} fill="#ef4444" opacity={0.6} cornerRadius={2} />
+          </>
+        );
+      case 'semi-truck':
+        return (
+          <>
+            <Rect x={w * 0.3} y={h * 0.06} width={w * 0.68} height={h * 0.88} fill={c} opacity={0.1} stroke={c} strokeWidth={1.5} cornerRadius={2} />
+            {Array.from({ length: 5 }, (_, i) => (
+              <Line key={`tr-${i}`} points={[w * 0.38 + i * w * 0.12, h * 0.08, w * 0.38 + i * w * 0.12, h * 0.92]} stroke={c} strokeWidth={0.4} opacity={0.15} />
+            ))}
+            <Rect x={2} y={h * 0.1} width={w * 0.28} height={h * 0.8} fill={c} opacity={0.2} stroke={c} strokeWidth={1.5} cornerRadius={6} />
+            <Rect x={w * 0.08} y={h * 0.04} width={w * 0.16} height={h * 0.92} fill={c} opacity={0.1} stroke={c} strokeWidth={1} cornerRadius={6} />
+            <Line points={[w * 0.08, h * 0.18, w * 0.12, h * 0.08, w * 0.12, h * 0.92, w * 0.08, h * 0.82]} stroke="#38bdf8" strokeWidth={1.2} fill="#38bdf8" opacity={0.15} closed />
+            <Line points={[w * 0.28, h * 0.4, w * 0.32, h * 0.4, w * 0.32, h * 0.6, w * 0.28, h * 0.6]} stroke={c} strokeWidth={1} opacity={0.3} />
+            <Circle x={w * 0.08} y={h * 0.08} radius={7} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Circle x={w * 0.08} y={h * 0.92} radius={7} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Circle x={w * 0.22} y={h * 0.08} radius={7} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Circle x={w * 0.22} y={h * 0.92} radius={7} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Circle x={w * 0.82} y={h * 0.06} radius={7} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Circle x={w * 0.82} y={h * 0.94} radius={7} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Circle x={w * 0.9} y={h * 0.06} radius={7} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Circle x={w * 0.9} y={h * 0.94} radius={7} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Rect x={0} y={h * 0.2} width={4} height={h * 0.15} fill="#fbbf24" opacity={0.8} cornerRadius={2} />
+            <Rect x={0} y={h * 0.65} width={4} height={h * 0.15} fill="#fbbf24" opacity={0.8} cornerRadius={2} />
+            <Rect x={w - 4} y={h * 0.18} width={4} height={h * 0.15} fill="#ef4444" opacity={0.6} cornerRadius={2} />
+            <Rect x={w - 4} y={h * 0.67} width={4} height={h * 0.15} fill="#ef4444" opacity={0.6} cornerRadius={2} />
+            <Rect x={w * 0.06} y={h * 0.02} width={3} height={h * 0.1} fill="#6b7280" opacity={0.4} cornerRadius={1} />
+            <Rect x={w * 0.06} y={h * 0.88} width={3} height={h * 0.1} fill="#6b7280" opacity={0.4} cornerRadius={1} />
+          </>
+        );
+      case 'police-car':
+        return (
+          <>
+            <Rect x={2} y={h * 0.15} width={w - 4} height={h * 0.7} fill={c} opacity={0.18} stroke={c} strokeWidth={1.5} cornerRadius={8} />
+            <Rect x={w * 0.25} y={h * 0.08} width={w * 0.45} height={h * 0.84} fill={c} opacity={0.1} stroke={c} strokeWidth={1} cornerRadius={10} />
+            <Line points={[w * 0.25, h * 0.2, w * 0.32, h * 0.12, w * 0.32, h * 0.88, w * 0.25, h * 0.8]} stroke="#38bdf8" strokeWidth={1.2} fill="#38bdf8" opacity={0.15} closed />
+            <Line points={[w * 0.7, h * 0.2, w * 0.63, h * 0.14, w * 0.63, h * 0.86, w * 0.7, h * 0.8]} stroke="#38bdf8" strokeWidth={1.2} fill="#38bdf8" opacity={0.12} closed />
+            {/* Light bar */}
+            <Rect x={w * 0.32} y={h * 0.04} width={w * 0.15} height={h * 0.92} fill="transparent" stroke="#475569" strokeWidth={1} cornerRadius={3} />
+            <Rect x={w * 0.33} y={h * 0.08} width={w * 0.06} height={h * 0.35} fill="#3b82f6" opacity={0.7} cornerRadius={2} />
+            <Rect x={w * 0.33} y={h * 0.57} width={w * 0.06} height={h * 0.35} fill="#ef4444" opacity={0.7} cornerRadius={2} />
+            <Rect x={w * 0.4} y={h * 0.08} width={w * 0.06} height={h * 0.35} fill="#ef4444" opacity={0.7} cornerRadius={2} />
+            <Rect x={w * 0.4} y={h * 0.57} width={w * 0.06} height={h * 0.35} fill="#3b82f6" opacity={0.7} cornerRadius={2} />
+            {/* White stripe */}
+            <Rect x={w * 0.05} y={h * 0.42} width={w * 0.88} height={h * 0.16} fill="#ffffff" opacity={0.15} />
+            {/* Wheels */}
+            <Circle x={w * 0.15} y={h * 0.12} radius={6} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Circle x={w * 0.15} y={h * 0.88} radius={6} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Circle x={w * 0.85} y={h * 0.12} radius={6} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Circle x={w * 0.85} y={h * 0.88} radius={6} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Rect x={0} y={h * 0.2} width={4} height={h * 0.18} fill="#fbbf24" opacity={0.8} cornerRadius={2} />
+            <Rect x={0} y={h * 0.62} width={4} height={h * 0.18} fill="#fbbf24" opacity={0.8} cornerRadius={2} />
+            <Rect x={w - 4} y={h * 0.2} width={4} height={h * 0.12} fill="#ef4444" opacity={0.6} cornerRadius={2} />
+            <Rect x={w - 4} y={h * 0.68} width={4} height={h * 0.12} fill="#ef4444" opacity={0.6} cornerRadius={2} />
+            {/* Push bar */}
+            <Line points={[0, h * 0.15, -3, h * 0.15, -3, h * 0.85, 0, h * 0.85]} stroke="#6b7280" strokeWidth={1.5} />
+          </>
+        );
       case 'freehand':
         return (
           <>
