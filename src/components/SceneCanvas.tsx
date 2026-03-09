@@ -8,8 +8,7 @@ import { Trash2, Copy, Lock, Unlock, ArrowUpToLine, ArrowDownToLine, X } from 'l
 const GRID_SIZE = 20;
 const PIXELS_PER_UNIT = 20;
 
-function BackgroundImageLayer() {
-  const { backgroundImage } = useScene();
+function BackgroundImageLayer({ backgroundImage }: { backgroundImage: import('@/store/SceneContext').BackgroundImage | null }) {
   const [image, setImage] = useState<HTMLImageElement | null>(null);
 
   useEffect(() => {
@@ -125,8 +124,7 @@ function WallLine({ w, isSelected, onSelect, onRemove }: { w: WallSegment; isSel
   );
 }
 
-function CanvasLegend({ x, y }: { x: number; y: number }) {
-  const { evidence, caseInfo } = useScene();
+function CanvasLegend({ x, y, evidence, caseInfo }: { x: number; y: number; evidence: import('@/store/SceneContext').EvidenceItem[]; caseInfo: import('@/store/SceneContext').CaseInfo }) {
   if (evidence.length === 0 && !caseInfo.location) return null;
 
   const lineHeight = 16;
@@ -169,12 +167,14 @@ interface SnapGuide {
   pos: number;
 }
 
-function SceneObjectShape({ obj, isSelected, onSelect, allObjects, onSnapGuides }: {
+function SceneObjectShape({ obj, isSelected, onSelect, allObjects, onSnapGuides, updateObject, updateObjectSilent, snapToGrid }: {
   obj: SceneObject; isSelected: boolean; onSelect: () => void;
   allObjects: SceneObject[];
   onSnapGuides: (guides: SnapGuide[]) => void;
+  updateObject: (id: string, updates: Partial<SceneObject>) => void;
+  updateObjectSilent: (id: string, updates: Partial<SceneObject>) => void;
+  snapToGrid: boolean;
 }) {
-  const { updateObject, updateObjectSilent, snapToGrid } = useScene();
   const shapeRef = useRef<Konva.Group>(null);
   const trRef = useRef<Konva.Transformer>(null);
   const [hovered, setHovered] = useState(false);
@@ -1864,7 +1864,7 @@ function Minimap({ objects, walls, dims, stagePos, zoom }: {
 }
 
 export default function SceneCanvas() {
-  const { objects, selectedObjectId, selectedWallId, selectedMeasurementId, selectObject, selectWall, selectMeasurement, removeObject, updateObject, addEvidence, activeTool, setTool, showGrid, showLegend, zoom, setZoom, addObject, snapToGrid, measurements, addMeasurement, removeMeasurement, walls, addWall, removeWall, evidence, isDark, bringToFront, sendToBack } = useScene();
+  const { objects, selectedObjectId, selectedWallId, selectedMeasurementId, selectObject, selectWall, selectMeasurement, removeObject, updateObject, updateObjectSilent, addEvidence, activeTool, setTool, showGrid, showLegend, zoom, setZoom, addObject, snapToGrid, measurements, addMeasurement, removeMeasurement, walls, addWall, removeWall, evidence, isDark, bringToFront, sendToBack, backgroundImage, caseInfo } = useScene();
   const containerRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<Konva.Stage>(null);
 
@@ -2174,10 +2174,10 @@ export default function SceneCanvas() {
         onDragEnd={(e) => { if (activeTool === 'pan') setStagePos({ x: e.target.x(), y: e.target.y() }); }}
       >
         <Layer>
-          <BackgroundImageLayer />
+          <BackgroundImageLayer backgroundImage={backgroundImage} />
           {showGrid && <GridLayer width={dims.width} height={dims.height} zoom={zoom} isDark={isDark} />}
           {objects.map(obj => (
-            <SceneObjectShape key={obj.id} obj={obj} isSelected={selectedObjectId === obj.id} onSelect={() => selectObject(obj.id)} allObjects={objects} onSnapGuides={setSnapGuides} />
+            <SceneObjectShape key={obj.id} obj={obj} isSelected={selectedObjectId === obj.id} onSelect={() => selectObject(obj.id)} allObjects={objects} onSnapGuides={setSnapGuides} updateObject={updateObject} updateObjectSilent={updateObjectSilent} snapToGrid={snapToGrid} />
           ))}
           {/* Snap alignment guides */}
           {snapGuides.map((g, i) =>
@@ -2214,7 +2214,7 @@ export default function SceneCanvas() {
           {isDrawing && freehandPoints.length >= 4 && (
             <Line points={freehandPoints} stroke="#94a3b8" strokeWidth={2} lineCap="round" lineJoin="round" tension={0.5} opacity={0.7} />
           )}
-          {showLegend && <CanvasLegend x={legendX} y={legendY} />}
+          {showLegend && <CanvasLegend x={legendX} y={legendY} evidence={evidence} caseInfo={caseInfo} />}
         </Layer>
       </Stage>
 
