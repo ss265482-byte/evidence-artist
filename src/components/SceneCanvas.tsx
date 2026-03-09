@@ -2360,11 +2360,29 @@ export default function SceneCanvas() {
           {wallStart && !wallPreview && (
             <Circle x={wallStart.x} y={wallStart.y} radius={5} fill="#a3a3a3" opacity={0.8} />
           )}
-          {measureStart && measurePreview && (
-            <MeasurementLine m={{ id: 'preview', x1: measureStart.x, y1: measureStart.y, x2: measurePreview.x, y2: measurePreview.y }} onRemove={() => { setMeasureStart(null); setMeasurePreview(null); }} />
+          {/* Distance measure preview */}
+          {activeTool === 'measure' && measureStart && measurePreview && (
+            <MeasurementLine m={{ id: 'preview', type: 'distance', x1: measureStart.x, y1: measureStart.y, x2: measurePreview.x, y2: measurePreview.y }} onRemove={() => { setMeasureStart(null); setMeasurePreview(null); }} />
           )}
-          {measureStart && !measurePreview && (
-            <Circle x={measureStart.x} y={measureStart.y} radius={5} fill="#22d3ee" opacity={0.8} />
+          {/* Angle measure preview */}
+          {activeTool === 'measure-angle' && measureStart && measurePreview && !measureMid && (
+            <Line points={[measureStart.x, measureStart.y, measurePreview.x, measurePreview.y]} stroke="#f97316" strokeWidth={1.5} dash={[6, 3]} opacity={0.7} />
+          )}
+          {activeTool === 'measure-angle' && measureStart && measureMid && measurePreview && (
+            <AngleMeasurement m={{ id: 'preview', type: 'angle', x1: measureMid.x, y1: measureMid.y, x2: measureStart.x, y2: measureStart.y, x3: measurePreview.x, y3: measurePreview.y }} onRemove={() => { setMeasureStart(null); setMeasureMid(null); setMeasurePreview(null); }} />
+          )}
+          {/* Arc measure preview */}
+          {activeTool === 'measure-arc' && measureStart && measurePreview && !measureMid && (
+            <Line points={[measureStart.x, measureStart.y, measurePreview.x, measurePreview.y]} stroke="#a855f7" strokeWidth={1.5} dash={[6, 3]} opacity={0.7} />
+          )}
+          {activeTool === 'measure-arc' && measureStart && measureMid && measurePreview && (
+            <ArcMeasurement m={{ id: 'preview', type: 'arc', x1: measureStart.x, y1: measureStart.y, x2: measureMid.x, y2: measureMid.y, x3: measurePreview.x, y3: measurePreview.y }} onRemove={() => { setMeasureStart(null); setMeasureMid(null); setMeasurePreview(null); }} />
+          )}
+          {(activeTool === 'measure' || activeTool === 'measure-angle' || activeTool === 'measure-arc') && measureStart && !measurePreview && (
+            <Circle x={measureStart.x} y={measureStart.y} radius={5} fill={activeTool === 'measure-angle' ? '#f97316' : activeTool === 'measure-arc' ? '#a855f7' : '#22d3ee'} opacity={0.8} />
+          )}
+          {(activeTool === 'measure-angle' || activeTool === 'measure-arc') && measureMid && !measurePreview && (
+            <Circle x={measureMid.x} y={measureMid.y} radius={5} fill={activeTool === 'measure-angle' ? '#f97316' : '#a855f7'} opacity={0.8} />
           )}
           {/* Arrow preview */}
           {arrowStart && arrowPreview && (
