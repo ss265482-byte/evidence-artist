@@ -314,137 +314,329 @@ function SceneObjectShape({ obj, isSelected, onSelect, allObjects, onSnapGuides 
       case 'body-outline':
         return (
           <>
-            <Rect width={w} height={h} fill="transparent" stroke={c} strokeWidth={1.5} dash={[6, 4]} cornerRadius={4} opacity={0.3} />
-            <Line points={[w * 0.2, h * 0.88, w * 0.8, h * 0.88, w * 0.85, h * 0.92, w * 0.15, h * 0.92]} fill={c} opacity={0.04} closed tension={0.4} />
-            <Circle x={w / 2} y={h * 0.11} radius={w * 0.21} stroke={c} strokeWidth={2.5} />
-            <Circle x={w / 2} y={h * 0.11} radius={w * 0.17} stroke={c} strokeWidth={0.5} opacity={0.15} />
-            <Line points={[w * 0.32, h * 0.05, w * 0.4, h * 0.02, w * 0.5, h * 0.01, w * 0.6, h * 0.02, w * 0.68, h * 0.05]} stroke={c} strokeWidth={1.2} tension={0.5} opacity={0.25} />
-            <Line points={[w * 0.39, h * 0.09, w * 0.44, h * 0.09]} stroke={c} strokeWidth={1.2} lineCap="round" opacity={0.5} />
-            <Line points={[w * 0.56, h * 0.09, w * 0.61, h * 0.09]} stroke={c} strokeWidth={1.2} lineCap="round" opacity={0.5} />
-            <Line points={[w * 0.5, h * 0.1, w * 0.49, h * 0.125, w * 0.51, h * 0.125]} stroke={c} strokeWidth={0.8} opacity={0.3} />
-            <Line points={[w * 0.44, h * 0.145, w * 0.5, h * 0.15, w * 0.56, h * 0.145]} stroke={c} strokeWidth={0.8} opacity={0.3} tension={0.3} />
-            <Line points={[w * 0.44, h * 0.2, w * 0.44, h * 0.26]} stroke={c} strokeWidth={1.8} lineCap="round" />
-            <Line points={[w * 0.56, h * 0.2, w * 0.56, h * 0.26]} stroke={c} strokeWidth={1.8} lineCap="round" />
-            <Line points={[w * 0.1, h * 0.32, w * 0.25, h * 0.27, w * 0.44, h * 0.26, w * 0.56, h * 0.26, w * 0.75, h * 0.27, w * 0.9, h * 0.32]} stroke={c} strokeWidth={2} tension={0.3} lineCap="round" />
-            <Line points={[w * 0.35, h * 0.27, w * 0.33, h * 0.4, w * 0.32, h * 0.55, w * 0.35, h * 0.6]} stroke={c} strokeWidth={2} tension={0.3} />
-            <Line points={[w * 0.65, h * 0.27, w * 0.67, h * 0.4, w * 0.68, h * 0.55, w * 0.65, h * 0.6]} stroke={c} strokeWidth={2} tension={0.3} />
-            <Line points={[w * 0.5, h * 0.27, w * 0.5, h * 0.58]} stroke={c} strokeWidth={1} dash={[2, 3]} opacity={0.15} />
-            <Line points={[w * 0.38, h * 0.34, w * 0.5, h * 0.32, w * 0.62, h * 0.34]} stroke={c} strokeWidth={0.6} opacity={0.12} tension={0.3} />
-            <Line points={[w * 0.37, h * 0.38, w * 0.5, h * 0.36, w * 0.63, h * 0.38]} stroke={c} strokeWidth={0.6} opacity={0.12} tension={0.3} />
-            <Line points={[w * 0.36, h * 0.42, w * 0.5, h * 0.4, w * 0.64, h * 0.42]} stroke={c} strokeWidth={0.6} opacity={0.12} tension={0.3} />
-            <Line points={[w * 0.1, h * 0.32, w * 0.06, h * 0.4, w * 0.04, h * 0.48]} stroke={c} strokeWidth={2} lineCap="round" tension={0.2} />
-            <Line points={[w * 0.04, h * 0.48, w * 0.06, h * 0.54, w * 0.1, h * 0.58]} stroke={c} strokeWidth={1.8} lineCap="round" tension={0.2} />
-            <Circle x={w * 0.1} y={h * 0.59} radius={3.5} stroke={c} strokeWidth={1} opacity={0.5} />
-            <Line points={[w * 0.08, h * 0.585, w * 0.06, h * 0.58]} stroke={c} strokeWidth={0.6} opacity={0.35} />
-            <Line points={[w * 0.09, h * 0.575, w * 0.075, h * 0.565]} stroke={c} strokeWidth={0.6} opacity={0.35} />
-            <Line points={[w * 0.1, h * 0.57, w * 0.09, h * 0.555]} stroke={c} strokeWidth={0.6} opacity={0.35} />
-            <Line points={[w * 0.9, h * 0.32, w * 0.94, h * 0.4, w * 0.96, h * 0.48]} stroke={c} strokeWidth={2} lineCap="round" tension={0.2} />
-            <Line points={[w * 0.96, h * 0.48, w * 0.94, h * 0.54, w * 0.9, h * 0.58]} stroke={c} strokeWidth={1.8} lineCap="round" tension={0.2} />
-            <Circle x={w * 0.9} y={h * 0.59} radius={3.5} stroke={c} strokeWidth={1} opacity={0.5} />
-            <Line points={[w * 0.92, h * 0.585, w * 0.94, h * 0.58]} stroke={c} strokeWidth={0.6} opacity={0.35} />
-            <Line points={[w * 0.91, h * 0.575, w * 0.925, h * 0.565]} stroke={c} strokeWidth={0.6} opacity={0.35} />
-            <Line points={[w * 0.9, h * 0.57, w * 0.91, h * 0.555]} stroke={c} strokeWidth={0.6} opacity={0.35} />
-            <Line points={[w * 0.25, h * 0.62, w * 0.35, h * 0.6, w * 0.5, h * 0.59, w * 0.65, h * 0.6, w * 0.75, h * 0.62]} stroke={c} strokeWidth={2} tension={0.3} lineCap="round" />
-            <Line points={[w * 0.35, h * 0.62, w * 0.3, h * 0.7, w * 0.25, h * 0.78, w * 0.22, h * 0.84]} stroke={c} strokeWidth={2.2} lineCap="round" tension={0.2} />
-            <Line points={[w * 0.22, h * 0.84, w * 0.2, h * 0.88]} stroke={c} strokeWidth={2} lineCap="round" />
-            <Line points={[w * 0.2, h * 0.88, w * 0.14, h * 0.92, w * 0.12, h * 0.93]} stroke={c} strokeWidth={2.5} lineCap="round" tension={0.3} />
-            <Line points={[w * 0.12, h * 0.92, w * 0.11, h * 0.935, w * 0.125, h * 0.94]} stroke={c} strokeWidth={0.6} opacity={0.3} />
-            <Line points={[w * 0.65, h * 0.62, w * 0.7, h * 0.7, w * 0.75, h * 0.78, w * 0.78, h * 0.84]} stroke={c} strokeWidth={2.2} lineCap="round" tension={0.2} />
-            <Line points={[w * 0.78, h * 0.84, w * 0.8, h * 0.88]} stroke={c} strokeWidth={2} lineCap="round" />
-            <Line points={[w * 0.8, h * 0.88, w * 0.86, h * 0.92, w * 0.88, h * 0.93]} stroke={c} strokeWidth={2.5} lineCap="round" tension={0.3} />
-            <Line points={[w * 0.88, h * 0.92, w * 0.89, h * 0.935, w * 0.875, h * 0.94]} stroke={c} strokeWidth={0.6} opacity={0.3} />
-            <Circle x={w * 0.26} y={h * 0.78} radius={2} stroke={c} strokeWidth={0.6} opacity={0.2} />
-            <Circle x={w * 0.74} y={h * 0.78} radius={2} stroke={c} strokeWidth={0.6} opacity={0.2} />
-            <Circle x={w * 0.04} y={h * 0.48} radius={1.5} stroke={c} strokeWidth={0.6} opacity={0.2} />
-            <Circle x={w * 0.96} y={h * 0.48} radius={1.5} stroke={c} strokeWidth={0.6} opacity={0.2} />
-            <Line points={[w / 2 - 5, h * 0.45, w / 2 + 5, h * 0.45]} stroke={c} strokeWidth={0.8} opacity={0.2} />
-            <Line points={[w / 2, h * 0.45 - 5, w / 2, h * 0.45 + 5]} stroke={c} strokeWidth={0.8} opacity={0.2} />
+            {/* Ground chalk outline glow */}
+            <Rect width={w} height={h} fill="transparent" stroke={c} strokeWidth={2} dash={[8, 4]} cornerRadius={6} opacity={0.2} />
+            <Rect x={2} y={2} width={w - 4} height={h - 4} fill="transparent" stroke={c} strokeWidth={0.5} dash={[4, 6]} cornerRadius={5} opacity={0.08} />
+            {/* Ground shadow */}
+            <Line points={[w * 0.15, h * 0.86, w * 0.85, h * 0.86, w * 0.9, h * 0.94, w * 0.1, h * 0.94]} fill={c} opacity={0.05} closed tension={0.4} />
+            {/* HEAD */}
+            <Circle x={w / 2} y={h * 0.1} radius={w * 0.22} stroke={c} strokeWidth={2.8} />
+            <Circle x={w / 2} y={h * 0.1} radius={w * 0.19} stroke={c} strokeWidth={0.6} opacity={0.12} />
+            {/* Hairline */}
+            <Line points={[w * 0.3, h * 0.04, w * 0.38, h * 0.015, w * 0.5, h * 0.005, w * 0.62, h * 0.015, w * 0.7, h * 0.04]} stroke={c} strokeWidth={1.5} tension={0.5} opacity={0.3} />
+            {/* Ears */}
+            <Line points={[w * 0.28, h * 0.08, w * 0.25, h * 0.09, w * 0.24, h * 0.11, w * 0.26, h * 0.13, w * 0.28, h * 0.12]} stroke={c} strokeWidth={1} opacity={0.3} tension={0.4} />
+            <Line points={[w * 0.72, h * 0.08, w * 0.75, h * 0.09, w * 0.76, h * 0.11, w * 0.74, h * 0.13, w * 0.72, h * 0.12]} stroke={c} strokeWidth={1} opacity={0.3} tension={0.4} />
+            {/* Eyebrows */}
+            <Line points={[w * 0.36, h * 0.075, w * 0.4, h * 0.068, w * 0.45, h * 0.072]} stroke={c} strokeWidth={1.2} opacity={0.4} tension={0.3} />
+            <Line points={[w * 0.55, h * 0.072, w * 0.6, h * 0.068, w * 0.64, h * 0.075]} stroke={c} strokeWidth={1.2} opacity={0.4} tension={0.3} />
+            {/* Eyes */}
+            <Line points={[w * 0.37, h * 0.09, w * 0.41, h * 0.085, w * 0.46, h * 0.09, w * 0.41, h * 0.095]} stroke={c} strokeWidth={0.9} opacity={0.5} tension={0.3} closed />
+            <Circle x={w * 0.41} y={h * 0.09} radius={1} fill={c} opacity={0.4} />
+            <Line points={[w * 0.54, h * 0.09, w * 0.59, h * 0.085, w * 0.63, h * 0.09, w * 0.59, h * 0.095]} stroke={c} strokeWidth={0.9} opacity={0.5} tension={0.3} closed />
+            <Circle x={w * 0.59} y={h * 0.09} radius={1} fill={c} opacity={0.4} />
+            {/* Nose */}
+            <Line points={[w * 0.5, h * 0.085, w * 0.48, h * 0.11, w * 0.47, h * 0.125, w * 0.5, h * 0.13, w * 0.53, h * 0.125, w * 0.52, h * 0.11]} stroke={c} strokeWidth={0.7} opacity={0.3} tension={0.3} />
+            <Circle x={w * 0.48} y={h * 0.128} radius={0.8} fill={c} opacity={0.2} />
+            <Circle x={w * 0.52} y={h * 0.128} radius={0.8} fill={c} opacity={0.2} />
+            {/* Mouth */}
+            <Line points={[w * 0.43, h * 0.145, w * 0.47, h * 0.15, w * 0.5, h * 0.152, w * 0.53, h * 0.15, w * 0.57, h * 0.145]} stroke={c} strokeWidth={1} opacity={0.35} tension={0.3} />
+            <Line points={[w * 0.45, h * 0.15, w * 0.5, h * 0.155, w * 0.55, h * 0.15]} stroke={c} strokeWidth={0.5} opacity={0.15} tension={0.3} />
+            {/* Chin */}
+            <Line points={[w * 0.44, h * 0.16, w * 0.5, h * 0.17, w * 0.56, h * 0.16]} stroke={c} strokeWidth={0.5} opacity={0.12} tension={0.3} />
+            {/* NECK */}
+            <Line points={[w * 0.43, h * 0.19, w * 0.43, h * 0.25]} stroke={c} strokeWidth={2} lineCap="round" />
+            <Line points={[w * 0.57, h * 0.19, w * 0.57, h * 0.25]} stroke={c} strokeWidth={2} lineCap="round" />
+            <Line points={[w * 0.44, h * 0.2, w * 0.46, h * 0.24]} stroke={c} strokeWidth={0.6} opacity={0.12} />
+            <Line points={[w * 0.56, h * 0.2, w * 0.54, h * 0.24]} stroke={c} strokeWidth={0.6} opacity={0.12} />
+            <Line points={[w * 0.49, h * 0.22, w * 0.5, h * 0.215, w * 0.51, h * 0.22]} stroke={c} strokeWidth={0.5} opacity={0.15} />
+            {/* SHOULDERS */}
+            <Line points={[w * 0.06, h * 0.32, w * 0.15, h * 0.28, w * 0.25, h * 0.26, w * 0.43, h * 0.25, w * 0.57, h * 0.25, w * 0.75, h * 0.26, w * 0.85, h * 0.28, w * 0.94, h * 0.32]} stroke={c} strokeWidth={2.2} tension={0.3} lineCap="round" />
+            {/* Clavicles */}
+            <Line points={[w * 0.25, h * 0.27, w * 0.35, h * 0.26, w * 0.45, h * 0.265]} stroke={c} strokeWidth={0.7} opacity={0.2} tension={0.2} />
+            <Line points={[w * 0.55, h * 0.265, w * 0.65, h * 0.26, w * 0.75, h * 0.27]} stroke={c} strokeWidth={0.7} opacity={0.2} tension={0.2} />
+            {/* Deltoids */}
+            <Line points={[w * 0.08, h * 0.31, w * 0.12, h * 0.28, w * 0.18, h * 0.27]} stroke={c} strokeWidth={0.6} opacity={0.15} tension={0.3} />
+            <Line points={[w * 0.92, h * 0.31, w * 0.88, h * 0.28, w * 0.82, h * 0.27]} stroke={c} strokeWidth={0.6} opacity={0.15} tension={0.3} />
+            {/* TORSO */}
+            <Line points={[w * 0.33, h * 0.26, w * 0.31, h * 0.38, w * 0.3, h * 0.5, w * 0.33, h * 0.58]} stroke={c} strokeWidth={2} tension={0.3} />
+            <Line points={[w * 0.67, h * 0.26, w * 0.69, h * 0.38, w * 0.7, h * 0.5, w * 0.67, h * 0.58]} stroke={c} strokeWidth={2} tension={0.3} />
+            <Line points={[w * 0.5, h * 0.26, w * 0.5, h * 0.58]} stroke={c} strokeWidth={0.8} dash={[2, 4]} opacity={0.1} />
+            {/* Pectorals */}
+            <Line points={[w * 0.35, h * 0.28, w * 0.42, h * 0.3, w * 0.48, h * 0.3]} stroke={c} strokeWidth={0.7} opacity={0.15} tension={0.3} />
+            <Line points={[w * 0.65, h * 0.28, w * 0.58, h * 0.3, w * 0.52, h * 0.3]} stroke={c} strokeWidth={0.7} opacity={0.15} tension={0.3} />
+            {/* Ribs */}
+            <Line points={[w * 0.36, h * 0.34, w * 0.44, h * 0.33, w * 0.5, h * 0.335]} stroke={c} strokeWidth={0.5} opacity={0.08} tension={0.2} />
+            <Line points={[w * 0.64, h * 0.34, w * 0.56, h * 0.33, w * 0.5, h * 0.335]} stroke={c} strokeWidth={0.5} opacity={0.08} tension={0.2} />
+            <Line points={[w * 0.35, h * 0.38, w * 0.43, h * 0.37, w * 0.5, h * 0.375]} stroke={c} strokeWidth={0.5} opacity={0.08} tension={0.2} />
+            <Line points={[w * 0.65, h * 0.38, w * 0.57, h * 0.37, w * 0.5, h * 0.375]} stroke={c} strokeWidth={0.5} opacity={0.08} tension={0.2} />
+            <Line points={[w * 0.34, h * 0.42, w * 0.42, h * 0.41, w * 0.5, h * 0.415]} stroke={c} strokeWidth={0.5} opacity={0.08} tension={0.2} />
+            <Line points={[w * 0.66, h * 0.42, w * 0.58, h * 0.41, w * 0.5, h * 0.415]} stroke={c} strokeWidth={0.5} opacity={0.08} tension={0.2} />
+            <Circle x={w * 0.5} y={h * 0.48} radius={1.5} stroke={c} strokeWidth={0.7} opacity={0.2} />
+            {/* LEFT ARM */}
+            <Line points={[w * 0.06, h * 0.32, w * 0.04, h * 0.38, w * 0.03, h * 0.44, w * 0.035, h * 0.48]} stroke={c} strokeWidth={2.2} lineCap="round" tension={0.2} />
+            <Line points={[w * 0.07, h * 0.34, w * 0.055, h * 0.38, w * 0.045, h * 0.42]} stroke={c} strokeWidth={0.5} opacity={0.1} tension={0.3} />
+            <Circle x={w * 0.035} y={h * 0.48} radius={2.5} stroke={c} strokeWidth={0.8} opacity={0.25} />
+            <Line points={[w * 0.035, h * 0.48, w * 0.05, h * 0.53, w * 0.08, h * 0.57]} stroke={c} strokeWidth={2} lineCap="round" tension={0.2} />
+            <Circle x={w * 0.1} y={h * 0.59} radius={4} stroke={c} strokeWidth={1.2} opacity={0.5} />
+            <Line points={[w * 0.075, h * 0.585, w * 0.055, h * 0.578]} stroke={c} strokeWidth={0.7} opacity={0.4} lineCap="round" />
+            <Line points={[w * 0.08, h * 0.575, w * 0.06, h * 0.56]} stroke={c} strokeWidth={0.7} opacity={0.4} lineCap="round" />
+            <Line points={[w * 0.09, h * 0.57, w * 0.075, h * 0.548]} stroke={c} strokeWidth={0.7} opacity={0.4} lineCap="round" />
+            <Line points={[w * 0.1, h * 0.568, w * 0.09, h * 0.545]} stroke={c} strokeWidth={0.7} opacity={0.4} lineCap="round" />
+            <Line points={[w * 0.115, h * 0.58, w * 0.12, h * 0.6]} stroke={c} strokeWidth={0.6} opacity={0.3} lineCap="round" />
+            {/* RIGHT ARM */}
+            <Line points={[w * 0.94, h * 0.32, w * 0.96, h * 0.38, w * 0.97, h * 0.44, w * 0.965, h * 0.48]} stroke={c} strokeWidth={2.2} lineCap="round" tension={0.2} />
+            <Line points={[w * 0.93, h * 0.34, w * 0.945, h * 0.38, w * 0.955, h * 0.42]} stroke={c} strokeWidth={0.5} opacity={0.1} tension={0.3} />
+            <Circle x={w * 0.965} y={h * 0.48} radius={2.5} stroke={c} strokeWidth={0.8} opacity={0.25} />
+            <Line points={[w * 0.965, h * 0.48, w * 0.95, h * 0.53, w * 0.92, h * 0.57]} stroke={c} strokeWidth={2} lineCap="round" tension={0.2} />
+            <Circle x={w * 0.9} y={h * 0.59} radius={4} stroke={c} strokeWidth={1.2} opacity={0.5} />
+            <Line points={[w * 0.925, h * 0.585, w * 0.945, h * 0.578]} stroke={c} strokeWidth={0.7} opacity={0.4} lineCap="round" />
+            <Line points={[w * 0.92, h * 0.575, w * 0.94, h * 0.56]} stroke={c} strokeWidth={0.7} opacity={0.4} lineCap="round" />
+            <Line points={[w * 0.91, h * 0.57, w * 0.925, h * 0.548]} stroke={c} strokeWidth={0.7} opacity={0.4} lineCap="round" />
+            <Line points={[w * 0.9, h * 0.568, w * 0.91, h * 0.545]} stroke={c} strokeWidth={0.7} opacity={0.4} lineCap="round" />
+            <Line points={[w * 0.885, h * 0.58, w * 0.88, h * 0.6]} stroke={c} strokeWidth={0.6} opacity={0.3} lineCap="round" />
+            {/* HIP */}
+            <Line points={[w * 0.25, h * 0.6, w * 0.35, h * 0.58, w * 0.5, h * 0.575, w * 0.65, h * 0.58, w * 0.75, h * 0.6]} stroke={c} strokeWidth={2.2} tension={0.3} lineCap="round" />
+            <Line points={[w * 0.32, h * 0.57, w * 0.38, h * 0.56]} stroke={c} strokeWidth={0.5} opacity={0.1} />
+            <Line points={[w * 0.68, h * 0.57, w * 0.62, h * 0.56]} stroke={c} strokeWidth={0.5} opacity={0.1} />
+            {/* LEFT LEG */}
+            <Line points={[w * 0.35, h * 0.6, w * 0.32, h * 0.66, w * 0.28, h * 0.72, w * 0.26, h * 0.77]} stroke={c} strokeWidth={2.5} lineCap="round" tension={0.2} />
+            <Line points={[w * 0.34, h * 0.63, w * 0.31, h * 0.68, w * 0.28, h * 0.73]} stroke={c} strokeWidth={0.5} opacity={0.1} tension={0.3} />
+            <Circle x={w * 0.255} y={h * 0.78} radius={3} stroke={c} strokeWidth={1} opacity={0.3} />
+            <Circle x={w * 0.255} y={h * 0.78} radius={1.5} fill={c} opacity={0.08} />
+            <Line points={[w * 0.255, h * 0.8, w * 0.24, h * 0.84, w * 0.22, h * 0.88]} stroke={c} strokeWidth={2.2} lineCap="round" tension={0.2} />
+            <Circle x={w * 0.215} y={h * 0.885} radius={2} stroke={c} strokeWidth={0.6} opacity={0.2} />
+            <Line points={[w * 0.22, h * 0.89, w * 0.16, h * 0.92, w * 0.13, h * 0.935, w * 0.11, h * 0.94]} stroke={c} strokeWidth={2.8} lineCap="round" tension={0.3} />
+            <Line points={[w * 0.11, h * 0.935, w * 0.095, h * 0.93]} stroke={c} strokeWidth={0.6} opacity={0.3} lineCap="round" />
+            <Line points={[w * 0.105, h * 0.94, w * 0.09, h * 0.938]} stroke={c} strokeWidth={0.6} opacity={0.3} lineCap="round" />
+            <Line points={[w * 0.11, h * 0.945, w * 0.095, h * 0.946]} stroke={c} strokeWidth={0.6} opacity={0.3} lineCap="round" />
+            {/* RIGHT LEG */}
+            <Line points={[w * 0.65, h * 0.6, w * 0.68, h * 0.66, w * 0.72, h * 0.72, w * 0.74, h * 0.77]} stroke={c} strokeWidth={2.5} lineCap="round" tension={0.2} />
+            <Line points={[w * 0.66, h * 0.63, w * 0.69, h * 0.68, w * 0.72, h * 0.73]} stroke={c} strokeWidth={0.5} opacity={0.1} tension={0.3} />
+            <Circle x={w * 0.745} y={h * 0.78} radius={3} stroke={c} strokeWidth={1} opacity={0.3} />
+            <Circle x={w * 0.745} y={h * 0.78} radius={1.5} fill={c} opacity={0.08} />
+            <Line points={[w * 0.745, h * 0.8, w * 0.76, h * 0.84, w * 0.78, h * 0.88]} stroke={c} strokeWidth={2.2} lineCap="round" tension={0.2} />
+            <Circle x={w * 0.785} y={h * 0.885} radius={2} stroke={c} strokeWidth={0.6} opacity={0.2} />
+            <Line points={[w * 0.78, h * 0.89, w * 0.84, h * 0.92, w * 0.87, h * 0.935, w * 0.89, h * 0.94]} stroke={c} strokeWidth={2.8} lineCap="round" tension={0.3} />
+            <Line points={[w * 0.89, h * 0.935, w * 0.905, h * 0.93]} stroke={c} strokeWidth={0.6} opacity={0.3} lineCap="round" />
+            <Line points={[w * 0.895, h * 0.94, w * 0.91, h * 0.938]} stroke={c} strokeWidth={0.6} opacity={0.3} lineCap="round" />
+            <Line points={[w * 0.89, h * 0.945, w * 0.905, h * 0.946]} stroke={c} strokeWidth={0.6} opacity={0.3} lineCap="round" />
+            {/* FORENSIC MARKERS */}
+            <Line points={[w / 2 - 6, h * 0.45, w / 2 + 6, h * 0.45]} stroke={c} strokeWidth={0.8} opacity={0.2} />
+            <Line points={[w / 2, h * 0.45 - 6, w / 2, h * 0.45 + 6]} stroke={c} strokeWidth={0.8} opacity={0.2} />
+            <Line points={[2, 2, 12, 2]} stroke={c} strokeWidth={1} opacity={0.15} />
+            <Line points={[2, 2, 2, 12]} stroke={c} strokeWidth={1} opacity={0.15} />
+            <Line points={[w - 2, 2, w - 12, 2]} stroke={c} strokeWidth={1} opacity={0.15} />
+            <Line points={[w - 2, 2, w - 2, 12]} stroke={c} strokeWidth={1} opacity={0.15} />
+            <Line points={[2, h - 2, 12, h - 2]} stroke={c} strokeWidth={1} opacity={0.15} />
+            <Line points={[2, h - 2, 2, h - 12]} stroke={c} strokeWidth={1} opacity={0.15} />
+            <Line points={[w - 2, h - 2, w - 12, h - 2]} stroke={c} strokeWidth={1} opacity={0.15} />
+            <Line points={[w - 2, h - 2, w - 2, h - 12]} stroke={c} strokeWidth={1} opacity={0.15} />
+            <Circle x={w / 2} y={h * 0.005} radius={1.5} fill={c} opacity={0.15} />
+            <Circle x={w / 2} y={h * 0.96} radius={1.5} fill={c} opacity={0.15} />
+            <Circle x={w * 0.03} y={h * 0.48} radius={1.5} fill={c} opacity={0.15} />
+            <Circle x={w * 0.97} y={h * 0.48} radius={1.5} fill={c} opacity={0.15} />
           </>
         );
       case 'body-standing':
         return (
           <>
             <Rect width={w} height={h} fill="transparent" />
-            <Line points={[w * 0.25, h * 0.96, w * 0.35, h * 0.98, w * 0.65, h * 0.98, w * 0.75, h * 0.96]} fill={c} opacity={0.06} closed tension={0.5} />
-            <Circle x={w / 2} y={h * 0.08} radius={w * 0.22} stroke={c} strokeWidth={2.5} />
-            <Circle x={w / 2} y={h * 0.08} radius={w * 0.18} stroke={c} strokeWidth={0.5} opacity={0.1} />
-            <Line points={[w * 0.3, h * 0.04, w * 0.38, h * 0.015, w * 0.5, h * 0.005, w * 0.62, h * 0.015, w * 0.7, h * 0.04]} stroke={c} strokeWidth={1.5} tension={0.5} opacity={0.3} />
-            <Line points={[w * 0.28, h * 0.07, w * 0.26, h * 0.08, w * 0.28, h * 0.1]} stroke={c} strokeWidth={0.8} opacity={0.25} tension={0.3} />
-            <Line points={[w * 0.72, h * 0.07, w * 0.74, h * 0.08, w * 0.72, h * 0.1]} stroke={c} strokeWidth={0.8} opacity={0.25} tension={0.3} />
-            <Line points={[w * 0.38, h * 0.07, w * 0.42, h * 0.065, w * 0.45, h * 0.07]} stroke={c} strokeWidth={1} opacity={0.5} tension={0.3} />
-            <Line points={[w * 0.55, h * 0.07, w * 0.58, h * 0.065, w * 0.62, h * 0.07]} stroke={c} strokeWidth={1} opacity={0.5} tension={0.3} />
-            <Circle x={w * 0.42} y={h * 0.07} radius={0.8} fill={c} opacity={0.4} />
-            <Circle x={w * 0.58} y={h * 0.07} radius={0.8} fill={c} opacity={0.4} />
-            <Line points={[w * 0.5, h * 0.075, w * 0.48, h * 0.098, w * 0.52, h * 0.098]} stroke={c} strokeWidth={0.7} opacity={0.3} />
-            <Line points={[w * 0.44, h * 0.11, w * 0.5, h * 0.115, w * 0.56, h * 0.11]} stroke={c} strokeWidth={0.8} opacity={0.25} tension={0.3} />
-            <Line points={[w * 0.43, h * 0.17, w * 0.43, h * 0.23]} stroke={c} strokeWidth={2} lineCap="round" />
-            <Line points={[w * 0.57, h * 0.17, w * 0.57, h * 0.23]} stroke={c} strokeWidth={2} lineCap="round" />
-            <Line points={[w * 0.46, h * 0.18, w * 0.44, h * 0.22]} stroke={c} strokeWidth={0.5} opacity={0.12} />
-            <Line points={[w * 0.54, h * 0.18, w * 0.56, h * 0.22]} stroke={c} strokeWidth={0.5} opacity={0.12} />
-            <Line points={[w * 0.08, h * 0.28, w * 0.2, h * 0.24, w * 0.43, h * 0.23, w * 0.57, h * 0.23, w * 0.8, h * 0.24, w * 0.92, h * 0.28]} stroke={c} strokeWidth={2.2} tension={0.3} lineCap="round" />
-            <Line points={[w * 0.33, h * 0.24, w * 0.3, h * 0.35, w * 0.3, h * 0.45, w * 0.32, h * 0.55]} stroke={c} strokeWidth={1.8} tension={0.3} />
-            <Line points={[w * 0.67, h * 0.24, w * 0.7, h * 0.35, w * 0.7, h * 0.45, w * 0.68, h * 0.55]} stroke={c} strokeWidth={1.8} tension={0.3} />
-            <Line points={[w * 0.5, h * 0.24, w * 0.5, h * 0.55]} stroke={c} strokeWidth={0.8} dash={[2, 4]} opacity={0.1} />
-            <Line points={[w * 0.36, h * 0.3, w * 0.48, h * 0.32]} stroke={c} strokeWidth={0.5} opacity={0.1} tension={0.3} />
-            <Line points={[w * 0.64, h * 0.3, w * 0.52, h * 0.32]} stroke={c} strokeWidth={0.5} opacity={0.1} tension={0.3} />
-            <Line points={[w * 0.08, h * 0.28, w * 0.06, h * 0.36, w * 0.04, h * 0.44]} stroke={c} strokeWidth={2.2} lineCap="round" tension={0.2} />
-            <Line points={[w * 0.04, h * 0.44, w * 0.06, h * 0.5, w * 0.1, h * 0.55]} stroke={c} strokeWidth={1.8} lineCap="round" tension={0.2} />
-            <Line points={[w * 0.1, h * 0.55, w * 0.09, h * 0.565, w * 0.1, h * 0.58, w * 0.12, h * 0.575, w * 0.11, h * 0.56]} stroke={c} strokeWidth={0.8} opacity={0.5} tension={0.3} closed />
-            <Line points={[w * 0.92, h * 0.28, w * 0.94, h * 0.36, w * 0.96, h * 0.44]} stroke={c} strokeWidth={2.2} lineCap="round" tension={0.2} />
-            <Line points={[w * 0.96, h * 0.44, w * 0.94, h * 0.5, w * 0.9, h * 0.55]} stroke={c} strokeWidth={1.8} lineCap="round" tension={0.2} />
-            <Line points={[w * 0.9, h * 0.55, w * 0.91, h * 0.565, w * 0.9, h * 0.58, w * 0.88, h * 0.575, w * 0.89, h * 0.56]} stroke={c} strokeWidth={0.8} opacity={0.5} tension={0.3} closed />
-            <Line points={[w * 0.28, h * 0.56, w * 0.5, h * 0.555, w * 0.72, h * 0.56]} stroke={c} strokeWidth={1.5} tension={0.2} />
-            <Line points={[w * 0.25, h * 0.6, w * 0.35, h * 0.58, w * 0.5, h * 0.57, w * 0.65, h * 0.58, w * 0.75, h * 0.6]} stroke={c} strokeWidth={1.8} tension={0.3} />
-            <Line points={[w * 0.35, h * 0.6, w * 0.32, h * 0.68, w * 0.28, h * 0.76]} stroke={c} strokeWidth={2.5} lineCap="round" tension={0.2} />
-            <Circle x={w * 0.27} y={h * 0.77} radius={2.5} stroke={c} strokeWidth={0.8} opacity={0.2} />
-            <Line points={[w * 0.28, h * 0.78, w * 0.25, h * 0.86, w * 0.22, h * 0.9]} stroke={c} strokeWidth={2} lineCap="round" tension={0.2} />
-            <Line points={[w * 0.22, h * 0.9, w * 0.16, h * 0.94, w * 0.13, h * 0.95, w * 0.12, h * 0.96]} stroke={c} strokeWidth={2.5} lineCap="round" tension={0.3} />
-            <Line points={[w * 0.65, h * 0.6, w * 0.68, h * 0.68, w * 0.72, h * 0.76]} stroke={c} strokeWidth={2.5} lineCap="round" tension={0.2} />
-            <Circle x={w * 0.73} y={h * 0.77} radius={2.5} stroke={c} strokeWidth={0.8} opacity={0.2} />
-            <Line points={[w * 0.72, h * 0.78, w * 0.75, h * 0.86, w * 0.78, h * 0.9]} stroke={c} strokeWidth={2} lineCap="round" tension={0.2} />
-            <Line points={[w * 0.78, h * 0.9, w * 0.84, h * 0.94, w * 0.87, h * 0.95, w * 0.88, h * 0.96]} stroke={c} strokeWidth={2.5} lineCap="round" tension={0.3} />
+            {/* Floor shadow */}
+            <Line points={[w * 0.2, h * 0.95, w * 0.35, h * 0.98, w * 0.65, h * 0.98, w * 0.8, h * 0.95]} fill={c} opacity={0.06} closed tension={0.5} />
+            {/* HEAD */}
+            <Circle x={w / 2} y={h * 0.07} radius={w * 0.24} stroke={c} strokeWidth={2.8} />
+            <Circle x={w / 2} y={h * 0.07} radius={w * 0.2} stroke={c} strokeWidth={0.5} opacity={0.08} />
+            {/* Hair */}
+            <Line points={[w * 0.28, h * 0.03, w * 0.35, h * 0.01, w * 0.5, h * 0.003, w * 0.65, h * 0.01, w * 0.72, h * 0.03]} stroke={c} strokeWidth={1.8} tension={0.5} opacity={0.35} />
+            <Line points={[w * 0.32, h * 0.02, w * 0.42, h * 0.008, w * 0.5, h * 0.005]} stroke={c} strokeWidth={0.6} opacity={0.12} tension={0.4} />
+            {/* Ears */}
+            <Line points={[w * 0.26, h * 0.06, w * 0.22, h * 0.065, w * 0.21, h * 0.08, w * 0.23, h * 0.095, w * 0.26, h * 0.085]} stroke={c} strokeWidth={0.9} opacity={0.3} tension={0.4} />
+            <Line points={[w * 0.74, h * 0.06, w * 0.78, h * 0.065, w * 0.79, h * 0.08, w * 0.77, h * 0.095, w * 0.74, h * 0.085]} stroke={c} strokeWidth={0.9} opacity={0.3} tension={0.4} />
+            {/* Eyebrows */}
+            <Line points={[w * 0.35, h * 0.055, w * 0.39, h * 0.05, w * 0.44, h * 0.053]} stroke={c} strokeWidth={1.2} opacity={0.45} tension={0.3} />
+            <Line points={[w * 0.56, h * 0.053, w * 0.61, h * 0.05, w * 0.65, h * 0.055]} stroke={c} strokeWidth={1.2} opacity={0.45} tension={0.3} />
+            {/* Eyes */}
+            <Line points={[w * 0.36, h * 0.068, w * 0.4, h * 0.063, w * 0.45, h * 0.068, w * 0.4, h * 0.073]} stroke={c} strokeWidth={0.9} opacity={0.5} tension={0.3} closed />
+            <Circle x={w * 0.405} y={h * 0.068} radius={1.2} fill={c} opacity={0.45} />
+            <Line points={[w * 0.55, h * 0.068, w * 0.6, h * 0.063, w * 0.64, h * 0.068, w * 0.6, h * 0.073]} stroke={c} strokeWidth={0.9} opacity={0.5} tension={0.3} closed />
+            <Circle x={w * 0.595} y={h * 0.068} radius={1.2} fill={c} opacity={0.45} />
+            {/* Nose */}
+            <Line points={[w * 0.5, h * 0.065, w * 0.48, h * 0.085, w * 0.47, h * 0.098, w * 0.5, h * 0.102, w * 0.53, h * 0.098, w * 0.52, h * 0.085]} stroke={c} strokeWidth={0.7} opacity={0.3} tension={0.3} />
+            {/* Mouth */}
+            <Line points={[w * 0.43, h * 0.112, w * 0.48, h * 0.117, w * 0.5, h * 0.118, w * 0.52, h * 0.117, w * 0.57, h * 0.112]} stroke={c} strokeWidth={1} opacity={0.3} tension={0.3} />
+            {/* Jaw */}
+            <Line points={[w * 0.28, h * 0.065, w * 0.32, h * 0.1, w * 0.4, h * 0.12, w * 0.5, h * 0.13]} stroke={c} strokeWidth={0.5} opacity={0.1} tension={0.3} />
+            <Line points={[w * 0.72, h * 0.065, w * 0.68, h * 0.1, w * 0.6, h * 0.12, w * 0.5, h * 0.13]} stroke={c} strokeWidth={0.5} opacity={0.1} tension={0.3} />
+            {/* NECK */}
+            <Line points={[w * 0.42, h * 0.14, w * 0.42, h * 0.21]} stroke={c} strokeWidth={2.2} lineCap="round" />
+            <Line points={[w * 0.58, h * 0.14, w * 0.58, h * 0.21]} stroke={c} strokeWidth={2.2} lineCap="round" />
+            <Line points={[w * 0.44, h * 0.16, w * 0.46, h * 0.2]} stroke={c} strokeWidth={0.5} opacity={0.1} />
+            <Line points={[w * 0.56, h * 0.16, w * 0.54, h * 0.2]} stroke={c} strokeWidth={0.5} opacity={0.1} />
+            <Line points={[w * 0.48, h * 0.21, w * 0.5, h * 0.215, w * 0.52, h * 0.21]} stroke={c} strokeWidth={0.6} opacity={0.15} />
+            {/* SHOULDERS */}
+            <Line points={[w * 0.05, h * 0.27, w * 0.15, h * 0.23, w * 0.28, h * 0.215, w * 0.42, h * 0.21, w * 0.58, h * 0.21, w * 0.72, h * 0.215, w * 0.85, h * 0.23, w * 0.95, h * 0.27]} stroke={c} strokeWidth={2.5} tension={0.3} lineCap="round" />
+            {/* Deltoids */}
+            <Line points={[w * 0.07, h * 0.26, w * 0.1, h * 0.24, w * 0.16, h * 0.225]} stroke={c} strokeWidth={0.6} opacity={0.15} tension={0.3} />
+            <Line points={[w * 0.93, h * 0.26, w * 0.9, h * 0.24, w * 0.84, h * 0.225]} stroke={c} strokeWidth={0.6} opacity={0.15} tension={0.3} />
+            {/* Clavicle */}
+            <Line points={[w * 0.3, h * 0.22, w * 0.4, h * 0.215, w * 0.48, h * 0.218]} stroke={c} strokeWidth={0.6} opacity={0.15} tension={0.2} />
+            <Line points={[w * 0.7, h * 0.22, w * 0.6, h * 0.215, w * 0.52, h * 0.218]} stroke={c} strokeWidth={0.6} opacity={0.15} tension={0.2} />
+            {/* TORSO */}
+            <Line points={[w * 0.32, h * 0.22, w * 0.29, h * 0.35, w * 0.28, h * 0.45, w * 0.3, h * 0.54]} stroke={c} strokeWidth={2} tension={0.3} />
+            <Line points={[w * 0.68, h * 0.22, w * 0.71, h * 0.35, w * 0.72, h * 0.45, w * 0.7, h * 0.54]} stroke={c} strokeWidth={2} tension={0.3} />
+            {/* Pectorals */}
+            <Line points={[w * 0.34, h * 0.24, w * 0.4, h * 0.26, w * 0.47, h * 0.265]} stroke={c} strokeWidth={0.7} opacity={0.15} tension={0.3} />
+            <Line points={[w * 0.66, h * 0.24, w * 0.6, h * 0.26, w * 0.53, h * 0.265]} stroke={c} strokeWidth={0.7} opacity={0.15} tension={0.3} />
+            {/* Sternum */}
+            <Line points={[w * 0.5, h * 0.22, w * 0.5, h * 0.54]} stroke={c} strokeWidth={0.6} dash={[2, 4]} opacity={0.08} />
+            {/* Abs */}
+            <Line points={[w * 0.45, h * 0.38, w * 0.45, h * 0.5]} stroke={c} strokeWidth={0.4} opacity={0.08} />
+            <Line points={[w * 0.55, h * 0.38, w * 0.55, h * 0.5]} stroke={c} strokeWidth={0.4} opacity={0.08} />
+            <Line points={[w * 0.42, h * 0.4, w * 0.48, h * 0.4]} stroke={c} strokeWidth={0.4} opacity={0.06} />
+            <Line points={[w * 0.52, h * 0.4, w * 0.58, h * 0.4]} stroke={c} strokeWidth={0.4} opacity={0.06} />
+            <Line points={[w * 0.42, h * 0.44, w * 0.48, h * 0.44]} stroke={c} strokeWidth={0.4} opacity={0.06} />
+            <Line points={[w * 0.52, h * 0.44, w * 0.58, h * 0.44]} stroke={c} strokeWidth={0.4} opacity={0.06} />
+            <Circle x={w * 0.5} y={h * 0.48} radius={1.5} stroke={c} strokeWidth={0.6} opacity={0.15} />
+            {/* LEFT ARM */}
+            <Line points={[w * 0.05, h * 0.27, w * 0.04, h * 0.33, w * 0.03, h * 0.39, w * 0.035, h * 0.44]} stroke={c} strokeWidth={2.5} lineCap="round" tension={0.2} />
+            <Line points={[w * 0.06, h * 0.29, w * 0.05, h * 0.34, w * 0.04, h * 0.38]} stroke={c} strokeWidth={0.5} opacity={0.1} tension={0.3} />
+            <Circle x={w * 0.035} y={h * 0.44} radius={2.5} stroke={c} strokeWidth={0.7} opacity={0.2} />
+            <Line points={[w * 0.035, h * 0.44, w * 0.05, h * 0.49, w * 0.08, h * 0.54]} stroke={c} strokeWidth={2} lineCap="round" tension={0.2} />
+            <Line points={[w * 0.08, h * 0.54, w * 0.09, h * 0.555, w * 0.1, h * 0.57, w * 0.12, h * 0.575, w * 0.115, h * 0.56, w * 0.1, h * 0.545]} stroke={c} strokeWidth={1} opacity={0.5} tension={0.3} closed />
+            <Line points={[w * 0.085, h * 0.56, w * 0.07, h * 0.555]} stroke={c} strokeWidth={0.6} opacity={0.35} lineCap="round" />
+            <Line points={[w * 0.095, h * 0.565, w * 0.08, h * 0.558]} stroke={c} strokeWidth={0.6} opacity={0.35} lineCap="round" />
+            <Line points={[w * 0.105, h * 0.568, w * 0.095, h * 0.555]} stroke={c} strokeWidth={0.6} opacity={0.35} lineCap="round" />
+            {/* RIGHT ARM */}
+            <Line points={[w * 0.95, h * 0.27, w * 0.96, h * 0.33, w * 0.97, h * 0.39, w * 0.965, h * 0.44]} stroke={c} strokeWidth={2.5} lineCap="round" tension={0.2} />
+            <Line points={[w * 0.94, h * 0.29, w * 0.95, h * 0.34, w * 0.96, h * 0.38]} stroke={c} strokeWidth={0.5} opacity={0.1} tension={0.3} />
+            <Circle x={w * 0.965} y={h * 0.44} radius={2.5} stroke={c} strokeWidth={0.7} opacity={0.2} />
+            <Line points={[w * 0.965, h * 0.44, w * 0.95, h * 0.49, w * 0.92, h * 0.54]} stroke={c} strokeWidth={2} lineCap="round" tension={0.2} />
+            <Line points={[w * 0.92, h * 0.54, w * 0.91, h * 0.555, w * 0.9, h * 0.57, w * 0.88, h * 0.575, w * 0.885, h * 0.56, w * 0.9, h * 0.545]} stroke={c} strokeWidth={1} opacity={0.5} tension={0.3} closed />
+            <Line points={[w * 0.915, h * 0.56, w * 0.93, h * 0.555]} stroke={c} strokeWidth={0.6} opacity={0.35} lineCap="round" />
+            <Line points={[w * 0.905, h * 0.565, w * 0.92, h * 0.558]} stroke={c} strokeWidth={0.6} opacity={0.35} lineCap="round" />
+            <Line points={[w * 0.895, h * 0.568, w * 0.905, h * 0.555]} stroke={c} strokeWidth={0.6} opacity={0.35} lineCap="round" />
+            {/* BELT */}
+            <Line points={[w * 0.26, h * 0.555, w * 0.35, h * 0.545, w * 0.5, h * 0.54, w * 0.65, h * 0.545, w * 0.74, h * 0.555]} stroke={c} strokeWidth={1.8} tension={0.2} />
+            {/* HIP */}
+            <Line points={[w * 0.24, h * 0.58, w * 0.35, h * 0.565, w * 0.5, h * 0.56, w * 0.65, h * 0.565, w * 0.76, h * 0.58]} stroke={c} strokeWidth={2} tension={0.3} />
+            {/* LEFT LEG */}
+            <Line points={[w * 0.35, h * 0.58, w * 0.33, h * 0.64, w * 0.3, h * 0.7, w * 0.28, h * 0.75]} stroke={c} strokeWidth={2.8} lineCap="round" tension={0.2} />
+            <Line points={[w * 0.34, h * 0.6, w * 0.32, h * 0.65, w * 0.295, h * 0.7]} stroke={c} strokeWidth={0.5} opacity={0.1} tension={0.3} />
+            <Circle x={w * 0.275} y={h * 0.76} radius={3.5} stroke={c} strokeWidth={1} opacity={0.3} />
+            <Circle x={w * 0.275} y={h * 0.76} radius={1.5} fill={c} opacity={0.06} />
+            <Line points={[w * 0.275, h * 0.78, w * 0.26, h * 0.84, w * 0.24, h * 0.89]} stroke={c} strokeWidth={2.5} lineCap="round" tension={0.2} />
+            <Line points={[w * 0.29, h * 0.79, w * 0.28, h * 0.83, w * 0.265, h * 0.87]} stroke={c} strokeWidth={0.5} opacity={0.1} tension={0.3} />
+            <Circle x={w * 0.235} y={h * 0.895} radius={2} stroke={c} strokeWidth={0.6} opacity={0.2} />
+            <Line points={[w * 0.24, h * 0.9, w * 0.18, h * 0.935, w * 0.14, h * 0.95, w * 0.12, h * 0.955]} stroke={c} strokeWidth={3} lineCap="round" tension={0.3} />
+            <Line points={[w * 0.12, h * 0.95, w * 0.105, h * 0.948]} stroke={c} strokeWidth={0.7} opacity={0.3} lineCap="round" />
+            <Line points={[w * 0.115, h * 0.956, w * 0.1, h * 0.955]} stroke={c} strokeWidth={0.7} opacity={0.3} lineCap="round" />
+            {/* RIGHT LEG */}
+            <Line points={[w * 0.65, h * 0.58, w * 0.67, h * 0.64, w * 0.7, h * 0.7, w * 0.72, h * 0.75]} stroke={c} strokeWidth={2.8} lineCap="round" tension={0.2} />
+            <Line points={[w * 0.66, h * 0.6, w * 0.68, h * 0.65, w * 0.705, h * 0.7]} stroke={c} strokeWidth={0.5} opacity={0.1} tension={0.3} />
+            <Circle x={w * 0.725} y={h * 0.76} radius={3.5} stroke={c} strokeWidth={1} opacity={0.3} />
+            <Circle x={w * 0.725} y={h * 0.76} radius={1.5} fill={c} opacity={0.06} />
+            <Line points={[w * 0.725, h * 0.78, w * 0.74, h * 0.84, w * 0.76, h * 0.89]} stroke={c} strokeWidth={2.5} lineCap="round" tension={0.2} />
+            <Line points={[w * 0.71, h * 0.79, w * 0.72, h * 0.83, w * 0.735, h * 0.87]} stroke={c} strokeWidth={0.5} opacity={0.1} tension={0.3} />
+            <Circle x={w * 0.765} y={h * 0.895} radius={2} stroke={c} strokeWidth={0.6} opacity={0.2} />
+            <Line points={[w * 0.76, h * 0.9, w * 0.82, h * 0.935, w * 0.86, h * 0.95, w * 0.88, h * 0.955]} stroke={c} strokeWidth={3} lineCap="round" tension={0.3} />
+            <Line points={[w * 0.88, h * 0.95, w * 0.895, h * 0.948]} stroke={c} strokeWidth={0.7} opacity={0.3} lineCap="round" />
+            <Line points={[w * 0.885, h * 0.956, w * 0.9, h * 0.955]} stroke={c} strokeWidth={0.7} opacity={0.3} lineCap="round" />
           </>
         );
       case 'body-prone':
         return (
           <>
-            <Rect width={w} height={h} fill="transparent" stroke={c} strokeWidth={1} dash={[5, 5]} cornerRadius={8} opacity={0.25} />
-            <Rect x={w * 0.04} y={h * 0.18} width={w * 0.92} height={h * 0.64} fill={c} opacity={0.03} cornerRadius={12} />
-            <Circle x={w * 0.09} y={h / 2} radius={h * 0.28} stroke={c} strokeWidth={2.5} />
-            <Circle x={w * 0.09} y={h / 2} radius={h * 0.22} stroke={c} strokeWidth={0.5} opacity={0.1} />
-            <Line points={[w * 0.05, h * 0.3, w * 0.03, h * 0.4, w * 0.03, h * 0.5, w * 0.03, h * 0.6, w * 0.05, h * 0.7]} stroke={c} strokeWidth={1.2} tension={0.4} opacity={0.25} />
-            <Line points={[w * 0.06, h * 0.46, w * 0.12, h * 0.54]} stroke={c} strokeWidth={0.8} opacity={0.25} />
-            <Line points={[w * 0.12, h * 0.46, w * 0.06, h * 0.54]} stroke={c} strokeWidth={0.8} opacity={0.25} />
-            <Line points={[w * 0.17, h * 0.44, w * 0.24, h * 0.44]} stroke={c} strokeWidth={2.2} lineCap="round" />
-            <Line points={[w * 0.17, h * 0.56, w * 0.24, h * 0.56]} stroke={c} strokeWidth={2.2} lineCap="round" />
-            <Line points={[w * 0.24, h * 0.3, w * 0.24, h * 0.7]} stroke={c} strokeWidth={2} />
-            <Line points={[w * 0.55, h * 0.28, w * 0.55, h * 0.72]} stroke={c} strokeWidth={2} />
-            <Line points={[w * 0.24, h / 2, w * 0.55, h / 2]} stroke={c} strokeWidth={1.5} dash={[3, 3]} opacity={0.15} />
-            <Line points={[w * 0.28, h * 0.35, w * 0.33, h * 0.32, w * 0.38, h * 0.34]} stroke={c} strokeWidth={0.6} opacity={0.15} tension={0.3} />
-            <Line points={[w * 0.28, h * 0.65, w * 0.33, h * 0.68, w * 0.38, h * 0.66]} stroke={c} strokeWidth={0.6} opacity={0.15} tension={0.3} />
-            <Line points={[w * 0.3, h * 0.4, w * 0.38, h * 0.39, w * 0.45, h * 0.4]} stroke={c} strokeWidth={0.5} opacity={0.08} />
-            <Line points={[w * 0.3, h * 0.44, w * 0.38, h * 0.43, w * 0.45, h * 0.44]} stroke={c} strokeWidth={0.5} opacity={0.08} />
-            <Line points={[w * 0.3, h * 0.56, w * 0.38, h * 0.57, w * 0.45, h * 0.56]} stroke={c} strokeWidth={0.5} opacity={0.08} />
-            <Line points={[w * 0.3, h * 0.6, w * 0.38, h * 0.61, w * 0.45, h * 0.6]} stroke={c} strokeWidth={0.5} opacity={0.08} />
-            <Line points={[w * 0.24, h * 0.3, w * 0.55, h * 0.28, w * 0.55, h * 0.72, w * 0.24, h * 0.7]} fill={c} opacity={0.03} closed />
-            <Line points={[w * 0.26, h * 0.3, w * 0.22, h * 0.22, w * 0.18, h * 0.15]} stroke={c} strokeWidth={2} lineCap="round" tension={0.2} />
-            <Line points={[w * 0.18, h * 0.15, w * 0.2, h * 0.1, w * 0.24, h * 0.08]} stroke={c} strokeWidth={1.8} lineCap="round" tension={0.2} />
-            <Line points={[w * 0.24, h * 0.08, w * 0.26, h * 0.065, w * 0.25, h * 0.055, w * 0.23, h * 0.06, w * 0.24, h * 0.075]} stroke={c} strokeWidth={0.7} opacity={0.4} tension={0.3} closed />
-            <Line points={[w * 0.26, h * 0.7, w * 0.22, h * 0.78, w * 0.18, h * 0.85]} stroke={c} strokeWidth={2} lineCap="round" tension={0.2} />
-            <Line points={[w * 0.18, h * 0.85, w * 0.2, h * 0.9, w * 0.24, h * 0.92]} stroke={c} strokeWidth={1.8} lineCap="round" tension={0.2} />
-            <Line points={[w * 0.24, h * 0.92, w * 0.26, h * 0.935, w * 0.25, h * 0.945, w * 0.23, h * 0.94, w * 0.24, h * 0.925]} stroke={c} strokeWidth={0.7} opacity={0.4} tension={0.3} closed />
-            <Line points={[w * 0.55, h * 0.3, w * 0.58, h * 0.35, w * 0.58, h * 0.65, w * 0.55, h * 0.7]} stroke={c} strokeWidth={1.5} tension={0.2} />
-            <Line points={[w * 0.58, h * 0.32, w * 0.68, h * 0.28, w * 0.78, h * 0.22]} stroke={c} strokeWidth={2.2} lineCap="round" tension={0.2} />
-            <Circle x={w * 0.78} y={h * 0.22} radius={2} stroke={c} strokeWidth={0.6} opacity={0.2} />
-            <Line points={[w * 0.78, h * 0.22, w * 0.86, h * 0.2, w * 0.9, h * 0.18]} stroke={c} strokeWidth={2} lineCap="round" tension={0.2} />
-            <Line points={[w * 0.9, h * 0.18, w * 0.94, h * 0.15, w * 0.96, h * 0.14]} stroke={c} strokeWidth={2.5} lineCap="round" />
-            <Line points={[w * 0.58, h * 0.68, w * 0.68, h * 0.72, w * 0.78, h * 0.78]} stroke={c} strokeWidth={2.2} lineCap="round" tension={0.2} />
-            <Circle x={w * 0.78} y={h * 0.78} radius={2} stroke={c} strokeWidth={0.6} opacity={0.2} />
-            <Line points={[w * 0.78, h * 0.78, w * 0.86, h * 0.8, w * 0.9, h * 0.82]} stroke={c} strokeWidth={2} lineCap="round" tension={0.2} />
-            <Line points={[w * 0.9, h * 0.82, w * 0.94, h * 0.85, w * 0.96, h * 0.86]} stroke={c} strokeWidth={2.5} lineCap="round" />
-            <Circle x={w * 0.4} y={h / 2} radius={3} stroke={c} strokeWidth={0.6} opacity={0.15} />
-            <Line points={[w * 0.4 - 4, h / 2, w * 0.4 + 4, h / 2]} stroke={c} strokeWidth={0.5} opacity={0.15} />
-            <Line points={[w * 0.4, h / 2 - 4, w * 0.4, h / 2 + 4]} stroke={c} strokeWidth={0.5} opacity={0.15} />
+            {/* Outline */}
+            <Rect width={w} height={h} fill="transparent" stroke={c} strokeWidth={1.2} dash={[6, 4]} cornerRadius={8} opacity={0.2} />
+            <Rect x={3} y={3} width={w - 6} height={h - 6} fill="transparent" stroke={c} strokeWidth={0.4} dash={[3, 5]} cornerRadius={6} opacity={0.06} />
+            {/* Ground shadow */}
+            <Rect x={w * 0.04} y={h * 0.15} width={w * 0.92} height={h * 0.7} fill={c} opacity={0.03} cornerRadius={14} />
+            {/* HEAD face down */}
+            <Circle x={w * 0.09} y={h / 2} radius={h * 0.3} stroke={c} strokeWidth={2.8} />
+            <Circle x={w * 0.09} y={h / 2} radius={h * 0.24} stroke={c} strokeWidth={0.5} opacity={0.08} />
+            {/* Hair whorl */}
+            <Line points={[w * 0.06, h * 0.35, w * 0.08, h * 0.32, w * 0.11, h * 0.31, w * 0.13, h * 0.33]} stroke={c} strokeWidth={0.7} opacity={0.2} tension={0.5} />
+            <Line points={[w * 0.07, h * 0.38, w * 0.1, h * 0.35, w * 0.12, h * 0.36]} stroke={c} strokeWidth={0.5} opacity={0.12} tension={0.5} />
+            {/* Ear */}
+            <Line points={[w * 0.04, h * 0.42, w * 0.025, h * 0.46, w * 0.025, h * 0.52, w * 0.04, h * 0.56]} stroke={c} strokeWidth={1} opacity={0.3} tension={0.4} />
+            <Line points={[w * 0.035, h * 0.44, w * 0.03, h * 0.48, w * 0.03, h * 0.52, w * 0.035, h * 0.54]} stroke={c} strokeWidth={0.5} opacity={0.15} tension={0.3} />
+            {/* Face-down X */}
+            <Line points={[w * 0.065, h * 0.45, w * 0.115, h * 0.55]} stroke={c} strokeWidth={1} opacity={0.2} />
+            <Line points={[w * 0.115, h * 0.45, w * 0.065, h * 0.55]} stroke={c} strokeWidth={1} opacity={0.2} />
+            <Circle x={w * 0.09} y={h * 0.52} radius={1.5} fill={c} opacity={0.15} />
+            {/* NECK */}
+            <Line points={[w * 0.17, h * 0.42, w * 0.23, h * 0.42]} stroke={c} strokeWidth={2.5} lineCap="round" />
+            <Line points={[w * 0.17, h * 0.58, w * 0.23, h * 0.58]} stroke={c} strokeWidth={2.5} lineCap="round" />
+            <Line points={[w * 0.18, h * 0.46, w * 0.2, h * 0.46]} stroke={c} strokeWidth={0.5} opacity={0.1} />
+            <Line points={[w * 0.19, h * 0.5, w * 0.21, h * 0.5]} stroke={c} strokeWidth={0.5} opacity={0.1} />
+            <Line points={[w * 0.18, h * 0.54, w * 0.2, h * 0.54]} stroke={c} strokeWidth={0.5} opacity={0.1} />
+            {/* SHOULDERS */}
+            <Line points={[w * 0.23, h * 0.28, w * 0.23, h * 0.72]} stroke={c} strokeWidth={2.2} />
+            {/* Shoulder blades */}
+            <Line points={[w * 0.27, h * 0.32, w * 0.32, h * 0.3, w * 0.36, h * 0.33, w * 0.33, h * 0.38, w * 0.28, h * 0.37]} stroke={c} strokeWidth={0.6} opacity={0.12} tension={0.3} closed />
+            <Line points={[w * 0.27, h * 0.68, w * 0.32, h * 0.7, w * 0.36, h * 0.67, w * 0.33, h * 0.62, w * 0.28, h * 0.63]} stroke={c} strokeWidth={0.6} opacity={0.12} tension={0.3} closed />
+            {/* SPINE */}
+            <Line points={[w * 0.24, h * 0.5, w * 0.55, h * 0.5]} stroke={c} strokeWidth={1.2} dash={[2, 3]} opacity={0.12} />
+            {[0.28, 0.32, 0.36, 0.4, 0.44, 0.48, 0.52].map((xp, i) => (
+              <Circle key={`vert-${i}`} x={w * xp} y={h * 0.5} radius={1} fill={c} opacity={0.08} />
+            ))}
+            {/* TORSO */}
+            <Line points={[w * 0.55, h * 0.26, w * 0.55, h * 0.74]} stroke={c} strokeWidth={2.2} />
+            <Line points={[w * 0.23, h * 0.28, w * 0.55, h * 0.26, w * 0.55, h * 0.74, w * 0.23, h * 0.72]} fill={c} opacity={0.025} closed />
+            {/* Lats */}
+            <Line points={[w * 0.25, h * 0.34, w * 0.35, h * 0.32, w * 0.45, h * 0.33]} stroke={c} strokeWidth={0.5} opacity={0.08} tension={0.3} />
+            <Line points={[w * 0.25, h * 0.66, w * 0.35, h * 0.68, w * 0.45, h * 0.67]} stroke={c} strokeWidth={0.5} opacity={0.08} tension={0.3} />
+            {/* Ribs */}
+            <Line points={[w * 0.28, h * 0.38, w * 0.38, h * 0.37]} stroke={c} strokeWidth={0.4} opacity={0.06} />
+            <Line points={[w * 0.28, h * 0.42, w * 0.4, h * 0.41]} stroke={c} strokeWidth={0.4} opacity={0.06} />
+            <Line points={[w * 0.28, h * 0.58, w * 0.4, h * 0.59]} stroke={c} strokeWidth={0.4} opacity={0.06} />
+            <Line points={[w * 0.28, h * 0.62, w * 0.38, h * 0.63]} stroke={c} strokeWidth={0.4} opacity={0.06} />
+            {/* HIP */}
+            <Line points={[w * 0.55, h * 0.28, w * 0.58, h * 0.34, w * 0.58, h * 0.66, w * 0.55, h * 0.72]} stroke={c} strokeWidth={1.5} tension={0.2} />
+            <Line points={[w * 0.57, h * 0.44, w * 0.58, h * 0.5, w * 0.57, h * 0.56]} stroke={c} strokeWidth={0.5} opacity={0.1} tension={0.3} />
+            {/* LEFT ARM */}
+            <Line points={[w * 0.24, h * 0.28, w * 0.2, h * 0.2, w * 0.17, h * 0.14]} stroke={c} strokeWidth={2.2} lineCap="round" tension={0.2} />
+            <Circle x={w * 0.17} y={h * 0.14} radius={2} stroke={c} strokeWidth={0.6} opacity={0.2} />
+            <Line points={[w * 0.17, h * 0.14, w * 0.2, h * 0.1, w * 0.24, h * 0.07]} stroke={c} strokeWidth={2} lineCap="round" tension={0.2} />
+            <Line points={[w * 0.24, h * 0.07, w * 0.26, h * 0.055, w * 0.265, h * 0.045, w * 0.255, h * 0.04, w * 0.24, h * 0.05, w * 0.235, h * 0.065]} stroke={c} strokeWidth={0.9} opacity={0.5} tension={0.3} closed />
+            <Line points={[w * 0.255, h * 0.045, w * 0.265, h * 0.03]} stroke={c} strokeWidth={0.6} opacity={0.3} lineCap="round" />
+            <Line points={[w * 0.26, h * 0.05, w * 0.275, h * 0.038]} stroke={c} strokeWidth={0.6} opacity={0.3} lineCap="round" />
+            <Line points={[w * 0.255, h * 0.058, w * 0.27, h * 0.05]} stroke={c} strokeWidth={0.6} opacity={0.3} lineCap="round" />
+            {/* RIGHT ARM */}
+            <Line points={[w * 0.24, h * 0.72, w * 0.2, h * 0.8, w * 0.17, h * 0.86]} stroke={c} strokeWidth={2.2} lineCap="round" tension={0.2} />
+            <Circle x={w * 0.17} y={h * 0.86} radius={2} stroke={c} strokeWidth={0.6} opacity={0.2} />
+            <Line points={[w * 0.17, h * 0.86, w * 0.2, h * 0.9, w * 0.24, h * 0.93]} stroke={c} strokeWidth={2} lineCap="round" tension={0.2} />
+            <Line points={[w * 0.24, h * 0.93, w * 0.26, h * 0.945, w * 0.265, h * 0.955, w * 0.255, h * 0.96, w * 0.24, h * 0.95, w * 0.235, h * 0.935]} stroke={c} strokeWidth={0.9} opacity={0.5} tension={0.3} closed />
+            <Line points={[w * 0.255, h * 0.955, w * 0.265, h * 0.97]} stroke={c} strokeWidth={0.6} opacity={0.3} lineCap="round" />
+            <Line points={[w * 0.26, h * 0.95, w * 0.275, h * 0.962]} stroke={c} strokeWidth={0.6} opacity={0.3} lineCap="round" />
+            <Line points={[w * 0.255, h * 0.942, w * 0.27, h * 0.95]} stroke={c} strokeWidth={0.6} opacity={0.3} lineCap="round" />
+            {/* LEFT LEG */}
+            <Line points={[w * 0.58, h * 0.3, w * 0.67, h * 0.26, w * 0.76, h * 0.2]} stroke={c} strokeWidth={2.5} lineCap="round" tension={0.2} />
+            <Line points={[w * 0.6, h * 0.32, w * 0.66, h * 0.29, w * 0.72, h * 0.24]} stroke={c} strokeWidth={0.5} opacity={0.08} tension={0.3} />
+            <Circle x={w * 0.76} y={h * 0.2} radius={2.5} stroke={c} strokeWidth={0.7} opacity={0.2} />
+            <Line points={[w * 0.76, h * 0.2, w * 0.84, h * 0.19, w * 0.9, h * 0.17]} stroke={c} strokeWidth={2.2} lineCap="round" tension={0.2} />
+            <Circle x={w * 0.9} y={h * 0.17} radius={1.8} stroke={c} strokeWidth={0.5} opacity={0.15} />
+            <Line points={[w * 0.9, h * 0.17, w * 0.94, h * 0.15, w * 0.96, h * 0.135]} stroke={c} strokeWidth={2.8} lineCap="round" />
+            <Line points={[w * 0.96, h * 0.13, w * 0.968, h * 0.12]} stroke={c} strokeWidth={0.6} opacity={0.3} lineCap="round" />
+            <Line points={[w * 0.965, h * 0.14, w * 0.975, h * 0.133]} stroke={c} strokeWidth={0.6} opacity={0.3} lineCap="round" />
+            {/* RIGHT LEG */}
+            <Line points={[w * 0.58, h * 0.7, w * 0.67, h * 0.74, w * 0.76, h * 0.8]} stroke={c} strokeWidth={2.5} lineCap="round" tension={0.2} />
+            <Line points={[w * 0.6, h * 0.68, w * 0.66, h * 0.71, w * 0.72, h * 0.76]} stroke={c} strokeWidth={0.5} opacity={0.08} tension={0.3} />
+            <Circle x={w * 0.76} y={h * 0.8} radius={2.5} stroke={c} strokeWidth={0.7} opacity={0.2} />
+            <Line points={[w * 0.76, h * 0.8, w * 0.84, h * 0.81, w * 0.9, h * 0.83]} stroke={c} strokeWidth={2.2} lineCap="round" tension={0.2} />
+            <Circle x={w * 0.9} y={h * 0.83} radius={1.8} stroke={c} strokeWidth={0.5} opacity={0.15} />
+            <Line points={[w * 0.9, h * 0.83, w * 0.94, h * 0.85, w * 0.96, h * 0.865]} stroke={c} strokeWidth={2.8} lineCap="round" />
+            <Line points={[w * 0.96, h * 0.87, w * 0.968, h * 0.88]} stroke={c} strokeWidth={0.6} opacity={0.3} lineCap="round" />
+            <Line points={[w * 0.965, h * 0.86, w * 0.975, h * 0.867]} stroke={c} strokeWidth={0.6} opacity={0.3} lineCap="round" />
+            {/* FORENSIC MARKERS */}
+            <Circle x={w * 0.4} y={h / 2} radius={4} stroke={c} strokeWidth={0.7} opacity={0.15} />
+            <Line points={[w * 0.4 - 5, h / 2, w * 0.4 + 5, h / 2]} stroke={c} strokeWidth={0.5} opacity={0.15} />
+            <Line points={[w * 0.4, h / 2 - 5, w * 0.4, h / 2 + 5]} stroke={c} strokeWidth={0.5} opacity={0.15} />
+            <Line points={[2, 2, 10, 2]} stroke={c} strokeWidth={0.8} opacity={0.12} />
+            <Line points={[2, 2, 2, 10]} stroke={c} strokeWidth={0.8} opacity={0.12} />
+            <Line points={[w - 2, h - 2, w - 10, h - 2]} stroke={c} strokeWidth={0.8} opacity={0.12} />
+            <Line points={[w - 2, h - 2, w - 2, h - 10]} stroke={c} strokeWidth={0.8} opacity={0.12} />
           </>
         );
       case 'knife':
