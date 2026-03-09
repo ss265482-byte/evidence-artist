@@ -2348,9 +2348,11 @@ export default function SceneCanvas() {
               ? <Line key={`sg-${i}`} points={[g.pos, -10000, g.pos, 10000]} stroke="#f59e0b" strokeWidth={1} dash={[4, 4]} opacity={0.7} />
               : <Line key={`sg-${i}`} points={[-10000, g.pos, 10000, g.pos]} stroke="#f59e0b" strokeWidth={1} dash={[4, 4]} opacity={0.7} />
           )}
-          {measurements.map(m => (
-            <MeasurementLine key={m.id} m={m} isSelected={selectedMeasurementId === m.id} onSelect={() => selectMeasurement(m.id)} onRemove={() => removeMeasurement(m.id)} />
-          ))}
+          {measurements.map(m => {
+            if (m.type === 'angle') return <AngleMeasurement key={m.id} m={m} isSelected={selectedMeasurementId === m.id} onSelect={() => selectMeasurement(m.id)} onRemove={() => removeMeasurement(m.id)} />;
+            if (m.type === 'arc') return <ArcMeasurement key={m.id} m={m} isSelected={selectedMeasurementId === m.id} onSelect={() => selectMeasurement(m.id)} onRemove={() => removeMeasurement(m.id)} />;
+            return <MeasurementLine key={m.id} m={m} isSelected={selectedMeasurementId === m.id} onSelect={() => selectMeasurement(m.id)} onRemove={() => removeMeasurement(m.id)} />;
+          })}
           {walls.map(w => (
             <WallLine key={w.id} w={w} isSelected={selectedWallId === w.id} onSelect={() => selectWall(w.id)} onRemove={() => removeWall(w.id)} />
           ))}
