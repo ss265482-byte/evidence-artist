@@ -8,6 +8,36 @@ import { Trash2, Copy, Lock, Unlock, ArrowUpToLine, ArrowDownToLine, X } from 'l
 const GRID_SIZE = 20;
 const PIXELS_PER_UNIT = 20;
 
+function BackgroundImageLayer() {
+  const { backgroundImage } = useScene();
+  const [image, setImage] = useState<HTMLImageElement | null>(null);
+
+  useEffect(() => {
+    if (!backgroundImage?.url) { setImage(null); return; }
+    const img = new window.Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => setImage(img);
+    img.src = backgroundImage.url;
+  }, [backgroundImage?.url]);
+
+  if (!image || !backgroundImage?.visible) return null;
+
+  const w = backgroundImage.width || image.naturalWidth;
+  const h = backgroundImage.height || image.naturalHeight;
+
+  return (
+    <KonvaImage
+      image={image}
+      x={0}
+      y={0}
+      width={w}
+      height={h}
+      opacity={backgroundImage.opacity}
+      listening={false}
+    />
+  );
+}
+
 function GridLayer({ width, height, zoom, isDark }: { width: number; height: number; zoom: number; isDark: boolean }) {
   const lines: React.ReactElement[] = [];
   const step = GRID_SIZE;
