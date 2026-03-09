@@ -2151,7 +2151,31 @@ export default function SceneCanvas() {
       const pos = getCanvasPos(stage);
       if (!pos) return;
       if (!measureStart) { setMeasureStart(pos); }
-      else { addMeasurement({ x1: measureStart.x, y1: measureStart.y, x2: pos.x, y2: pos.y }); setMeasureStart(null); setMeasurePreview(null); }
+      else { addMeasurement({ type: 'distance', x1: measureStart.x, y1: measureStart.y, x2: pos.x, y2: pos.y }); setMeasureStart(null); setMeasurePreview(null); }
+      return;
+    }
+
+    if (activeTool === 'measure-angle') {
+      const pos = getCanvasPos(stage);
+      if (!pos) return;
+      if (!measureStart) { setMeasureStart(pos); }
+      else if (!measureMid) { setMeasureMid(pos); }
+      else {
+        addMeasurement({ type: 'angle', x1: measureMid.x, y1: measureMid.y, x2: measureStart.x, y2: measureStart.y, x3: pos.x, y3: pos.y });
+        setMeasureStart(null); setMeasureMid(null); setMeasurePreview(null);
+      }
+      return;
+    }
+
+    if (activeTool === 'measure-arc') {
+      const pos = getCanvasPos(stage);
+      if (!pos) return;
+      if (!measureStart) { setMeasureStart(pos); }
+      else if (!measureMid) { setMeasureMid(pos); }
+      else {
+        addMeasurement({ type: 'arc', x1: measureStart.x, y1: measureStart.y, x2: measureMid.x, y2: measureMid.y, x3: pos.x, y3: pos.y });
+        setMeasureStart(null); setMeasureMid(null); setMeasurePreview(null);
+      }
       return;
     }
 
