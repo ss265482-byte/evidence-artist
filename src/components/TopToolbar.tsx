@@ -1,14 +1,16 @@
-import { useEffect, useState } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { useScene, ToolType } from '@/store/SceneContext';
 import { stageStore } from '@/lib/stageRef';
 import {
   MousePointer2, Hand, Minus, ArrowRight, Pencil, Type, Ruler,
   Grid3X3, Magnet, Sun, Moon, LayoutList, Square,
-  Undo2, Redo2, Maximize, Info, Keyboard, ChevronDown, Trash2
+  Undo2, Redo2, Maximize, Info, Keyboard, ChevronDown, Trash2,
+  ImagePlus, Eye, EyeOff, X as XIcon
 } from 'lucide-react';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
 import { AlertDialog, AlertDialogAction, AlertDialogCancel, AlertDialogContent, AlertDialogDescription, AlertDialogFooter, AlertDialogHeader, AlertDialogTitle, AlertDialogTrigger } from '@/components/ui/alert-dialog';
+import { Slider } from '@/components/ui/slider';
 import ExportDialog from '@/components/ExportDialog';
 
 const tools: { type: ToolType; icon: React.ElementType; label: string; shortcut: string }[] = [
