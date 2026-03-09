@@ -85,7 +85,7 @@ export interface CaseInfo {
   sketchBy: string;
 }
 
-export type ToolType = 'select' | 'pan' | 'wall' | 'line' | 'arrow' | 'freehand' | 'text' | 'measure' | 'room-label';
+export type ToolType = 'select' | 'pan' | 'wall' | 'line' | 'arrow' | 'freehand' | 'text' | 'measure' | 'measure-angle' | 'measure-arc' | 'room-label';
 
 export interface BackgroundImage {
   url: string;
