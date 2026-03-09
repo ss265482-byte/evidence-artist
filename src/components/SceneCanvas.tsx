@@ -306,6 +306,7 @@ function SceneObjectShape({ obj, isSelected, onSelect, allObjects, onSnapGuides 
   const c = obj.color || '#3b82f6';
   const w = obj.width;
   const h = obj.height;
+  const r = Math.min(w, h);
   const opacity = obj.opacity ?? 1;
 
   const renderShape = () => {
