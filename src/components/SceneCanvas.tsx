@@ -2214,7 +2214,7 @@ export default function SceneCanvas() {
           {isDrawing && freehandPoints.length >= 4 && (
             <Line points={freehandPoints} stroke="#94a3b8" strokeWidth={2} lineCap="round" lineJoin="round" tension={0.5} opacity={0.7} />
           )}
-          {showLegend && <CanvasLegend x={legendX} y={legendY} />}
+          {showLegend && <CanvasLegend x={legendX} y={legendY} evidence={evidence} caseInfo={caseInfo} />}
         </Layer>
       </Stage>
 
