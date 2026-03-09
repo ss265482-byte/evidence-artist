@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { Stage, Layer, Rect, Text, Line, Circle, Group, Transformer, Arrow as KonvaArrow } from 'react-konva';
+import { Stage, Layer, Rect, Text, Line, Circle, Group, Transformer, Arrow as KonvaArrow, Image as KonvaImage } from 'react-konva';
 import { useScene, SceneObject, Measurement, WallSegment } from '@/store/SceneContext';
 import Konva from 'konva';
 import { stageStore } from '@/lib/stageRef';
