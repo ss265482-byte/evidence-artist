@@ -109,6 +109,7 @@ interface SceneState {
   showLegend: boolean;
   zoom: number;
   isDark: boolean;
+  backgroundImage: BackgroundImage | null;
   canUndo: boolean;
   canRedo: boolean;
   addObject: (obj: Omit<SceneObject, 'id'>) => string;
