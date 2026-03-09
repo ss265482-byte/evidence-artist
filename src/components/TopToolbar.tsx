@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { useScene, ToolType } from '@/store/SceneContext';
+import { useScene, ToolType, MeasurementUnit, UNIT_CONFIG } from '@/store/SceneContext';
 import { themes, themeCategories, ThemeDefinition } from '@/lib/themes';
 import { stageStore } from '@/lib/stageRef';
 import {
