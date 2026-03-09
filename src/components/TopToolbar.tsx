@@ -6,7 +6,7 @@ import {
   MousePointer2, Hand, Minus, ArrowRight, Pencil, Type, Ruler,
   Grid3X3, Magnet, Sun, Moon, LayoutList, Square,
   Undo2, Redo2, Maximize, Info, Keyboard, ChevronDown, Trash2,
-  ImagePlus, Eye, EyeOff, X as XIcon, Palette, Check
+  ImagePlus, Eye, EyeOff, X as XIcon, Palette, Check, Compass, Spline
 } from 'lucide-react';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
@@ -22,7 +22,12 @@ const tools: { type: ToolType; icon: React.ElementType; label: string; shortcut:
   { type: 'freehand', icon: Pencil, label: 'Draw', shortcut: 'P' },
   { type: 'text', icon: Type, label: 'Text', shortcut: 'T' },
   { type: 'room-label', icon: Square, label: 'Room', shortcut: 'R' },
-  { type: 'measure', icon: Ruler, label: 'Measure', shortcut: 'M' },
+];
+
+const measureTools: { type: ToolType; icon: React.ElementType; label: string; shortcut: string; desc: string }[] = [
+  { type: 'measure', icon: Ruler, label: 'Distance', shortcut: 'M', desc: '2 clicks — straight line' },
+  { type: 'measure-angle', icon: Compass, label: 'Angle', shortcut: '', desc: '3 clicks — ray, vertex, ray' },
+  { type: 'measure-arc', icon: Spline, label: 'Arc/Curve', shortcut: '', desc: '3 clicks — start, end, bend' },
 ];
 
 const shortcutMap: Record<string, ToolType> = {
@@ -126,6 +131,43 @@ export default function TopToolbar() {
               </TooltipContent>
             </Tooltip>
           ))}
+
+          {/* Measure dropdown */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <button
+                className={`h-7 flex items-center gap-0.5 px-1.5 rounded transition-colors ${
+                  activeTool === 'measure' || activeTool === 'measure-angle' || activeTool === 'measure-arc'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
+                }`}
+              >
+                {(() => {
+                  const active = measureTools.find(mt => mt.type === activeTool);
+                  const Icon = active?.icon || Ruler;
+                  return <Icon className="h-3.5 w-3.5" />;
+                })()}
+                <ChevronDown className="h-2.5 w-2.5" />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-48 p-1.5" align="start">
+              {measureTools.map(mt => (
+                <button
+                  key={mt.type}
+                  onClick={() => setTool(mt.type)}
+                  className={`w-full flex items-center gap-2 px-2 py-1.5 rounded text-xs transition-colors ${
+                    activeTool === mt.type ? 'bg-primary text-primary-foreground' : 'text-foreground hover:bg-secondary'
+                  }`}
+                >
+                  <mt.icon className="h-3.5 w-3.5 shrink-0" />
+                  <div className="text-left">
+                    <div className="font-medium">{mt.label}{mt.shortcut ? ` (${mt.shortcut})` : ''}</div>
+                    <div className={`text-[10px] ${activeTool === mt.type ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>{mt.desc}</div>
+                  </div>
+                </button>
+              ))}
+            </PopoverContent>
+          </Popover>
         </div>
 
         <div className="h-5 w-px bg-border" />

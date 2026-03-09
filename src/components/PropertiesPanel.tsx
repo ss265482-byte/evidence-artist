@@ -332,6 +332,48 @@ export default function PropertiesPanel() {
           </h2>
           <div className="space-y-1.5">
             {measurements.map(m => {
+              if (m.type === 'angle') {
+                const vx = m.x1, vy = m.y1, ax = m.x2, ay = m.y2, bx = m.x3 ?? m.x2, by = m.y3 ?? m.y2;
+                const a1 = Math.atan2(ay - vy, ax - vx);
+                const a2 = Math.atan2(by - vy, bx - vx);
+                let deg = ((a2 - a1) * 180) / Math.PI;
+                if (deg < 0) deg += 360;
+                if (deg > 180) deg = 360 - deg;
+                return (
+                  <div key={m.id} className="flex items-center justify-between p-1.5 rounded bg-secondary/30 border border-border">
+                    <div>
+                      <span className="text-[9px] font-mono text-orange-400 bg-orange-500/10 px-1 rounded mr-1.5">∠</span>
+                      <span className="text-xs font-mono text-orange-400 font-medium">{deg.toFixed(1)}°</span>
+                    </div>
+                    <button onClick={() => removeMeasurement(m.id)} className="text-destructive hover:opacity-70">
+                      <Trash2 className="h-3 w-3" />
+                    </button>
+                  </div>
+                );
+              }
+              if (m.type === 'arc') {
+                const sx = m.x1, sy = m.y1, ex = m.x2, ey = m.y2, cx = m.x3 ?? (sx+ex)/2, cy = m.y3 ?? (sy+ey)/2;
+                let arcLen = 0; let px = sx, py = sy;
+                for (let i = 1; i <= 40; i++) {
+                  const t = i / 40;
+                  const x = (1-t)*(1-t)*sx + 2*(1-t)*t*cx + t*t*ex;
+                  const y = (1-t)*(1-t)*sy + 2*(1-t)*t*cy + t*t*ey;
+                  arcLen += Math.sqrt((x-px)**2 + (y-py)**2);
+                  px = x; py = y;
+                }
+                const distUnits = (arcLen / PIXELS_PER_UNIT).toFixed(1);
+                return (
+                  <div key={m.id} className="flex items-center justify-between p-1.5 rounded bg-secondary/30 border border-border">
+                    <div>
+                      <span className="text-[9px] font-mono text-purple-400 bg-purple-500/10 px-1 rounded mr-1.5">⌒</span>
+                      <span className="text-xs font-mono text-purple-400 font-medium">{distUnits}'</span>
+                    </div>
+                    <button onClick={() => removeMeasurement(m.id)} className="text-destructive hover:opacity-70">
+                      <Trash2 className="h-3 w-3" />
+                    </button>
+                  </div>
+                );
+              }
               const dist = (Math.sqrt(Math.pow(m.x2 - m.x1, 2) + Math.pow(m.y2 - m.y1, 2)) / PIXELS_PER_UNIT).toFixed(1);
               return (
                 <div key={m.id} className="flex items-center justify-between p-1.5 rounded bg-secondary/30 border border-border">

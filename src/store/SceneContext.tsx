@@ -34,12 +34,19 @@ export interface SceneObject {
   points?: number[]; // for freehand/arrow/line
 }
 
+export type MeasurementType = 'distance' | 'angle' | 'arc';
+
 export interface Measurement {
   id: string;
+  type: MeasurementType;
   x1: number;
   y1: number;
   x2: number;
   y2: number;
+  // For angle: vertex is (x1,y1), first ray end is (x2,y2), second ray end is (x3,y3)
+  // For arc: start is (x1,y1), end is (x2,y2), control point is (x3,y3)
+  x3?: number;
+  y3?: number;
 }
 
 export interface WallSegment {
@@ -78,7 +85,7 @@ export interface CaseInfo {
   sketchBy: string;
 }
 
-export type ToolType = 'select' | 'pan' | 'wall' | 'line' | 'arrow' | 'freehand' | 'text' | 'measure' | 'room-label';
+export type ToolType = 'select' | 'pan' | 'wall' | 'line' | 'arrow' | 'freehand' | 'text' | 'measure' | 'measure-angle' | 'measure-arc' | 'room-label';
 
 export interface BackgroundImage {
   url: string;
