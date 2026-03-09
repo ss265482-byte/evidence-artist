@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { useScene, EvidencePriority, EvidenceStatus } from '@/store/SceneContext';
-import { Trash2, Tag, Ruler, Copy, RotateCw, Layers, Lock, Unlock, ChevronsUp, ChevronsDown, ArrowUp, ArrowDown, Eye, Filter, AlertTriangle, CheckCircle2, Clock, FlaskConical, Camera } from 'lucide-react';
+import { useScene, EvidencePriority, EvidenceStatus, UNIT_CONFIG } from '@/store/SceneContext';
+import { Trash2, Tag, Ruler, Copy, RotateCw, Layers, Lock, Unlock, ChevronsUp, ChevronsDown, ArrowUp, ArrowDown, Eye, Filter, AlertTriangle, CheckCircle2, Clock, FlaskConical, Camera, Search, SortAsc, SortDesc } from 'lucide-react';
 
 const PIXELS_PER_UNIT = 20;
 
@@ -19,15 +19,21 @@ const statusConfig: Record<EvidenceStatus, { label: string; icon: React.ElementT
   'sent-to-lab': { label: 'Sent to Lab', icon: FlaskConical, color: 'text-cyan-400' },
 };
 
+type SortField = 'letter' | 'priority' | 'status' | 'time';
+
 export default function PropertiesPanel() {
   const {
     objects, selectedObjectId, updateObject, removeObject, addObject, evidence,
     addEvidence, updateEvidence, selectObject, measurements, removeMeasurement, walls,
-    bringToFront, sendToBack, moveLayerUp, moveLayerDown,
+    bringToFront, sendToBack, moveLayerUp, moveLayerDown, measurementUnit,
   } = useScene();
   const [evidenceFilter, setEvidenceFilter] = useState<'all' | EvidencePriority>('all');
+  const [evidenceSearch, setEvidenceSearch] = useState('');
+  const [sortField, setSortField] = useState<SortField>('letter');
+  const [sortAsc, setSortAsc] = useState(true);
   const selectedObj = objects.find(o => o.id === selectedObjectId);
   const selectedIndex = objects.findIndex(o => o.id === selectedObjectId);
+  const unitCfg = UNIT_CONFIG[measurementUnit];
 
   const handleDuplicate = () => {
     if (!selectedObj) return;
@@ -39,6 +45,33 @@ export default function PropertiesPanel() {
     });
     selectObject(newId);
   };
+
+  const toggleSort = (field: SortField) => {
+    if (sortField === field) setSortAsc(!sortAsc);
+    else { setSortField(field); setSortAsc(true); }
+  };
+
+  const priorityOrder: Record<EvidencePriority, number> = { critical: 0, high: 1, medium: 2, low: 3 };
+  const statusOrder: Record<EvidenceStatus, number> = { 'identified': 0, 'photographed': 1, 'collected': 2, 'processed': 3, 'sent-to-lab': 4 };
+
+  const filteredEvidence = evidence
+    .filter(ev => evidenceFilter === 'all' || ev.priority === evidenceFilter)
+    .filter(ev => !evidenceSearch || ev.description.toLowerCase().includes(evidenceSearch.toLowerCase()) || ev.letter.toLowerCase().includes(evidenceSearch.toLowerCase()) || ev.notes?.toLowerCase().includes(evidenceSearch.toLowerCase()))
+    .sort((a, b) => {
+      let cmp = 0;
+      if (sortField === 'letter') cmp = a.letter.localeCompare(b.letter);
+      else if (sortField === 'priority') cmp = priorityOrder[a.priority] - priorityOrder[b.priority];
+      else if (sortField === 'status') cmp = statusOrder[a.status] - statusOrder[b.status];
+      else if (sortField === 'time') cmp = a.timeLogged.localeCompare(b.timeLogged);
+      return sortAsc ? cmp : -cmp;
+    });
+
+  // Calculate measurement totals
+  const distanceMeasurements = measurements.filter(m => m.type === 'distance');
+  const totalDistance = distanceMeasurements.reduce((sum, m) => {
+    const dx = m.x2 - m.x1, dy = m.y2 - m.y1;
+    return sum + Math.sqrt(dx * dx + dy * dy);
+  }, 0);
 
   return (
     <div className="w-64 bg-card border-l border-border flex flex-col h-full">
@@ -194,7 +227,7 @@ export default function PropertiesPanel() {
                   <span className="text-muted-foreground">— Evidence</span>
                 </div>
               )}
-              <button onClick={handleDuplicate} title="Duplicate"
+              <button onClick={handleDuplicate} title="Duplicate (Ctrl+D)"
                 className="flex items-center justify-center gap-1 text-xs bg-secondary text-secondary-foreground rounded-md py-1.5 px-3 hover:opacity-90 transition-opacity">
                 <Copy className="h-3 w-3" />
               </button>
@@ -207,7 +240,7 @@ export default function PropertiesPanel() {
         ) : (
           <div className="text-center py-4">
             <p className="text-xs text-muted-foreground">Select an object to edit</p>
-            <p className="text-[10px] text-muted-foreground/50 mt-1">Click on canvas or right-click for options</p>
+            <p className="text-[10px] text-muted-foreground/50 mt-1">Click on canvas · <kbd className="px-1 py-0.5 bg-secondary rounded text-[9px] font-mono">Ctrl+D</kbd> to duplicate</p>
           </div>
         )}
       </div>
@@ -220,6 +253,20 @@ export default function PropertiesPanel() {
             <span className="text-[9px] font-mono bg-accent text-accent-foreground px-1.5 py-0.5 rounded-full font-bold">{evidence.length}</span>
           )}
         </div>
+
+        {/* Search bar */}
+        {evidence.length > 2 && (
+          <div className="relative mb-2">
+            <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3 w-3 text-muted-foreground" />
+            <input
+              type="text"
+              placeholder="Search evidence..."
+              value={evidenceSearch}
+              onChange={e => setEvidenceSearch(e.target.value)}
+              className="w-full bg-secondary text-foreground text-[10px] rounded-md pl-6 pr-2 py-1.5 border border-border focus:outline-none focus:ring-1 focus:ring-ring placeholder:text-muted-foreground"
+            />
+          </div>
+        )}
 
         {/* Filter bar */}
         {evidence.length > 0 && (
@@ -240,6 +287,29 @@ export default function PropertiesPanel() {
           </div>
         )}
 
+        {/* Sort controls */}
+        {evidence.length > 1 && (
+          <div className="flex gap-1 mb-2">
+            {([
+              { field: 'letter' as SortField, label: 'ID' },
+              { field: 'priority' as SortField, label: 'Priority' },
+              { field: 'status' as SortField, label: 'Status' },
+              { field: 'time' as SortField, label: 'Time' },
+            ]).map(s => (
+              <button
+                key={s.field}
+                onClick={() => toggleSort(s.field)}
+                className={`text-[8px] px-1 py-0.5 rounded transition-colors flex items-center gap-0.5 ${
+                  sortField === s.field ? 'bg-primary/20 text-primary' : 'text-muted-foreground hover:text-foreground'
+                }`}
+              >
+                {s.label}
+                {sortField === s.field && (sortAsc ? <SortAsc className="h-2.5 w-2.5" /> : <SortDesc className="h-2.5 w-2.5" />)}
+              </button>
+            ))}
+          </div>
+        )}
+
         {evidence.length === 0 ? (
           <div className="text-center py-4">
             <p className="text-xs text-muted-foreground">No evidence logged</p>
@@ -247,9 +317,7 @@ export default function PropertiesPanel() {
           </div>
         ) : (
           <div className="space-y-2">
-            {evidence
-              .filter(ev => evidenceFilter === 'all' || ev.priority === evidenceFilter)
-              .map(ev => {
+            {filteredEvidence.map(ev => {
               const prio = priorityConfig[ev.priority];
               const stat = statusConfig[ev.status];
               const StatusIcon = stat.icon;
@@ -319,6 +387,11 @@ export default function PropertiesPanel() {
                 </button>
               );
             })}
+            {filteredEvidence.length === 0 && evidence.length > 0 && (
+              <div className="text-center py-3">
+                <p className="text-[10px] text-muted-foreground">No matches found</p>
+              </div>
+            )}
           </div>
         )}
       </div>
@@ -361,12 +434,12 @@ export default function PropertiesPanel() {
                   arcLen += Math.sqrt((x-px)**2 + (y-py)**2);
                   px = x; py = y;
                 }
-                const distUnits = (arcLen / PIXELS_PER_UNIT).toFixed(1);
+                const distUnits = ((arcLen / PIXELS_PER_UNIT) * unitCfg.factor).toFixed(1);
                 return (
                   <div key={m.id} className="flex items-center justify-between p-1.5 rounded bg-secondary/30 border border-border">
                     <div>
                       <span className="text-[9px] font-mono text-purple-400 bg-purple-500/10 px-1 rounded mr-1.5">⌒</span>
-                      <span className="text-xs font-mono text-purple-400 font-medium">{distUnits}'</span>
+                      <span className="text-xs font-mono text-purple-400 font-medium">{distUnits}{unitCfg.suffix}</span>
                     </div>
                     <button onClick={() => removeMeasurement(m.id)} className="text-destructive hover:opacity-70">
                       <Trash2 className="h-3 w-3" />
@@ -374,11 +447,11 @@ export default function PropertiesPanel() {
                   </div>
                 );
               }
-              const dist = (Math.sqrt(Math.pow(m.x2 - m.x1, 2) + Math.pow(m.y2 - m.y1, 2)) / PIXELS_PER_UNIT).toFixed(1);
+              const dist = ((Math.sqrt(Math.pow(m.x2 - m.x1, 2) + Math.pow(m.y2 - m.y1, 2)) / PIXELS_PER_UNIT) * unitCfg.factor).toFixed(1);
               return (
                 <div key={m.id} className="flex items-center justify-between p-1.5 rounded bg-secondary/30 border border-border">
                   <div>
-                    <span className="text-xs font-mono text-[#22d3ee] font-medium">{dist}'</span>
+                    <span className="text-xs font-mono text-[#22d3ee] font-medium">{dist}{unitCfg.suffix}</span>
                     <span className="text-[10px] text-muted-foreground ml-2">
                       ({Math.round(m.x1)},{Math.round(m.y1)}) → ({Math.round(m.x2)},{Math.round(m.y2)})
                     </span>
@@ -390,13 +463,22 @@ export default function PropertiesPanel() {
               );
             })}
           </div>
+          {/* Totals */}
+          {distanceMeasurements.length > 1 && (
+            <div className="mt-2 pt-2 border-t border-border/50">
+              <div className="flex items-center justify-between text-[10px]">
+                <span className="text-muted-foreground font-mono">Total distance:</span>
+                <span className="font-mono font-bold text-[#22d3ee]">{((totalDistance / PIXELS_PER_UNIT) * unitCfg.factor).toFixed(1)}{unitCfg.suffix}</span>
+              </div>
+            </div>
+          )}
         </div>
       )}
 
       {/* Scene summary */}
       <div className="border-t border-border p-3">
         <h2 className="text-[10px] font-semibold text-muted-foreground/50 uppercase tracking-wider mb-1">Scene Summary</h2>
-        <div className="grid grid-cols-3 gap-1 text-[9px] font-mono text-muted-foreground">
+        <div className="grid grid-cols-4 gap-1 text-[9px] font-mono text-muted-foreground">
           <div className="bg-secondary/30 rounded px-1.5 py-1 text-center">
             <div className="text-foreground font-bold">{objects.length}</div>
             <div>objects</div>
@@ -408,6 +490,10 @@ export default function PropertiesPanel() {
           <div className="bg-secondary/30 rounded px-1.5 py-1 text-center">
             <div className="text-foreground font-bold">{evidence.length}</div>
             <div>evidence</div>
+          </div>
+          <div className="bg-secondary/30 rounded px-1.5 py-1 text-center">
+            <div className="text-foreground font-bold">{measurements.length}</div>
+            <div>measures</div>
           </div>
         </div>
       </div>

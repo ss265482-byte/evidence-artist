@@ -1,5 +1,5 @@
 import { useEffect, useState, useRef } from 'react';
-import { useScene, ToolType } from '@/store/SceneContext';
+import { useScene, ToolType, MeasurementUnit, UNIT_CONFIG } from '@/store/SceneContext';
 import { themes, themeCategories, ThemeDefinition } from '@/lib/themes';
 import { stageStore } from '@/lib/stageRef';
 import {
@@ -35,7 +35,7 @@ const shortcutMap: Record<string, ToolType> = {
 };
 
 export default function TopToolbar() {
-  const { activeTool, setTool, showGrid, toggleGrid, snapToGrid, toggleSnap, showLegend, toggleLegend, isDark, toggleDark, themeId, setTheme, caseInfo, setCaseInfo, zoom, setZoom, undo, redo, canUndo, canRedo, objects, clearAll, walls, measurements, backgroundImage, setBackgroundImage, updateBackgroundImage } = useScene();
+  const { activeTool, setTool, showGrid, toggleGrid, snapToGrid, toggleSnap, showLegend, toggleLegend, isDark, toggleDark, themeId, setTheme, caseInfo, setCaseInfo, zoom, setZoom, undo, redo, canUndo, canRedo, objects, clearAll, walls, measurements, backgroundImage, setBackgroundImage, updateBackgroundImage, measurementUnit, setMeasurementUnit } = useScene();
   const [showShortcuts, setShowShortcuts] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -150,7 +150,7 @@ export default function TopToolbar() {
                 <ChevronDown className="h-2.5 w-2.5" />
               </button>
             </PopoverTrigger>
-            <PopoverContent className="w-48 p-1.5" align="start">
+            <PopoverContent className="w-52 p-1.5" align="start">
               {measureTools.map(mt => (
                 <button
                   key={mt.type}
@@ -166,6 +166,25 @@ export default function TopToolbar() {
                   </div>
                 </button>
               ))}
+              <div className="h-px bg-border my-1.5" />
+              <div className="px-2 py-1">
+                <label className="text-[9px] text-muted-foreground uppercase tracking-wider font-semibold">Unit System</label>
+                <div className="grid grid-cols-4 gap-1 mt-1">
+                  {(Object.keys(UNIT_CONFIG) as MeasurementUnit[]).map(unit => (
+                    <button
+                      key={unit}
+                      onClick={() => setMeasurementUnit(unit)}
+                      className={`text-[10px] font-mono py-1 rounded transition-colors ${
+                        measurementUnit === unit
+                          ? 'bg-primary text-primary-foreground'
+                          : 'bg-secondary text-muted-foreground hover:text-foreground'
+                      }`}
+                    >
+                      {UNIT_CONFIG[unit].suffix || unit}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </PopoverContent>
           </Popover>
         </div>
@@ -339,6 +358,7 @@ export default function TopToolbar() {
               <div className="flex justify-between text-muted-foreground"><span>Undo</span><kbd className="px-1.5 py-0.5 bg-secondary rounded font-mono text-[10px]">⌘Z</kbd></div>
               <div className="flex justify-between text-muted-foreground"><span>Redo</span><kbd className="px-1.5 py-0.5 bg-secondary rounded font-mono text-[10px]">⌘⇧Z</kbd></div>
               <div className="flex justify-between text-muted-foreground"><span>Delete</span><kbd className="px-1.5 py-0.5 bg-secondary rounded font-mono text-[10px]">Del</kbd></div>
+              <div className="flex justify-between text-muted-foreground"><span>Duplicate</span><kbd className="px-1.5 py-0.5 bg-secondary rounded font-mono text-[10px]">⌘D</kbd></div>
               <div className="flex justify-between text-muted-foreground"><span>Deselect</span><kbd className="px-1.5 py-0.5 bg-secondary rounded font-mono text-[10px]">Esc</kbd></div>
             </div>
           </PopoverContent>

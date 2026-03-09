@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { Stage, Layer, Rect, Text, Line, Circle, Group, Transformer, Arrow as KonvaArrow, Image as KonvaImage } from 'react-konva';
-import { useScene, SceneObject, Measurement, WallSegment } from '@/store/SceneContext';
+import { useScene, SceneObject, Measurement, WallSegment, UNIT_CONFIG } from '@/store/SceneContext';
 import Konva from 'konva';
 import { stageStore } from '@/lib/stageRef';
 import { Trash2, Copy, Lock, Unlock, ArrowUpToLine, ArrowDownToLine, X } from 'lucide-react';
@@ -55,11 +55,11 @@ function GridLayer({ width, height, zoom, isDark }: { width: number; height: num
   return <>{lines}</>;
 }
 
-function MeasurementLine({ m, isSelected, onSelect, onRemove }: { m: Measurement; isSelected?: boolean; onSelect?: () => void; onRemove: () => void }) {
+function MeasurementLine({ m, isSelected, onSelect, onRemove, unitConfig }: { m: Measurement; isSelected?: boolean; onSelect?: () => void; onRemove: () => void; unitConfig: { suffix: string; factor: number } }) {
   const dx = m.x2 - m.x1;
   const dy = m.y2 - m.y1;
   const dist = Math.sqrt(dx * dx + dy * dy);
-  const distUnits = (dist / PIXELS_PER_UNIT).toFixed(1);
+  const distUnits = ((dist / PIXELS_PER_UNIT) * unitConfig.factor).toFixed(1);
   const midX = (m.x1 + m.x2) / 2;
   const midY = (m.y1 + m.y2) / 2;
   const len = dist || 1;
@@ -78,7 +78,7 @@ function MeasurementLine({ m, isSelected, onSelect, onRemove }: { m: Measurement
       <Circle x={m.x2} y={m.y2} radius={4} fill={strokeColor} />
       <Group x={midX} y={midY}>
         <Rect x={-30} y={-22} width={60} height={18} fill="hsl(225, 22%, 11%)" stroke={strokeColor} strokeWidth={1} cornerRadius={3} opacity={0.9} />
-        <Text x={-30} y={-20} width={60} text={`${distUnits}'`} fontSize={11} fontFamily="JetBrains Mono, monospace" fill={strokeColor} align="center" />
+        <Text x={-30} y={-20} width={60} text={`${distUnits}${unitConfig.suffix}`} fontSize={11} fontFamily="JetBrains Mono, monospace" fill={strokeColor} align="center" />
       </Group>
       {isSelected && (
         <Group x={midX + 35} y={midY - 22} onClick={onRemove} onTap={onRemove}>
@@ -144,7 +144,7 @@ function AngleMeasurement({ m, isSelected, onSelect, onRemove }: { m: Measuremen
   );
 }
 
-function ArcMeasurement({ m, isSelected, onSelect, onRemove }: { m: Measurement; isSelected?: boolean; onSelect?: () => void; onRemove: () => void }) {
+function ArcMeasurement({ m, isSelected, onSelect, onRemove, unitConfig }: { m: Measurement; isSelected?: boolean; onSelect?: () => void; onRemove: () => void; unitConfig: { suffix: string; factor: number } }) {
   // m.x1,y1 = start, m.x2,y2 = end, m.x3,y3 = control point
   const sx = m.x1, sy = m.y1;
   const ex = m.x2, ey = m.y2;
@@ -168,7 +168,7 @@ function ArcMeasurement({ m, isSelected, onSelect, onRemove }: { m: Measurement;
     prevX = x; prevY = y;
   }
 
-  const distUnits = (arcLength / PIXELS_PER_UNIT).toFixed(1);
+  const distUnits = ((arcLength / PIXELS_PER_UNIT) * unitConfig.factor).toFixed(1);
   const midT = 0.5;
   const midX = (1 - midT) * (1 - midT) * sx + 2 * (1 - midT) * midT * cx + midT * midT * ex;
   const midY = (1 - midT) * (1 - midT) * sy + 2 * (1 - midT) * midT * cy + midT * midT * ey;
@@ -185,7 +185,7 @@ function ArcMeasurement({ m, isSelected, onSelect, onRemove }: { m: Measurement;
       <Line points={[ex, ey, cx, cy]} stroke={strokeColor} strokeWidth={0.5} dash={[2, 4]} opacity={0.4} />
       <Group x={midX} y={midY - 4}>
         <Rect x={-32} y={-22} width={64} height={18} fill="hsl(225, 22%, 11%)" stroke={strokeColor} strokeWidth={1} cornerRadius={3} opacity={0.9} />
-        <Text x={-32} y={-20} width={64} text={`⌒ ${distUnits}'`} fontSize={11} fontFamily="JetBrains Mono, monospace" fill={strokeColor} align="center" />
+        <Text x={-32} y={-20} width={64} text={`⌒ ${distUnits}${unitConfig.suffix}`} fontSize={11} fontFamily="JetBrains Mono, monospace" fill={strokeColor} align="center" />
       </Group>
       {isSelected && (
         <Group x={midX + 38} y={midY - 26} onClick={onRemove} onTap={onRemove}>
@@ -1742,6 +1742,122 @@ function SceneObjectShape({ obj, isSelected, onSelect, allObjects, onSnapGuides,
             {/* Push bar */}
             <Line points={[0, h * 0.15, -3, h * 0.15, -3, h * 0.85, 0, h * 0.85]} stroke="#6b7280" strokeWidth={1.5} />
           </>
+      );
+      case 'ambulance':
+        return (
+          <>
+            <Rect x={2} y={h * 0.1} width={w - 4} height={h * 0.8} fill={c} opacity={0.15} stroke={c} strokeWidth={1.5} cornerRadius={5} />
+            {/* Cab */}
+            <Rect x={2} y={h * 0.12} width={w * 0.3} height={h * 0.76} fill={c} opacity={0.22} stroke={c} strokeWidth={1.2} cornerRadius={6} />
+            {/* Windshield */}
+            <Line points={[w * 0.06, h * 0.2, w * 0.12, h * 0.14, w * 0.12, h * 0.86, w * 0.06, h * 0.8]} stroke="#38bdf8" strokeWidth={1.2} fill="#38bdf8" opacity={0.15} closed />
+            {/* Cross symbol on side */}
+            <Rect x={w * 0.48} y={h * 0.35} width={w * 0.14} height={h * 0.3} fill="#ef4444" opacity={0.6} cornerRadius={1} />
+            <Rect x={w * 0.42} y={h * 0.42} width={w * 0.26} height={h * 0.16} fill="#ef4444" opacity={0.6} cornerRadius={1} />
+            {/* Rear doors */}
+            <Line points={[w - 4, h * 0.2, w - 4, h * 0.8]} stroke={c} strokeWidth={1} opacity={0.4} />
+            <Line points={[w - 8, h * 0.35, w - 4, h * 0.35]} stroke={c} strokeWidth={0.6} opacity={0.3} />
+            <Line points={[w - 8, h * 0.65, w - 4, h * 0.65]} stroke={c} strokeWidth={0.6} opacity={0.3} />
+            {/* Light bar */}
+            <Rect x={w * 0.1} y={h * 0.04} width={w * 0.12} height={h * 0.92} fill="transparent" stroke="#475569" strokeWidth={0.8} cornerRadius={3} />
+            <Rect x={w * 0.11} y={h * 0.08} width={w * 0.05} height={h * 0.4} fill="#ef4444" opacity={0.7} cornerRadius={2} />
+            <Rect x={w * 0.11} y={h * 0.52} width={w * 0.05} height={h * 0.4} fill="#f5f5f4" opacity={0.5} cornerRadius={2} />
+            <Rect x={w * 0.17} y={h * 0.08} width={w * 0.04} height={h * 0.4} fill="#f5f5f4" opacity={0.5} cornerRadius={2} />
+            <Rect x={w * 0.17} y={h * 0.52} width={w * 0.04} height={h * 0.4} fill="#ef4444" opacity={0.7} cornerRadius={2} />
+            {/* Red stripe */}
+            <Rect x={w * 0.02} y={h * 0.44} width={w * 0.92} height={h * 0.12} fill="#ef4444" opacity={0.2} />
+            {/* Wheels */}
+            <Circle x={w * 0.15} y={h * 0.08} radius={7} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Circle x={w * 0.15} y={h * 0.92} radius={7} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Circle x={w * 0.82} y={h * 0.08} radius={7} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Circle x={w * 0.82} y={h * 0.92} radius={7} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            {/* Lights */}
+            <Rect x={0} y={h * 0.22} width={4} height={h * 0.15} fill="#fbbf24" opacity={0.8} cornerRadius={2} />
+            <Rect x={0} y={h * 0.63} width={4} height={h * 0.15} fill="#fbbf24" opacity={0.8} cornerRadius={2} />
+            <Rect x={w - 4} y={h * 0.2} width={4} height={h * 0.12} fill="#ef4444" opacity={0.6} cornerRadius={2} />
+            <Rect x={w - 4} y={h * 0.68} width={4} height={h * 0.12} fill="#ef4444" opacity={0.6} cornerRadius={2} />
+          </>
+        );
+      case 'fire-truck':
+        return (
+          <>
+            {/* Main body */}
+            <Rect x={2} y={h * 0.1} width={w - 4} height={h * 0.8} fill={c} opacity={0.18} stroke={c} strokeWidth={1.5} cornerRadius={4} />
+            {/* Cab */}
+            <Rect x={2} y={h * 0.12} width={w * 0.22} height={h * 0.76} fill={c} opacity={0.25} stroke={c} strokeWidth={1.2} cornerRadius={6} />
+            {/* Windshield */}
+            <Line points={[w * 0.04, h * 0.2, w * 0.1, h * 0.14, w * 0.1, h * 0.86, w * 0.04, h * 0.8]} stroke="#38bdf8" strokeWidth={1.2} fill="#38bdf8" opacity={0.15} closed />
+            {/* Equipment compartments */}
+            <Rect x={w * 0.25} y={h * 0.15} width={w * 0.15} height={h * 0.7} fill={c} opacity={0.08} stroke={c} strokeWidth={0.8} cornerRadius={2} />
+            <Rect x={w * 0.42} y={h * 0.15} width={w * 0.15} height={h * 0.7} fill={c} opacity={0.08} stroke={c} strokeWidth={0.8} cornerRadius={2} />
+            <Rect x={w * 0.59} y={h * 0.15} width={w * 0.15} height={h * 0.7} fill={c} opacity={0.08} stroke={c} strokeWidth={0.8} cornerRadius={2} />
+            {/* Ladder on top */}
+            <Line points={[w * 0.3, h * 0.3, w * 0.92, h * 0.3]} stroke="#d4a574" strokeWidth={2} opacity={0.5} />
+            <Line points={[w * 0.3, h * 0.7, w * 0.92, h * 0.7]} stroke="#d4a574" strokeWidth={2} opacity={0.5} />
+            {Array.from({ length: 8 }, (_, i) => (
+              <Line key={`lad-${i}`} points={[w * 0.32 + i * w * 0.075, h * 0.3, w * 0.32 + i * w * 0.075, h * 0.7]} stroke="#d4a574" strokeWidth={1} opacity={0.35} />
+            ))}
+            {/* Hose reel at rear */}
+            <Circle x={w * 0.88} y={h * 0.5} radius={h * 0.18} stroke={c} strokeWidth={1.5} opacity={0.4} />
+            <Circle x={w * 0.88} y={h * 0.5} radius={h * 0.1} stroke={c} strokeWidth={0.8} opacity={0.25} />
+            {/* Light bar */}
+            <Rect x={w * 0.08} y={h * 0.04} width={w * 0.1} height={h * 0.92} fill="transparent" stroke="#475569" strokeWidth={0.8} cornerRadius={3} />
+            <Rect x={w * 0.09} y={h * 0.08} width={w * 0.04} height={h * 0.4} fill="#ef4444" opacity={0.8} cornerRadius={2} />
+            <Rect x={w * 0.09} y={h * 0.52} width={w * 0.04} height={h * 0.4} fill="#f5f5f4" opacity={0.5} cornerRadius={2} />
+            <Rect x={w * 0.14} y={h * 0.08} width={w * 0.03} height={h * 0.4} fill="#f5f5f4" opacity={0.5} cornerRadius={2} />
+            <Rect x={w * 0.14} y={h * 0.52} width={w * 0.03} height={h * 0.4} fill="#ef4444" opacity={0.8} cornerRadius={2} />
+            {/* White stripe */}
+            <Rect x={w * 0.02} y={h * 0.42} width={w * 0.94} height={h * 0.16} fill="#ffffff" opacity={0.12} />
+            {/* Wheels - 3 axles */}
+            <Circle x={w * 0.12} y={h * 0.08} radius={7} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Circle x={w * 0.12} y={h * 0.92} radius={7} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Circle x={w * 0.55} y={h * 0.08} radius={7} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Circle x={w * 0.55} y={h * 0.92} radius={7} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Circle x={w * 0.72} y={h * 0.08} radius={7} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Circle x={w * 0.72} y={h * 0.92} radius={7} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            {/* Lights */}
+            <Rect x={0} y={h * 0.2} width={4} height={h * 0.15} fill="#fbbf24" opacity={0.8} cornerRadius={2} />
+            <Rect x={0} y={h * 0.65} width={4} height={h * 0.15} fill="#fbbf24" opacity={0.8} cornerRadius={2} />
+            <Rect x={w - 4} y={h * 0.2} width={4} height={h * 0.12} fill="#ef4444" opacity={0.6} cornerRadius={2} />
+            <Rect x={w - 4} y={h * 0.68} width={4} height={h * 0.12} fill="#ef4444" opacity={0.6} cornerRadius={2} />
+          </>
+        );
+      case 'tow-truck':
+        return (
+          <>
+            {/* Cab */}
+            <Rect x={2} y={h * 0.12} width={w * 0.35} height={h * 0.76} fill={c} opacity={0.2} stroke={c} strokeWidth={1.5} cornerRadius={6} />
+            {/* Windshield */}
+            <Line points={[w * 0.05, h * 0.2, w * 0.12, h * 0.14, w * 0.12, h * 0.86, w * 0.05, h * 0.8]} stroke="#38bdf8" strokeWidth={1.2} fill="#38bdf8" opacity={0.15} closed />
+            {/* Flatbed */}
+            <Rect x={w * 0.35} y={h * 0.18} width={w * 0.62} height={h * 0.64} fill={c} opacity={0.08} stroke={c} strokeWidth={1.2} cornerRadius={2} />
+            {/* Bed surface lines */}
+            <Line points={[w * 0.4, h * 0.2, w * 0.4, h * 0.8]} stroke={c} strokeWidth={0.5} opacity={0.15} />
+            <Line points={[w * 0.55, h * 0.2, w * 0.55, h * 0.8]} stroke={c} strokeWidth={0.5} opacity={0.15} />
+            <Line points={[w * 0.7, h * 0.2, w * 0.7, h * 0.8]} stroke={c} strokeWidth={0.5} opacity={0.15} />
+            {/* Boom/crane arm */}
+            <Line points={[w * 0.35, h * 0.5, w * 0.32, h * 0.5, w * 0.28, h * 0.35, w * 0.25, h * 0.22]} stroke="#6b7280" strokeWidth={3} lineCap="round" />
+            <Line points={[w * 0.35, h * 0.5, w * 0.32, h * 0.5, w * 0.28, h * 0.65, w * 0.25, h * 0.78]} stroke="#6b7280" strokeWidth={3} lineCap="round" />
+            {/* Hook */}
+            <Line points={[w * 0.25, h * 0.22, w * 0.22, h * 0.16]} stroke="#d4a574" strokeWidth={1.5} lineCap="round" />
+            <Line points={[w * 0.22, h * 0.16, w * 0.2, h * 0.18, w * 0.22, h * 0.2]} stroke="#d4a574" strokeWidth={1.5} tension={0.5} />
+            {/* Warning lights */}
+            <Rect x={w * 0.15} y={h * 0.04} width={w * 0.08} height={h * 0.92} fill="transparent" stroke="#475569" strokeWidth={0.8} cornerRadius={3} />
+            <Rect x={w * 0.16} y={h * 0.1} width={w * 0.03} height={h * 0.35} fill="#f59e0b" opacity={0.7} cornerRadius={2} />
+            <Rect x={w * 0.16} y={h * 0.55} width={w * 0.03} height={h * 0.35} fill="#f59e0b" opacity={0.7} cornerRadius={2} />
+            <Rect x={w * 0.2} y={h * 0.1} width={w * 0.025} height={h * 0.35} fill="#f59e0b" opacity={0.7} cornerRadius={2} />
+            <Rect x={w * 0.2} y={h * 0.55} width={w * 0.025} height={h * 0.35} fill="#f59e0b" opacity={0.7} cornerRadius={2} />
+            {/* Wheels */}
+            <Circle x={w * 0.15} y={h * 0.1} radius={7} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Circle x={w * 0.15} y={h * 0.9} radius={7} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Circle x={w * 0.82} y={h * 0.1} radius={7} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            <Circle x={w * 0.82} y={h * 0.9} radius={7} fill="#1e293b" stroke="#475569" strokeWidth={1.5} />
+            {/* Lights */}
+            <Rect x={0} y={h * 0.22} width={4} height={h * 0.15} fill="#fbbf24" opacity={0.8} cornerRadius={2} />
+            <Rect x={0} y={h * 0.63} width={4} height={h * 0.15} fill="#fbbf24" opacity={0.8} cornerRadius={2} />
+            <Rect x={w - 4} y={h * 0.2} width={4} height={h * 0.12} fill="#ef4444" opacity={0.6} cornerRadius={2} />
+            <Rect x={w - 4} y={h * 0.68} width={4} height={h * 0.12} fill="#ef4444" opacity={0.6} cornerRadius={2} />
+          </>
         );
       case 'freehand':
         return (
@@ -2109,7 +2225,8 @@ function Minimap({ objects, walls, dims, stagePos, zoom }: {
 }
 
 export default function SceneCanvas() {
-  const { objects, selectedObjectId, selectedWallId, selectedMeasurementId, selectObject, selectWall, selectMeasurement, removeObject, updateObject, updateObjectSilent, addEvidence, activeTool, setTool, showGrid, showLegend, zoom, setZoom, addObject, snapToGrid, measurements, addMeasurement, removeMeasurement, walls, addWall, removeWall, evidence, isDark, bringToFront, sendToBack, backgroundImage, caseInfo } = useScene();
+  const { objects, selectedObjectId, selectedWallId, selectedMeasurementId, selectObject, selectWall, selectMeasurement, removeObject, updateObject, updateObjectSilent, addEvidence, activeTool, setTool, showGrid, showLegend, zoom, setZoom, addObject, snapToGrid, measurements, addMeasurement, removeMeasurement, walls, addWall, removeWall, evidence, isDark, bringToFront, sendToBack, backgroundImage, caseInfo, measurementUnit } = useScene();
+  const unitCfg = UNIT_CONFIG[measurementUnit];
   const containerRef = useRef<HTMLDivElement>(null);
   const stageRef = useRef<Konva.Stage>(null);
 
@@ -2144,15 +2261,31 @@ export default function SceneCanvas() {
     return () => window.removeEventListener('resize', updateDims);
   }, []);
 
+  const handleDuplicate = useCallback((objId: string) => {
+    const obj = objects.find(o => o.id === objId);
+    if (!obj) return;
+    addObject({
+      type: obj.type, x: obj.x + 20, y: obj.y + 20,
+      width: obj.width, height: obj.height, rotation: obj.rotation,
+      label: obj.label, color: obj.color, category: obj.category,
+      points: obj.points,
+    });
+    setContextMenu(null);
+  }, [objects, addObject]);
+
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
+      const tag = document.activeElement?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA') return;
       if (e.key === 'Delete' || e.key === 'Backspace') {
-        const tag = document.activeElement?.tagName;
-        if (tag === 'INPUT' || tag === 'TEXTAREA') return;
         e.preventDefault();
         if (selectedObjectId) { removeObject(selectedObjectId); }
         else if (selectedWallId) { removeWall(selectedWallId); selectWall(null); }
         else if (selectedMeasurementId) { removeMeasurement(selectedMeasurementId); selectMeasurement(null); }
+      }
+      if ((e.ctrlKey || e.metaKey) && e.key === 'd') {
+        e.preventDefault();
+        if (selectedObjectId) handleDuplicate(selectedObjectId);
       }
       if (e.key === 'Escape') {
         selectObject(null);
@@ -2168,7 +2301,7 @@ export default function SceneCanvas() {
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [selectedObjectId, selectedWallId, selectedMeasurementId, removeObject, removeWall, removeMeasurement, selectObject, selectWall, selectMeasurement, setTool]);
+  }, [selectedObjectId, selectedWallId, selectedMeasurementId, removeObject, removeWall, removeMeasurement, selectObject, selectWall, selectMeasurement, setTool, handleDuplicate]);
 
   useEffect(() => {
     if (!contextMenu) return;
@@ -2370,17 +2503,7 @@ export default function SceneCanvas() {
     }
   }, [objects, stagePos, zoom, selectObject]);
 
-  const handleDuplicate = useCallback((objId: string) => {
-    const obj = objects.find(o => o.id === objId);
-    if (!obj) return;
-    addObject({
-      type: obj.type, x: obj.x + 20, y: obj.y + 20,
-      width: obj.width, height: obj.height, rotation: obj.rotation,
-      label: obj.label, color: obj.color, category: obj.category,
-      points: obj.points,
-    });
-    setContextMenu(null);
-  }, [objects, addObject]);
+  // handleDuplicate already declared above
 
   useEffect(() => {
     if (activeTool !== 'measure' && activeTool !== 'measure-angle' && activeTool !== 'measure-arc') { setMeasureStart(null); setMeasureMid(null); setMeasurePreview(null); }
@@ -2457,8 +2580,8 @@ export default function SceneCanvas() {
           )}
           {measurements.map(m => {
             if (m.type === 'angle') return <AngleMeasurement key={m.id} m={m} isSelected={selectedMeasurementId === m.id} onSelect={() => selectMeasurement(m.id)} onRemove={() => removeMeasurement(m.id)} />;
-            if (m.type === 'arc') return <ArcMeasurement key={m.id} m={m} isSelected={selectedMeasurementId === m.id} onSelect={() => selectMeasurement(m.id)} onRemove={() => removeMeasurement(m.id)} />;
-            return <MeasurementLine key={m.id} m={m} isSelected={selectedMeasurementId === m.id} onSelect={() => selectMeasurement(m.id)} onRemove={() => removeMeasurement(m.id)} />;
+            if (m.type === 'arc') return <ArcMeasurement key={m.id} m={m} isSelected={selectedMeasurementId === m.id} onSelect={() => selectMeasurement(m.id)} onRemove={() => removeMeasurement(m.id)} unitConfig={unitCfg} />;
+            return <MeasurementLine key={m.id} m={m} isSelected={selectedMeasurementId === m.id} onSelect={() => selectMeasurement(m.id)} onRemove={() => removeMeasurement(m.id)} unitConfig={unitCfg} />;
           })}
           {walls.map(w => (
             <WallLine key={w.id} w={w} isSelected={selectedWallId === w.id} onSelect={() => selectWall(w.id)} onRemove={() => removeWall(w.id)} />
@@ -2471,7 +2594,7 @@ export default function SceneCanvas() {
           )}
           {/* Distance measure preview */}
           {activeTool === 'measure' && measureStart && measurePreview && (
-            <MeasurementLine m={{ id: 'preview', type: 'distance', x1: measureStart.x, y1: measureStart.y, x2: measurePreview.x, y2: measurePreview.y }} onRemove={() => { setMeasureStart(null); setMeasurePreview(null); }} />
+            <MeasurementLine m={{ id: 'preview', type: 'distance', x1: measureStart.x, y1: measureStart.y, x2: measurePreview.x, y2: measurePreview.y }} onRemove={() => { setMeasureStart(null); setMeasurePreview(null); }} unitConfig={unitCfg} />
           )}
           {/* Angle measure preview */}
           {activeTool === 'measure-angle' && measureStart && measurePreview && !measureMid && (
@@ -2485,7 +2608,7 @@ export default function SceneCanvas() {
             <Line points={[measureStart.x, measureStart.y, measurePreview.x, measurePreview.y]} stroke="#a855f7" strokeWidth={1.5} dash={[6, 3]} opacity={0.7} />
           )}
           {activeTool === 'measure-arc' && measureStart && measureMid && measurePreview && (
-            <ArcMeasurement m={{ id: 'preview', type: 'arc', x1: measureStart.x, y1: measureStart.y, x2: measureMid.x, y2: measureMid.y, x3: measurePreview.x, y3: measurePreview.y }} onRemove={() => { setMeasureStart(null); setMeasureMid(null); setMeasurePreview(null); }} />
+            <ArcMeasurement m={{ id: 'preview', type: 'arc', x1: measureStart.x, y1: measureStart.y, x2: measureMid.x, y2: measureMid.y, x3: measurePreview.x, y3: measurePreview.y }} onRemove={() => { setMeasureStart(null); setMeasureMid(null); setMeasurePreview(null); }} unitConfig={unitCfg} />
           )}
           {(activeTool === 'measure' || activeTool === 'measure-angle' || activeTool === 'measure-arc') && measureStart && !measurePreview && (
             <Circle x={measureStart.x} y={measureStart.y} radius={5} fill={activeTool === 'measure-angle' ? '#f97316' : activeTool === 'measure-arc' ? '#a855f7' : '#22d3ee'} opacity={0.8} />
