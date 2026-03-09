@@ -127,6 +127,8 @@ interface SceneState {
   zoom: number;
   isDark: boolean;
   themeId: string;
+  measurementUnit: MeasurementUnit;
+  setMeasurementUnit: (unit: MeasurementUnit) => void;
   setTheme: (id: string) => void;
   backgroundImage: BackgroundImage | null;
   canUndo: boolean;
