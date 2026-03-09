@@ -2261,6 +2261,18 @@ export default function SceneCanvas() {
     return () => window.removeEventListener('resize', updateDims);
   }, []);
 
+  const handleDuplicate = useCallback((objId: string) => {
+    const obj = objects.find(o => o.id === objId);
+    if (!obj) return;
+    addObject({
+      type: obj.type, x: obj.x + 20, y: obj.y + 20,
+      width: obj.width, height: obj.height, rotation: obj.rotation,
+      label: obj.label, color: obj.color, category: obj.category,
+      points: obj.points,
+    });
+    setContextMenu(null);
+  }, [objects, addObject]);
+
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       const tag = document.activeElement?.tagName;
