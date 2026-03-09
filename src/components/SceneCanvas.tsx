@@ -306,6 +306,7 @@ function SceneObjectShape({ obj, isSelected, onSelect, allObjects, onSnapGuides 
   const c = obj.color || '#3b82f6';
   const w = obj.width;
   const h = obj.height;
+  const r = Math.min(w, h);
   const opacity = obj.opacity ?? 1;
 
   const renderShape = () => {
@@ -528,119 +529,236 @@ function SceneObjectShape({ obj, isSelected, onSelect, allObjects, onSnapGuides 
       case 'evidence-marker':
         return (
           <>
-            {/* Shadow */}
-            <Circle x={w / 2} y={h * 0.92} radius={w * 0.35} fill="#000" opacity={0.08} />
-            {/* Tent base */}
-            <Line points={[w * 0.08, h * 0.95, w * 0.92, h * 0.95]} stroke="#a16207" strokeWidth={1.5} />
-            {/* Tent body */}
-            <Line points={[w / 2, h * 0.02, w * 0.92, h * 0.95, w * 0.08, h * 0.95]} fill={c} stroke="#a16207" strokeWidth={1.5} closed />
-            {/* Highlight edge */}
-            <Line points={[w / 2, h * 0.02, w * 0.92, h * 0.95]} stroke="#fde047" strokeWidth={0.5} opacity={0.4} />
+            {/* Ground shadow */}
+            <Line points={[w * 0.15, h * 0.94, w * 0.85, h * 0.94, w * 0.9, h * 0.98, w * 0.1, h * 0.98]} fill="#000" opacity={0.1} closed tension={0.2} />
+            {/* Tent base with thickness */}
+            <Rect x={w * 0.06} y={h * 0.9} width={w * 0.88} height={h * 0.06} fill="#92400e" cornerRadius={1} opacity={0.6} />
+            <Line points={[w * 0.06, h * 0.9, w * 0.94, h * 0.9]} stroke="#a16207" strokeWidth={1.5} />
+            {/* Tent back face (darker) */}
+            <Line points={[w / 2, h * 0.01, w * 0.06, h * 0.9, w * 0.94, h * 0.9]} fill="#a16207" opacity={0.15} closed />
+            {/* Tent front face */}
+            <Line points={[w / 2, h * 0.01, w * 0.94, h * 0.9, w * 0.06, h * 0.9]} fill={c} stroke="#b45309" strokeWidth={1.5} closed />
+            {/* Left edge highlight */}
+            <Line points={[w / 2, h * 0.01, w * 0.06, h * 0.9]} stroke="#fde047" strokeWidth={0.8} opacity={0.5} />
+            {/* Right edge shadow */}
+            <Line points={[w / 2, h * 0.01, w * 0.94, h * 0.9]} stroke="#92400e" strokeWidth={0.8} opacity={0.4} />
+            {/* Center fold crease */}
+            <Line points={[w / 2, h * 0.01, w / 2, h * 0.9]} stroke="#a16207" strokeWidth={0.6} opacity={0.35} />
+            {/* Surface texture lines */}
+            <Line points={[w * 0.3, h * 0.5, w * 0.35, h * 0.48]} stroke="#a16207" strokeWidth={0.4} opacity={0.2} />
+            <Line points={[w * 0.6, h * 0.55, w * 0.65, h * 0.53]} stroke="#a16207" strokeWidth={0.4} opacity={0.2} />
+            <Line points={[w * 0.45, h * 0.7, w * 0.52, h * 0.68]} stroke="#a16207" strokeWidth={0.4} opacity={0.2} />
+            {/* Number background circle */}
+            <Circle x={w / 2} y={h * 0.5} radius={Math.min(w, h) * 0.18} fill="#1c1917" opacity={0.15} />
             {/* Number/letter */}
-            <Text text={obj.evidenceId || '#'} x={0} y={h * 0.38} width={w} align="center" fontSize={Math.min(18, w * 0.5)} fontStyle="bold" fill="#1c1917" fontFamily="JetBrains Mono, monospace" />
-            {/* Top fold line */}
-            <Line points={[w / 2, h * 0.02, w / 2, h * 0.25]} stroke="#a16207" strokeWidth={0.5} opacity={0.5} />
+            <Text text={obj.evidenceId || '#'} x={0} y={h * 0.36} width={w} align="center" fontSize={Math.min(20, w * 0.5)} fontStyle="bold" fill="#1c1917" fontFamily="JetBrains Mono, monospace" />
+            {/* Top apex detail */}
+            <Circle x={w / 2} y={h * 0.01} radius={2} fill="#fbbf24" opacity={0.6} />
+            {/* Reflective strip at base */}
+            <Rect x={w * 0.08} y={h * 0.84} width={w * 0.84} height={h * 0.04} fill="#fde047" opacity={0.15} cornerRadius={1} />
           </>
         );
       case 'blood-stain':
         return (
-          <>
-            {/* Main pool */}
-            <Circle x={w * 0.45} y={h * 0.5} radius={Math.min(w, h) * 0.38} fill={c} opacity={0.7} />
-            <Circle x={w * 0.45} y={h * 0.5} radius={Math.min(w, h) * 0.32} fill="#991b1b" opacity={0.3} />
-            {/* Spreading edges */}
-            <Circle x={w * 0.65} y={h * 0.35} radius={Math.min(w, h) * 0.22} fill={c} opacity={0.55} />
-            <Circle x={w * 0.3} y={h * 0.65} radius={Math.min(w, h) * 0.18} fill={c} opacity={0.5} />
-            <Circle x={w * 0.7} y={h * 0.6} radius={Math.min(w, h) * 0.12} fill={c} opacity={0.45} />
-            {/* Spatter drops */}
-            <Circle x={w * 0.85} y={h * 0.25} radius={2.5} fill={c} opacity={0.6} />
-            <Circle x={w * 0.12} y={h * 0.18} radius={2} fill={c} opacity={0.5} />
-            <Circle x={w * 0.78} y={h * 0.78} radius={3} fill={c} opacity={0.45} />
-            <Circle x={w * 0.9} y={h * 0.5} radius={1.5} fill={c} opacity={0.5} />
-            <Circle x={w * 0.2} y={h * 0.85} radius={1.8} fill={c} opacity={0.4} />
-            {/* Drag trail hint */}
-            <Line points={[w * 0.65, h * 0.5, w * 0.9, h * 0.42]} stroke={c} strokeWidth={2} opacity={0.25} lineCap="round" />
-            {/* Dark center */}
-            <Circle x={w * 0.42} y={h * 0.48} radius={Math.min(w, h) * 0.12} fill="#7f1d1d" opacity={0.4} />
-          </>
+            <>
+              {/* Main pooling - organic shape */}
+              <Line points={[
+                w * 0.2, h * 0.35, w * 0.25, h * 0.2, w * 0.4, h * 0.12, w * 0.6, h * 0.15,
+                w * 0.75, h * 0.25, w * 0.82, h * 0.4, w * 0.8, h * 0.6, w * 0.72, h * 0.75,
+                w * 0.55, h * 0.82, w * 0.35, h * 0.8, w * 0.2, h * 0.7, w * 0.15, h * 0.5
+              ]} fill="#991b1b" opacity={0.6} closed tension={0.35} />
+              {/* Inner darker core */}
+              <Line points={[
+                w * 0.3, h * 0.38, w * 0.4, h * 0.28, w * 0.55, h * 0.3,
+                w * 0.65, h * 0.4, w * 0.62, h * 0.58, w * 0.5, h * 0.65,
+                w * 0.35, h * 0.6, w * 0.28, h * 0.48
+              ]} fill="#7f1d1d" opacity={0.55} closed tension={0.35} />
+              {/* Darkest center */}
+              <Line points={[
+                w * 0.38, h * 0.4, w * 0.48, h * 0.35, w * 0.56, h * 0.42,
+                w * 0.52, h * 0.55, w * 0.42, h * 0.55
+              ]} fill="#450a0a" opacity={0.5} closed tension={0.3} />
+              {/* Surface reflection */}
+              <Line points={[w * 0.42, h * 0.38, w * 0.5, h * 0.36, w * 0.54, h * 0.4]} stroke="#fca5a5" strokeWidth={0.8} opacity={0.15} tension={0.3} />
+              {/* Coagulation edge */}
+              <Line points={[
+                w * 0.2, h * 0.35, w * 0.25, h * 0.2, w * 0.4, h * 0.12, w * 0.6, h * 0.15,
+                w * 0.75, h * 0.25, w * 0.82, h * 0.4, w * 0.8, h * 0.6, w * 0.72, h * 0.75,
+                w * 0.55, h * 0.82, w * 0.35, h * 0.8, w * 0.2, h * 0.7, w * 0.15, h * 0.5
+              ]} stroke="#7f1d1d" strokeWidth={1.2} opacity={0.4} closed tension={0.35} />
+              {/* Satellite spatter */}
+              <Circle x={w * 0.88} y={h * 0.2} radius={r * 0.04} fill={c} opacity={0.6} />
+              <Circle x={w * 0.92} y={h * 0.15} radius={r * 0.025} fill={c} opacity={0.5} />
+              <Circle x={w * 0.95} y={h * 0.12} radius={r * 0.015} fill={c} opacity={0.4} />
+              <Circle x={w * 0.1} y={h * 0.15} radius={r * 0.035} fill={c} opacity={0.5} />
+              <Circle x={w * 0.05} y={h * 0.1} radius={r * 0.02} fill={c} opacity={0.4} />
+              <Circle x={w * 0.08} y={h * 0.22} radius={r * 0.015} fill={c} opacity={0.35} />
+              <Circle x={w * 0.82} y={h * 0.82} radius={r * 0.03} fill={c} opacity={0.5} />
+              <Circle x={w * 0.88} y={h * 0.88} radius={r * 0.018} fill={c} opacity={0.4} />
+              <Circle x={w * 0.18} y={h * 0.88} radius={r * 0.025} fill={c} opacity={0.45} />
+              {/* Elongated directional spatter */}
+              <Line points={[w * 0.85, h * 0.3, w * 0.9, h * 0.25]} stroke={c} strokeWidth={2.5} lineCap="round" opacity={0.45} />
+              <Line points={[w * 0.87, h * 0.35, w * 0.93, h * 0.28]} stroke={c} strokeWidth={1.5} lineCap="round" opacity={0.35} />
+              {/* Drag/smear trail */}
+              <Line points={[w * 0.7, h * 0.55, w * 0.85, h * 0.5, w * 0.92, h * 0.48]} stroke={c} strokeWidth={3} opacity={0.2} lineCap="round" tension={0.3} />
+              <Line points={[w * 0.72, h * 0.58, w * 0.88, h * 0.53, w * 0.95, h * 0.52]} stroke={c} strokeWidth={1.5} opacity={0.12} lineCap="round" tension={0.3} />
+              {/* Transfer pattern */}
+              <Line points={[w * 0.35, h * 0.85, w * 0.42, h * 0.86]} stroke="#7f1d1d" strokeWidth={0.6} opacity={0.2} />
+              <Line points={[w * 0.36, h * 0.87, w * 0.41, h * 0.88]} stroke="#7f1d1d" strokeWidth={0.6} opacity={0.2} />
+              {/* Void pattern */}
+              <Circle x={w * 0.48} y={h * 0.48} radius={r * 0.06} stroke="#450a0a" strokeWidth={0.5} opacity={0.15} dash={[2, 2]} />
+            </>
         );
       case 'footprint':
         return (
           <>
             <Rect width={w} height={h} fill="transparent" />
-            {/* Sole outline */}
-            <Line points={[w * 0.25, h * 0.15, w * 0.35, h * 0.05, w * 0.65, h * 0.05, w * 0.75, h * 0.15, w * 0.78, h * 0.5, w * 0.72, h * 0.68, w * 0.28, h * 0.68, w * 0.22, h * 0.5]} fill={c} opacity={0.5} closed stroke={c} strokeWidth={1.2} />
-            {/* Heel */}
-            <Line points={[w * 0.28, h * 0.75, w * 0.72, h * 0.75, w * 0.7, h * 0.95, w * 0.3, h * 0.95]} fill={c} opacity={0.6} closed stroke={c} strokeWidth={1.2} />
-            {/* Tread pattern */}
-            <Line points={[w * 0.3, h * 0.15, w * 0.7, h * 0.15]} stroke="#a3a3a3" strokeWidth={0.8} opacity={0.5} />
-            <Line points={[w * 0.28, h * 0.25, w * 0.72, h * 0.25]} stroke="#a3a3a3" strokeWidth={0.8} opacity={0.5} />
-            <Line points={[w * 0.26, h * 0.35, w * 0.74, h * 0.35]} stroke="#a3a3a3" strokeWidth={0.8} opacity={0.5} />
-            <Line points={[w * 0.25, h * 0.45, w * 0.75, h * 0.45]} stroke="#a3a3a3" strokeWidth={0.8} opacity={0.5} />
-            <Line points={[w * 0.27, h * 0.55, w * 0.73, h * 0.55]} stroke="#a3a3a3" strokeWidth={0.8} opacity={0.5} />
-            {/* Heel tread */}
-            <Line points={[w * 0.33, h * 0.82, w * 0.67, h * 0.82]} stroke="#a3a3a3" strokeWidth={0.6} opacity={0.4} />
-            <Line points={[w * 0.32, h * 0.88, w * 0.68, h * 0.88]} stroke="#a3a3a3" strokeWidth={0.6} opacity={0.4} />
+            {/* Sole outline with anatomical shape */}
+            <Line points={[
+              w * 0.3, h * 0.08, w * 0.4, h * 0.03, w * 0.6, h * 0.03, w * 0.7, h * 0.08,
+              w * 0.75, h * 0.2, w * 0.78, h * 0.35, w * 0.76, h * 0.48,
+              w * 0.72, h * 0.58, w * 0.68, h * 0.62, w * 0.32, h * 0.62, w * 0.28, h * 0.58,
+              w * 0.24, h * 0.48, w * 0.22, h * 0.35, w * 0.25, h * 0.2
+            ]} fill={c} opacity={0.45} closed stroke={c} strokeWidth={1.5} tension={0.15} />
+            {/* Heel with rounded shape */}
+            <Line points={[
+              w * 0.3, h * 0.72, w * 0.32, h * 0.68, w * 0.68, h * 0.68, w * 0.7, h * 0.72,
+              w * 0.72, h * 0.85, w * 0.68, h * 0.95, w * 0.32, h * 0.95, w * 0.28, h * 0.85
+            ]} fill={c} opacity={0.55} closed stroke={c} strokeWidth={1.5} tension={0.15} />
             {/* Arch gap */}
-            <Line points={[w * 0.35, h * 0.68, w * 0.35, h * 0.75]} stroke={c} strokeWidth={0.5} opacity={0.3} dash={[2, 2]} />
-            <Line points={[w * 0.65, h * 0.68, w * 0.65, h * 0.75]} stroke={c} strokeWidth={0.5} opacity={0.3} dash={[2, 2]} />
+            <Line points={[w * 0.32, h * 0.62, w * 0.38, h * 0.66, w * 0.38, h * 0.68, w * 0.32, h * 0.72]} stroke={c} strokeWidth={0.5} opacity={0.2} />
+            <Line points={[w * 0.68, h * 0.62, w * 0.62, h * 0.66, w * 0.62, h * 0.68, w * 0.68, h * 0.72]} stroke={c} strokeWidth={0.5} opacity={0.2} />
+            {/* Toe impressions */}
+            <Circle x={w * 0.38} y={h * 0.06} radius={r * 0.04} fill={c} opacity={0.3} />
+            <Circle x={w * 0.5} y={h * 0.04} radius={r * 0.045} fill={c} opacity={0.3} />
+            <Circle x={w * 0.62} y={h * 0.06} radius={r * 0.04} fill={c} opacity={0.3} />
+            {/* Tread pattern - herringbone */}
+            {Array.from({ length: 6 }).map((_, i) => {
+              const ty = h * (0.12 + i * 0.08);
+              return (
+                <React.Fragment key={`tread-${i}`}>
+                  <Line points={[w * 0.32, ty, w * 0.5, ty - h * 0.015, w * 0.68, ty]} stroke="#a3a3a3" strokeWidth={0.7} opacity={0.4} />
+                  <Line points={[w * 0.35, ty + h * 0.02, w * 0.5, ty + h * 0.005, w * 0.65, ty + h * 0.02]} stroke="#a3a3a3" strokeWidth={0.5} opacity={0.25} />
+                </React.Fragment>
+              );
+            })}
+            {/* Heel tread - cross-hatch */}
+            <Line points={[w * 0.35, h * 0.76, w * 0.65, h * 0.76]} stroke="#a3a3a3" strokeWidth={0.6} opacity={0.35} />
+            <Line points={[w * 0.34, h * 0.82, w * 0.66, h * 0.82]} stroke="#a3a3a3" strokeWidth={0.6} opacity={0.35} />
+            <Line points={[w * 0.35, h * 0.88, w * 0.65, h * 0.88]} stroke="#a3a3a3" strokeWidth={0.6} opacity={0.35} />
+            {/* Brand mark hint */}
+            <Circle x={w * 0.5} y={h * 0.82} radius={r * 0.06} stroke="#a3a3a3" strokeWidth={0.5} opacity={0.2} />
+            {/* Pressure map - darker at ball and heel */}
+            <Circle x={w * 0.5} y={h * 0.3} radius={r * 0.12} fill={c} opacity={0.12} />
+            <Circle x={w * 0.5} y={h * 0.82} radius={r * 0.1} fill={c} opacity={0.1} />
+            {/* Scale reference */}
+            <Line points={[w * 0.02, h * 0.95, w * 0.02, h * 0.05]} stroke={c} strokeWidth={0.4} opacity={0.3} />
+            <Line points={[w * 0.01, h * 0.05, w * 0.03, h * 0.05]} stroke={c} strokeWidth={0.4} opacity={0.3} />
+            <Line points={[w * 0.01, h * 0.95, w * 0.03, h * 0.95]} stroke={c} strokeWidth={0.4} opacity={0.3} />
           </>
         );
       case 'tire-mark':
         return (
           <>
             <Rect width={w} height={h} fill="transparent" />
-            {/* Main tracks */}
-            <Line points={[0, h * 0.25, w, h * 0.25]} stroke={c} strokeWidth={4} opacity={0.6} lineCap="round" />
-            <Line points={[0, h * 0.75, w, h * 0.75]} stroke={c} strokeWidth={4} opacity={0.6} lineCap="round" />
-            {/* Inner track edges */}
-            <Line points={[0, h * 0.35, w, h * 0.35]} stroke={c} strokeWidth={1} opacity={0.25} />
-            <Line points={[0, h * 0.65, w, h * 0.65]} stroke={c} strokeWidth={1} opacity={0.25} />
-            {/* Tread pattern - chevron */}
-            {Array.from({ length: Math.floor(w / 10) }).map((_, i) => (
+            {/* Left track */}
+            <Line points={[0, h * 0.2, w, h * 0.2]} stroke={c} strokeWidth={5} opacity={0.5} lineCap="round" />
+            <Line points={[0, h * 0.2, w, h * 0.2]} stroke={c} strokeWidth={3} opacity={0.3} />
+            <Line points={[0, h * 0.3, w, h * 0.3]} stroke={c} strokeWidth={1} opacity={0.15} />
+            {/* Right track */}
+            <Line points={[0, h * 0.75, w, h * 0.75]} stroke={c} strokeWidth={5} opacity={0.5} lineCap="round" />
+            <Line points={[0, h * 0.75, w, h * 0.75]} stroke={c} strokeWidth={3} opacity={0.3} />
+            <Line points={[0, h * 0.65, w, h * 0.65]} stroke={c} strokeWidth={1} opacity={0.15} />
+            {/* Tread pattern - detailed chevron */}
+            {Array.from({ length: Math.floor(w / 8) }).map((_, i) => (
               <React.Fragment key={i}>
-                <Line points={[i * 10 + 2, h * 0.18, i * 10 + 5, h * 0.32, i * 10 + 8, h * 0.18]} stroke={c} strokeWidth={1} opacity={0.35} />
-                <Line points={[i * 10 + 2, h * 0.82, i * 10 + 5, h * 0.68, i * 10 + 8, h * 0.82]} stroke={c} strokeWidth={1} opacity={0.35} />
+                <Line points={[i * 8, h * 0.14, i * 8 + 4, h * 0.26, i * 8 + 8, h * 0.14]} stroke={c} strokeWidth={1} opacity={0.3} />
+                <Line points={[i * 8 + 2, h * 0.16, i * 8 + 4, h * 0.24, i * 8 + 6, h * 0.16]} stroke={c} strokeWidth={0.5} opacity={0.15} />
+                <Line points={[i * 8, h * 0.81, i * 8 + 4, h * 0.69, i * 8 + 8, h * 0.81]} stroke={c} strokeWidth={1} opacity={0.3} />
+                <Line points={[i * 8 + 2, h * 0.79, i * 8 + 4, h * 0.71, i * 8 + 6, h * 0.79]} stroke={c} strokeWidth={0.5} opacity={0.15} />
               </React.Fragment>
             ))}
-            {/* Fading ends */}
-            <Rect x={0} y={0} width={w * 0.08} height={h} fill="transparent" />
+            {/* Track edges - debris */}
+            <Circle x={w * 0.15} y={h * 0.12} radius={1} fill={c} opacity={0.2} />
+            <Circle x={w * 0.4} y={h * 0.33} radius={0.8} fill={c} opacity={0.15} />
+            <Circle x={w * 0.7} y={h * 0.85} radius={1.2} fill={c} opacity={0.2} />
+            <Circle x={w * 0.85} y={h * 0.1} radius={0.6} fill={c} opacity={0.15} />
+            {/* Skid fade effect */}
+            <Rect x={0} y={0} width={w * 0.06} height={h} fill="transparent" opacity={0.3} />
           </>
         );
       case 'fingerprint':
         return (
           <>
             <Rect width={w} height={h} fill="transparent" />
-            {/* Whorl pattern */}
-            <Circle x={w / 2} y={h / 2} radius={Math.min(w, h) * 0.46} stroke={c} strokeWidth={0.8} opacity={0.2} />
-            <Circle x={w / 2} y={h * 0.48} radius={Math.min(w, h) * 0.38} stroke={c} strokeWidth={0.8} opacity={0.3} />
-            <Circle x={w / 2} y={h * 0.46} radius={Math.min(w, h) * 0.3} stroke={c} strokeWidth={0.8} opacity={0.4} />
-            <Circle x={w / 2} y={h * 0.44} radius={Math.min(w, h) * 0.22} stroke={c} strokeWidth={0.8} opacity={0.5} />
-            <Circle x={w / 2} y={h * 0.42} radius={Math.min(w, h) * 0.14} stroke={c} strokeWidth={0.8} opacity={0.6} />
-            <Circle x={w / 2} y={h * 0.4} radius={Math.min(w, h) * 0.06} fill={c} opacity={0.5} />
-            {/* Ridge flow lines */}
-            <Line points={[w * 0.15, h * 0.35, w * 0.25, h * 0.12, w * 0.5, h * 0.05, w * 0.75, h * 0.12, w * 0.85, h * 0.35]} stroke={c} strokeWidth={0.6} opacity={0.35} tension={0.5} />
-            <Line points={[w * 0.12, h * 0.5, w * 0.2, h * 0.25, w * 0.5, h * 0.15, w * 0.8, h * 0.25, w * 0.88, h * 0.5]} stroke={c} strokeWidth={0.6} opacity={0.3} tension={0.5} />
-            {/* Bottom ridges */}
-            <Line points={[w * 0.15, h * 0.7, w * 0.5, h * 0.85, w * 0.85, h * 0.7]} stroke={c} strokeWidth={0.5} opacity={0.25} tension={0.3} />
-            <Line points={[w * 0.2, h * 0.8, w * 0.5, h * 0.92, w * 0.8, h * 0.8]} stroke={c} strokeWidth={0.5} opacity={0.2} tension={0.3} />
+            {/* Latent print background */}
+            <Circle x={w / 2} y={h / 2} radius={r * 0.47} fill={c} opacity={0.04} />
+            {/* Outer ridges - loop pattern */}
+            <Line points={[w * 0.12, h * 0.55, w * 0.15, h * 0.3, w * 0.3, h * 0.12, w * 0.5, h * 0.05, w * 0.7, h * 0.12, w * 0.85, h * 0.3, w * 0.88, h * 0.55]} stroke={c} strokeWidth={0.7} opacity={0.2} tension={0.4} />
+            <Line points={[w * 0.15, h * 0.55, w * 0.18, h * 0.32, w * 0.32, h * 0.16, w * 0.5, h * 0.1, w * 0.68, h * 0.16, w * 0.82, h * 0.32, w * 0.85, h * 0.55]} stroke={c} strokeWidth={0.7} opacity={0.25} tension={0.4} />
+            <Line points={[w * 0.18, h * 0.55, w * 0.21, h * 0.34, w * 0.34, h * 0.2, w * 0.5, h * 0.15, w * 0.66, h * 0.2, w * 0.79, h * 0.34, w * 0.82, h * 0.55]} stroke={c} strokeWidth={0.7} opacity={0.3} tension={0.4} />
+            {/* Core whorl pattern */}
+            <Circle x={w / 2} y={h * 0.42} radius={r * 0.3} stroke={c} strokeWidth={0.7} opacity={0.25} />
+            <Circle x={w / 2} y={h * 0.41} radius={r * 0.24} stroke={c} strokeWidth={0.7} opacity={0.3} />
+            <Circle x={w / 2} y={h * 0.4} radius={r * 0.18} stroke={c} strokeWidth={0.7} opacity={0.35} />
+            <Circle x={w / 2} y={h * 0.39} radius={r * 0.12} stroke={c} strokeWidth={0.7} opacity={0.4} />
+            <Circle x={w / 2} y={h * 0.38} radius={r * 0.06} stroke={c} strokeWidth={0.7} opacity={0.5} />
+            <Circle x={w / 2} y={h * 0.37} radius={r * 0.02} fill={c} opacity={0.5} />
+            {/* Delta point (left) */}
+            <Line points={[w * 0.2, h * 0.65, w * 0.25, h * 0.58, w * 0.3, h * 0.65]} stroke={c} strokeWidth={0.6} opacity={0.3} />
+            {/* Delta point (right) */}
+            <Line points={[w * 0.7, h * 0.65, w * 0.75, h * 0.58, w * 0.8, h * 0.65]} stroke={c} strokeWidth={0.6} opacity={0.3} />
+            {/* Lower ridges */}
+            <Line points={[w * 0.15, h * 0.65, w * 0.3, h * 0.78, w * 0.5, h * 0.85, w * 0.7, h * 0.78, w * 0.85, h * 0.65]} stroke={c} strokeWidth={0.6} opacity={0.2} tension={0.3} />
+            <Line points={[w * 0.18, h * 0.72, w * 0.35, h * 0.84, w * 0.5, h * 0.9, w * 0.65, h * 0.84, w * 0.82, h * 0.72]} stroke={c} strokeWidth={0.6} opacity={0.18} tension={0.3} />
+            <Line points={[w * 0.22, h * 0.78, w * 0.38, h * 0.88, w * 0.5, h * 0.94, w * 0.62, h * 0.88, w * 0.78, h * 0.78]} stroke={c} strokeWidth={0.5} opacity={0.15} tension={0.3} />
+            {/* Ridge ending minutiae (forensic markers) */}
+            <Circle x={w * 0.35} y={h * 0.3} radius={1.5} stroke="#22d3ee" strokeWidth={0.5} opacity={0.4} />
+            <Circle x={w * 0.62} y={h * 0.35} radius={1.5} stroke="#22d3ee" strokeWidth={0.5} opacity={0.4} />
+            <Circle x={w * 0.45} y={h * 0.55} radius={1.5} stroke="#22d3ee" strokeWidth={0.5} opacity={0.4} />
+            {/* Bifurcation minutiae */}
+            <Line points={[w * 0.55, h * 0.25, w * 0.58, h * 0.22]} stroke="#22d3ee" strokeWidth={0.4} opacity={0.35} />
+            <Line points={[w * 0.55, h * 0.25, w * 0.58, h * 0.28]} stroke="#22d3ee" strokeWidth={0.4} opacity={0.35} />
+            {/* Partial smudge */}
+            <Line points={[w * 0.7, h * 0.45, w * 0.82, h * 0.42, w * 0.9, h * 0.45]} stroke={c} strokeWidth={2} opacity={0.06} lineCap="round" tension={0.3} />
           </>
         );
       case 'hair-fiber':
         return (
           <>
             <Rect width={w} height={h} fill="transparent" />
-            {/* Evidence circle */}
-            <Circle x={w / 2} y={h / 2} radius={Math.min(w, h) * 0.45} stroke={c} strokeWidth={0.5} opacity={0.15} dash={[2, 2]} />
-            {/* Hair strand */}
-            <Line points={[w * 0.15, h * 0.85, w * 0.2, h * 0.55, w * 0.35, h * 0.35, w * 0.5, h * 0.5, w * 0.65, h * 0.2, w * 0.8, h * 0.35, w * 0.85, h * 0.15]} stroke={c} strokeWidth={1.8} tension={0.5} lineCap="round" />
-            {/* Hair shine */}
-            <Line points={[w * 0.3, h * 0.38, w * 0.45, h * 0.45, w * 0.6, h * 0.25]} stroke={c} strokeWidth={0.5} opacity={0.3} tension={0.5} />
-            {/* Scale markers */}
-            <Circle x={w * 0.5} y={h * 0.5} radius={1.5} fill={c} opacity={0.4} />
-            <Line points={[w * 0.05, h * 0.95, w * 0.15, h * 0.95]} stroke={c} strokeWidth={0.5} opacity={0.4} />
-            <Line points={[w * 0.05, h * 0.92, w * 0.05, h * 0.98]} stroke={c} strokeWidth={0.5} opacity={0.4} />
-            <Line points={[w * 0.15, h * 0.92, w * 0.15, h * 0.98]} stroke={c} strokeWidth={0.5} opacity={0.4} />
+            {/* Collection circle */}
+            <Circle x={w / 2} y={h / 2} radius={r * 0.46} stroke={c} strokeWidth={0.6} opacity={0.12} dash={[3, 3]} />
+            {/* Main hair strand with natural curve */}
+            <Line points={[
+              w * 0.12, h * 0.88, w * 0.15, h * 0.7, w * 0.2, h * 0.55, w * 0.28, h * 0.42,
+              w * 0.38, h * 0.35, w * 0.48, h * 0.45, w * 0.55, h * 0.32, w * 0.62, h * 0.2,
+              w * 0.72, h * 0.28, w * 0.8, h * 0.18, w * 0.88, h * 0.12
+            ]} stroke={c} strokeWidth={2} tension={0.45} lineCap="round" />
+            {/* Hair thickness variation */}
+            <Line points={[
+              w * 0.14, h * 0.86, w * 0.17, h * 0.68, w * 0.22, h * 0.53, w * 0.3, h * 0.4,
+              w * 0.4, h * 0.33, w * 0.5, h * 0.43, w * 0.57, h * 0.3, w * 0.64, h * 0.18,
+              w * 0.74, h * 0.26, w * 0.82, h * 0.16, w * 0.9, h * 0.1
+            ]} stroke={c} strokeWidth={0.8} tension={0.45} lineCap="round" opacity={0.4} />
+            {/* Cuticle scale pattern */}
+            <Line points={[w * 0.3, h * 0.4, w * 0.33, h * 0.38]} stroke={c} strokeWidth={0.5} opacity={0.3} />
+            <Line points={[w * 0.45, h * 0.42, w * 0.48, h * 0.4]} stroke={c} strokeWidth={0.5} opacity={0.3} />
+            <Line points={[w * 0.6, h * 0.22, w * 0.63, h * 0.2]} stroke={c} strokeWidth={0.5} opacity={0.3} />
+            <Line points={[w * 0.75, h * 0.25, w * 0.78, h * 0.23]} stroke={c} strokeWidth={0.5} opacity={0.3} />
+            {/* Root bulb (if visible) */}
+            <Circle x={w * 0.12} y={h * 0.89} radius={2.5} fill={c} opacity={0.5} />
+            <Circle x={w * 0.12} y={h * 0.89} radius={1.5} fill={c} opacity={0.3} />
+            {/* Medulla hint (center line) */}
+            <Line points={[w * 0.25, h * 0.5, w * 0.45, h * 0.4, w * 0.6, h * 0.25, w * 0.75, h * 0.22]} stroke={c} strokeWidth={0.4} opacity={0.15} tension={0.4} dash={[1, 2]} />
+            {/* Scale bar */}
+            <Line points={[w * 0.03, h * 0.96, w * 0.18, h * 0.96]} stroke={c} strokeWidth={0.6} opacity={0.4} />
+            <Line points={[w * 0.03, h * 0.94, w * 0.03, h * 0.98]} stroke={c} strokeWidth={0.6} opacity={0.4} />
+            <Line points={[w * 0.18, h * 0.94, w * 0.18, h * 0.98]} stroke={c} strokeWidth={0.6} opacity={0.4} />
+            <Line points={[w * 0.105, h * 0.95, w * 0.105, h * 0.97]} stroke={c} strokeWidth={0.4} opacity={0.3} />
+            {/* Microscope crosshair */}
+            <Line points={[w * 0.45, h / 2, w * 0.55, h / 2]} stroke={c} strokeWidth={0.3} opacity={0.2} />
+            <Line points={[w / 2, h * 0.45, w / 2, h * 0.55]} stroke={c} strokeWidth={0.3} opacity={0.2} />
           </>
         );
       case 'clothing':
