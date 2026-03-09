@@ -2276,7 +2276,7 @@ export default function SceneCanvas() {
   }, [objects, addObject]);
 
   useEffect(() => {
-    if (activeTool !== 'measure') { setMeasureStart(null); setMeasurePreview(null); }
+    if (activeTool !== 'measure' && activeTool !== 'measure-angle' && activeTool !== 'measure-arc') { setMeasureStart(null); setMeasureMid(null); setMeasurePreview(null); }
     if (activeTool !== 'wall') { setWallStart(null); setWallPreview(null); }
     if (activeTool !== 'arrow') { setArrowStart(null); setArrowPreview(null); }
     if (activeTool !== 'freehand') { setIsDrawing(false); setFreehandPoints([]); }
