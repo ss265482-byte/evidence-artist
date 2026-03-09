@@ -55,11 +55,11 @@ function GridLayer({ width, height, zoom, isDark }: { width: number; height: num
   return <>{lines}</>;
 }
 
-function MeasurementLine({ m, isSelected, onSelect, onRemove }: { m: Measurement; isSelected?: boolean; onSelect?: () => void; onRemove: () => void }) {
+function MeasurementLine({ m, isSelected, onSelect, onRemove, unitConfig }: { m: Measurement; isSelected?: boolean; onSelect?: () => void; onRemove: () => void; unitConfig: { suffix: string; factor: number } }) {
   const dx = m.x2 - m.x1;
   const dy = m.y2 - m.y1;
   const dist = Math.sqrt(dx * dx + dy * dy);
-  const distUnits = (dist / PIXELS_PER_UNIT).toFixed(1);
+  const distUnits = ((dist / PIXELS_PER_UNIT) * unitConfig.factor).toFixed(1);
   const midX = (m.x1 + m.x2) / 2;
   const midY = (m.y1 + m.y2) / 2;
   const len = dist || 1;
@@ -78,7 +78,7 @@ function MeasurementLine({ m, isSelected, onSelect, onRemove }: { m: Measurement
       <Circle x={m.x2} y={m.y2} radius={4} fill={strokeColor} />
       <Group x={midX} y={midY}>
         <Rect x={-30} y={-22} width={60} height={18} fill="hsl(225, 22%, 11%)" stroke={strokeColor} strokeWidth={1} cornerRadius={3} opacity={0.9} />
-        <Text x={-30} y={-20} width={60} text={`${distUnits}'`} fontSize={11} fontFamily="JetBrains Mono, monospace" fill={strokeColor} align="center" />
+        <Text x={-30} y={-20} width={60} text={`${distUnits}${unitConfig.suffix}`} fontSize={11} fontFamily="JetBrains Mono, monospace" fill={strokeColor} align="center" />
       </Group>
       {isSelected && (
         <Group x={midX + 35} y={midY - 22} onClick={onRemove} onTap={onRemove}>
