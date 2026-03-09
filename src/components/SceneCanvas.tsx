@@ -124,8 +124,7 @@ function WallLine({ w, isSelected, onSelect, onRemove }: { w: WallSegment; isSel
   );
 }
 
-function CanvasLegend({ x, y }: { x: number; y: number }) {
-  const { evidence, caseInfo } = useScene();
+function CanvasLegend({ x, y, evidence, caseInfo }: { x: number; y: number; evidence: import('@/store/SceneContext').EvidenceItem[]; caseInfo: import('@/store/SceneContext').CaseInfo }) {
   if (evidence.length === 0 && !caseInfo.location) return null;
 
   const lineHeight = 16;
