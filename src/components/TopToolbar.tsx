@@ -6,7 +6,7 @@ import {
   MousePointer2, Hand, Minus, ArrowRight, Pencil, Type, Ruler,
   Grid3X3, Magnet, Sun, Moon, LayoutList, Square,
   Undo2, Redo2, Maximize, Info, Keyboard, ChevronDown, Trash2,
-  ImagePlus, Eye, EyeOff, X as XIcon
+  ImagePlus, Eye, EyeOff, X as XIcon, Palette, Check
 } from 'lucide-react';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
