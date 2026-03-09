@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useCallback, useRef, ReactNode } from 'react';
+import { getThemeById } from '@/lib/themes';
 
 export type SceneObjectType = 
   | 'body-outline' | 'body-standing' | 'body-prone'
@@ -109,6 +110,8 @@ interface SceneState {
   showLegend: boolean;
   zoom: number;
   isDark: boolean;
+  themeId: string;
+  setTheme: (id: string) => void;
   backgroundImage: BackgroundImage | null;
   canUndo: boolean;
   canRedo: boolean;
@@ -175,6 +178,7 @@ export function SceneProvider({ children }: { children: ReactNode }) {
   const [showLegend, setShowLegend] = useState(true);
   const [zoom, setZoom] = useState(1);
   const [isDark, setIsDark] = useState(true);
+  const [themeId, setThemeId] = useState('dark');
   const [backgroundImage, setBackgroundImageState] = useState<BackgroundImage | null>(null);
 
   const undoStack = useRef<SceneSnapshot[]>([]);
@@ -363,10 +367,18 @@ export function SceneProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const toggleDark = useCallback(() => {
-    setIsDark(prev => {
-      const next = !prev;
-      document.documentElement.classList.toggle('dark', next);
-      return next;
+    const nextId = isDark ? 'light' : 'dark';
+    applyTheme(nextId);
+  }, [isDark]);
+
+  const applyTheme = useCallback((id: string) => {
+    const theme = getThemeById(id);
+    setThemeId(id);
+    setIsDark(theme.isDark);
+    document.documentElement.classList.toggle('dark', theme.isDark);
+    const root = document.documentElement;
+    Object.entries(theme.vars).forEach(([key, value]) => {
+      root.style.setProperty(key, value);
     });
   }, []);
 
@@ -382,18 +394,18 @@ export function SceneProvider({ children }: { children: ReactNode }) {
   }, []);
 
   React.useEffect(() => {
-    document.documentElement.classList.toggle('dark', isDark);
+    applyTheme(themeId);
   }, []);
 
   return (
     <SceneContext.Provider value={{
       objects, evidence, measurements, walls, caseInfo, selectedObjectId, selectedWallId, selectedMeasurementId, activeTool,
-      showGrid, snapToGrid, showLegend, zoom, isDark, backgroundImage,
+      showGrid, snapToGrid, showLegend, zoom, isDark, themeId, backgroundImage,
       canUndo: undoStack.current.length > 0,
       canRedo: redoStack.current.length > 0,
       addObject, updateObject, updateObjectSilent, removeObject, selectObject, selectWall, selectMeasurement,
       setTool: setActiveTool, toggleGrid, toggleSnap: () => setSnapToGrid(p => !p),
-      toggleLegend, setZoom, toggleDark, setCaseInfo, addEvidence, updateEvidence,
+      toggleLegend, setZoom, toggleDark, setTheme: applyTheme, setCaseInfo, addEvidence, updateEvidence,
       addMeasurement, removeMeasurement, addWall, removeWall,
       setBackgroundImage, updateBackgroundImage,
       clearAll, undo, redo, bringToFront, sendToBack, moveLayerUp, moveLayerDown,

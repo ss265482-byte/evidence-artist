@@ -1,11 +1,12 @@
 import { useEffect, useState, useRef } from 'react';
 import { useScene, ToolType } from '@/store/SceneContext';
+import { themes, themeCategories, ThemeDefinition } from '@/lib/themes';
 import { stageStore } from '@/lib/stageRef';
 import {
   MousePointer2, Hand, Minus, ArrowRight, Pencil, Type, Ruler,
   Grid3X3, Magnet, Sun, Moon, LayoutList, Square,
   Undo2, Redo2, Maximize, Info, Keyboard, ChevronDown, Trash2,
-  ImagePlus, Eye, EyeOff, X as XIcon
+  ImagePlus, Eye, EyeOff, X as XIcon, Palette, Check
 } from 'lucide-react';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
@@ -29,7 +30,7 @@ const shortcutMap: Record<string, ToolType> = {
 };
 
 export default function TopToolbar() {
-  const { activeTool, setTool, showGrid, toggleGrid, snapToGrid, toggleSnap, showLegend, toggleLegend, isDark, toggleDark, caseInfo, setCaseInfo, zoom, setZoom, undo, redo, canUndo, canRedo, objects, clearAll, walls, measurements, backgroundImage, setBackgroundImage, updateBackgroundImage } = useScene();
+  const { activeTool, setTool, showGrid, toggleGrid, snapToGrid, toggleSnap, showLegend, toggleLegend, isDark, toggleDark, themeId, setTheme, caseInfo, setCaseInfo, zoom, setZoom, undo, redo, canUndo, canRedo, objects, clearAll, walls, measurements, backgroundImage, setBackgroundImage, updateBackgroundImage } = useScene();
   const [showShortcuts, setShowShortcuts] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -355,14 +356,51 @@ export default function TopToolbar() {
         )}
 
         <ExportDialog />
-        <Tooltip>
-          <TooltipTrigger asChild>
-            <button onClick={toggleDark} className="h-7 w-7 flex items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
-              {isDark ? <Sun className="h-3.5 w-3.5" /> : <Moon className="h-3.5 w-3.5" />}
-            </button>
-          </TooltipTrigger>
-          <TooltipContent side="bottom" className="text-xs">{isDark ? 'Light Mode' : 'Dark Mode'}</TooltipContent>
-        </Tooltip>
+        <Popover>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <PopoverTrigger asChild>
+                <button className="h-7 w-7 flex items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
+                  <Palette className="h-3.5 w-3.5" />
+                </button>
+              </PopoverTrigger>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="text-xs">Themes</TooltipContent>
+          </Tooltip>
+          <PopoverContent className="w-64 p-3" align="end">
+            <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider mb-2">Themes</h3>
+            <div className="space-y-3">
+              {(Object.keys(themeCategories) as Array<keyof typeof themeCategories>).map(catKey => {
+                const cat = themeCategories[catKey];
+                const catThemes = themes.filter(t => t.category === catKey);
+                return (
+                  <div key={catKey}>
+                    <div className="text-[10px] text-muted-foreground uppercase tracking-wider mb-1 flex items-center gap-1">
+                      <span>{cat.icon}</span> {cat.label}
+                    </div>
+                    <div className="grid grid-cols-2 gap-1">
+                      {catThemes.map(t => (
+                        <button
+                          key={t.id}
+                          onClick={() => setTheme(t.id)}
+                          className={`flex items-center gap-1.5 px-2 py-1.5 rounded text-[11px] transition-colors border ${
+                            themeId === t.id
+                              ? 'border-primary bg-primary/10 text-foreground'
+                              : 'border-transparent bg-secondary/50 text-muted-foreground hover:text-foreground hover:bg-secondary'
+                          }`}
+                        >
+                          <span className="text-xs">{t.icon}</span>
+                          <span className="truncate">{t.name}</span>
+                          {themeId === t.id && <Check className="h-3 w-3 ml-auto text-primary shrink-0" />}
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </PopoverContent>
+        </Popover>
       </div>
     </TooltipProvider>
   );
