@@ -394,7 +394,7 @@ export function SceneProvider({ children }: { children: ReactNode }) {
   }, []);
 
   React.useEffect(() => {
-    document.documentElement.classList.toggle('dark', isDark);
+    applyTheme(themeId);
   }, []);
 
   return (
