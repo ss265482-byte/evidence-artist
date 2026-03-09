@@ -358,6 +358,7 @@ export default function TopToolbar() {
               <div className="flex justify-between text-muted-foreground"><span>Undo</span><kbd className="px-1.5 py-0.5 bg-secondary rounded font-mono text-[10px]">⌘Z</kbd></div>
               <div className="flex justify-between text-muted-foreground"><span>Redo</span><kbd className="px-1.5 py-0.5 bg-secondary rounded font-mono text-[10px]">⌘⇧Z</kbd></div>
               <div className="flex justify-between text-muted-foreground"><span>Delete</span><kbd className="px-1.5 py-0.5 bg-secondary rounded font-mono text-[10px]">Del</kbd></div>
+              <div className="flex justify-between text-muted-foreground"><span>Duplicate</span><kbd className="px-1.5 py-0.5 bg-secondary rounded font-mono text-[10px]">⌘D</kbd></div>
               <div className="flex justify-between text-muted-foreground"><span>Deselect</span><kbd className="px-1.5 py-0.5 bg-secondary rounded font-mono text-[10px]">Esc</kbd></div>
             </div>
           </PopoverContent>
