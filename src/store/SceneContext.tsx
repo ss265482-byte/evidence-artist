@@ -87,6 +87,15 @@ export interface CaseInfo {
 
 export type ToolType = 'select' | 'pan' | 'wall' | 'line' | 'arrow' | 'freehand' | 'text' | 'measure' | 'measure-angle' | 'measure-arc' | 'room-label';
 
+export type MeasurementUnit = 'ft' | 'm' | 'cm' | 'in';
+
+export const UNIT_CONFIG: Record<MeasurementUnit, { label: string; suffix: string; factor: number }> = {
+  ft: { label: 'Feet', suffix: "'", factor: 1 },
+  m: { label: 'Meters', suffix: 'm', factor: 0.3048 },
+  cm: { label: 'Centimeters', suffix: 'cm', factor: 30.48 },
+  in: { label: 'Inches', suffix: '"', factor: 12 },
+};
+
 export interface BackgroundImage {
   url: string;
   opacity: number;
