@@ -301,6 +301,59 @@ export default function TopToolbar() {
           </PopoverContent>
         </Popover>
 
+        {/* Floor Plan Import */}
+        <input ref={fileInputRef} type="file" accept="image/*" className="hidden" onChange={handleFileChange} />
+        {!backgroundImage ? (
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <button onClick={handleImportFloorPlan} className="h-7 w-7 flex items-center justify-center rounded text-muted-foreground hover:text-foreground hover:bg-secondary transition-colors">
+                <ImagePlus className="h-3.5 w-3.5" />
+              </button>
+            </TooltipTrigger>
+            <TooltipContent side="bottom" className="text-xs">Import Floor Plan</TooltipContent>
+          </Tooltip>
+        ) : (
+          <Popover>
+            <PopoverTrigger asChild>
+              <button className="flex items-center gap-1 px-2 py-1 rounded-md text-[11px] bg-secondary text-foreground hover:bg-secondary/80 transition-colors border border-border">
+                <ImagePlus className="h-3 w-3 text-muted-foreground" />
+                <span className="hidden sm:inline">Floor Plan</span>
+                <ChevronDown className="h-3 w-3 text-muted-foreground" />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-56 p-3 space-y-3" align="end">
+              <h3 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Floor Plan</h3>
+              <div className="space-y-2">
+                <div className="flex items-center justify-between">
+                  <span className="text-[11px] text-muted-foreground">Visible</span>
+                  <button onClick={() => updateBackgroundImage({ visible: !backgroundImage.visible })} className="h-6 w-6 flex items-center justify-center rounded hover:bg-secondary transition-colors">
+                    {backgroundImage.visible ? <Eye className="h-3.5 w-3.5 text-foreground" /> : <EyeOff className="h-3.5 w-3.5 text-muted-foreground" />}
+                  </button>
+                </div>
+                <div>
+                  <label className="text-[10px] text-muted-foreground uppercase block mb-1">Opacity: {Math.round(backgroundImage.opacity * 100)}%</label>
+                  <Slider
+                    value={[backgroundImage.opacity]}
+                    onValueChange={([v]) => updateBackgroundImage({ opacity: v })}
+                    min={0.05}
+                    max={1}
+                    step={0.05}
+                    className="w-full"
+                  />
+                </div>
+                <div className="flex gap-1">
+                  <button onClick={handleImportFloorPlan} className="flex-1 text-[10px] py-1.5 rounded bg-secondary text-foreground hover:bg-secondary/80 transition-colors">
+                    Replace
+                  </button>
+                  <button onClick={() => setBackgroundImage(null)} className="flex-1 text-[10px] py-1.5 rounded bg-destructive/10 text-destructive hover:bg-destructive/20 transition-colors">
+                    Remove
+                  </button>
+                </div>
+              </div>
+            </PopoverContent>
+          </Popover>
+        )}
+
         <ExportDialog />
         <Tooltip>
           <TooltipTrigger asChild>
