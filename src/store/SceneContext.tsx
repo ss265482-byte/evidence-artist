@@ -1,4 +1,5 @@
 import React, { createContext, useContext, useState, useCallback, useRef, ReactNode } from 'react';
+import { getThemeById } from '@/lib/themes';
 
 export type SceneObjectType = 
   | 'body-outline' | 'body-standing' | 'body-prone'
