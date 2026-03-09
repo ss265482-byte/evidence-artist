@@ -367,10 +367,18 @@ export function SceneProvider({ children }: { children: ReactNode }) {
   }, []);
 
   const toggleDark = useCallback(() => {
-    setIsDark(prev => {
-      const next = !prev;
-      document.documentElement.classList.toggle('dark', next);
-      return next;
+    const nextId = isDark ? 'light' : 'dark';
+    applyTheme(nextId);
+  }, [isDark]);
+
+  const applyTheme = useCallback((id: string) => {
+    const theme = getThemeById(id);
+    setThemeId(id);
+    setIsDark(theme.isDark);
+    document.documentElement.classList.toggle('dark', theme.isDark);
+    const root = document.documentElement;
+    Object.entries(theme.vars).forEach(([key, value]) => {
+      root.style.setProperty(key, value);
     });
   }, []);
 
