@@ -2214,7 +2214,41 @@ export default function SceneCanvas() {
           {isDrawing && freehandPoints.length >= 4 && (
             <Line points={freehandPoints} stroke="#94a3b8" strokeWidth={2} lineCap="round" lineJoin="round" tension={0.5} opacity={0.7} />
           )}
-          {showLegend && <CanvasLegend x={legendX} y={legendY} evidence={evidence} caseInfo={caseInfo} />}
+          {showLegend && (() => {
+            const ev = evidence || [];
+            const ci = caseInfo || {} as any;
+            if (ev.length === 0 && !ci.location) return null;
+            const lineHeight = 16;
+            const padding = 12;
+            const headerH = ci.location || ci.caseNumber ? 80 : 0;
+            const legendH = ev.length * lineHeight + padding * 2 + (ev.length > 0 ? 20 : 0) + headerH;
+            const legendW = 180;
+            return (
+              <Group x={legendX} y={legendY} draggable>
+                <Rect width={legendW} height={legendH} fill="hsl(225, 22%, 11%)" stroke="#475569" strokeWidth={1} cornerRadius={4} opacity={0.95} />
+                {(ci.location || ci.caseNumber) && (
+                  <>
+                    {ci.location && <Text x={padding} y={padding} text={`Location: ${ci.location}`} fontSize={9} fill="#94a3b8" fontFamily="JetBrains Mono, monospace" width={legendW - padding * 2} />}
+                    {ci.dateTime && <Text x={padding} y={padding + 14} text={`Date: ${ci.dateTime}`} fontSize={9} fill="#94a3b8" fontFamily="JetBrains Mono, monospace" width={legendW - padding * 2} />}
+                    {ci.incident && <Text x={padding} y={padding + 28} text={`Incident: ${ci.incident}`} fontSize={9} fill="#94a3b8" fontFamily="JetBrains Mono, monospace" width={legendW - padding * 2} />}
+                    {ci.sketchBy && <Text x={padding} y={padding + 42} text={`Sketch by: ${ci.sketchBy}`} fontSize={9} fill="#94a3b8" fontFamily="JetBrains Mono, monospace" width={legendW - padding * 2} />}
+                    <Line points={[padding, headerH - 8, legendW - padding, headerH - 8]} stroke="#475569" strokeWidth={0.5} />
+                  </>
+                )}
+                {ev.length > 0 && (
+                  <>
+                    <Text x={padding} y={headerH + padding - 4} text="EVIDENCE KEY" fontSize={9} fill="#94a3b8" fontStyle="bold" letterSpacing={1} />
+                    {ev.map((item: any, i: number) => (
+                      <React.Fragment key={item.id}>
+                        <Text x={padding} y={headerH + padding + 14 + i * lineHeight} text={`${item.letter} -`} fontSize={11} fill="#eab308" fontStyle="bold" fontFamily="JetBrains Mono, monospace" />
+                        <Text x={padding + 28} y={headerH + padding + 14 + i * lineHeight} text={item.description} fontSize={10} fill="#e2e8f0" fontFamily="Inter, sans-serif" width={legendW - padding * 2 - 28} />
+                      </React.Fragment>
+                    ))}
+                  </>
+                )}
+              </Group>
+            );
+          })()}
         </Layer>
       </Stage>
 
