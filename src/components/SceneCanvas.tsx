@@ -2233,7 +2233,7 @@ export default function SceneCanvas() {
     if (!stage) return;
     const pos = getCanvasPos(stage);
     if (pos) setMousePos({ x: Math.round(pos.x), y: Math.round(pos.y) });
-    if (activeTool === 'measure' && measureStart && pos) setMeasurePreview(pos);
+    if ((activeTool === 'measure' || activeTool === 'measure-angle' || activeTool === 'measure-arc') && measureStart && pos) setMeasurePreview(pos);
     if (activeTool === 'wall' && wallStart && pos) setWallPreview(pos);
     if (activeTool === 'arrow' && arrowStart && pos) setArrowPreview(pos);
 
