@@ -1,5 +1,5 @@
 import React, { useRef, useEffect, useState, useCallback } from 'react';
-import { Stage, Layer, Rect, Text, Line, Circle, Group, Transformer, Arrow as KonvaArrow } from 'react-konva';
+import { Stage, Layer, Rect, Text, Line, Circle, Group, Transformer, Arrow as KonvaArrow, Image as KonvaImage } from 'react-konva';
 import { useScene, SceneObject, Measurement, WallSegment } from '@/store/SceneContext';
 import Konva from 'konva';
 import { stageStore } from '@/lib/stageRef';
@@ -7,6 +7,36 @@ import { Trash2, Copy, Lock, Unlock, ArrowUpToLine, ArrowDownToLine, X } from 'l
 
 const GRID_SIZE = 20;
 const PIXELS_PER_UNIT = 20;
+
+function BackgroundImageLayer() {
+  const { backgroundImage } = useScene();
+  const [image, setImage] = useState<HTMLImageElement | null>(null);
+
+  useEffect(() => {
+    if (!backgroundImage?.url) { setImage(null); return; }
+    const img = new window.Image();
+    img.crossOrigin = 'anonymous';
+    img.onload = () => setImage(img);
+    img.src = backgroundImage.url;
+  }, [backgroundImage?.url]);
+
+  if (!image || !backgroundImage?.visible) return null;
+
+  const w = backgroundImage.width || image.naturalWidth;
+  const h = backgroundImage.height || image.naturalHeight;
+
+  return (
+    <KonvaImage
+      image={image}
+      x={0}
+      y={0}
+      width={w}
+      height={h}
+      opacity={backgroundImage.opacity}
+      listening={false}
+    />
+  );
+}
 
 function GridLayer({ width, height, zoom, isDark }: { width: number; height: number; zoom: number; isDark: boolean }) {
   const lines: React.ReactElement[] = [];
@@ -1803,6 +1833,7 @@ export default function SceneCanvas() {
         onDragEnd={(e) => { if (activeTool === 'pan') setStagePos({ x: e.target.x(), y: e.target.y() }); }}
       >
         <Layer>
+          <BackgroundImageLayer />
           {showGrid && <GridLayer width={dims.width} height={dims.height} zoom={zoom} isDark={isDark} />}
           {objects.map(obj => (
             <SceneObjectShape key={obj.id} obj={obj} isSelected={selectedObjectId === obj.id} onSelect={() => selectObject(obj.id)} allObjects={objects} onSnapGuides={setSnapGuides} />
