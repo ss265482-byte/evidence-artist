@@ -2014,6 +2014,7 @@ export default function SceneCanvas() {
   const [dims, setDims] = useState({ width: 800, height: 600 });
   const [stagePos, setStagePos] = useState({ x: 0, y: 0 });
   const [measureStart, setMeasureStart] = useState<{ x: number; y: number } | null>(null);
+  const [measureMid, setMeasureMid] = useState<{ x: number; y: number } | null>(null);
   const [measurePreview, setMeasurePreview] = useState<{ x: number; y: number } | null>(null);
   const [wallStart, setWallStart] = useState<{ x: number; y: number } | null>(null);
   const [wallPreview, setWallPreview] = useState<{ x: number; y: number } | null>(null);
