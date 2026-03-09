@@ -29,8 +29,31 @@ const shortcutMap: Record<string, ToolType> = {
 };
 
 export default function TopToolbar() {
-  const { activeTool, setTool, showGrid, toggleGrid, snapToGrid, toggleSnap, showLegend, toggleLegend, isDark, toggleDark, caseInfo, setCaseInfo, zoom, setZoom, undo, redo, canUndo, canRedo, objects, clearAll, walls, measurements } = useScene();
+  const { activeTool, setTool, showGrid, toggleGrid, snapToGrid, toggleSnap, showLegend, toggleLegend, isDark, toggleDark, caseInfo, setCaseInfo, zoom, setZoom, undo, redo, canUndo, canRedo, objects, clearAll, walls, measurements, backgroundImage, setBackgroundImage, updateBackgroundImage } = useScene();
   const [showShortcuts, setShowShortcuts] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
+  const handleImportFloorPlan = () => {
+    fileInputRef.current?.click();
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    const url = URL.createObjectURL(file);
+    const img = new window.Image();
+    img.onload = () => {
+      setBackgroundImage({
+        url,
+        opacity: 0.4,
+        visible: true,
+        width: img.naturalWidth,
+        height: img.naturalHeight,
+      });
+    };
+    img.src = url;
+    e.target.value = '';
+  };
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
