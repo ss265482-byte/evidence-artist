@@ -2305,7 +2305,7 @@ export default function SceneCanvas() {
 
   const getCursor = () => {
     if (activeTool === 'freehand' && isDrawing) return 'crosshair';
-    if (activeTool === 'measure' || activeTool === 'wall' || activeTool === 'arrow' || activeTool === 'freehand') return 'crosshair';
+    if (activeTool === 'measure' || activeTool === 'measure-angle' || activeTool === 'measure-arc' || activeTool === 'wall' || activeTool === 'arrow' || activeTool === 'freehand') return 'crosshair';
     if (activeTool === 'pan') return 'grab';
     if (activeTool === 'text' || activeTool === 'room-label') return 'text';
     return 'default';
