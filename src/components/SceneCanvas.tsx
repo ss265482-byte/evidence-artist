@@ -560,7 +560,6 @@ function SceneObjectShape({ obj, isSelected, onSelect, allObjects, onSnapGuides 
         );
       case 'blood-stain':
         {
-          const r = Math.min(w, h);
           return (
             <>
               {/* Main pooling - organic shape */}
