@@ -132,6 +132,8 @@ interface SceneState {
   removeMeasurement: (id: string) => void;
   addWall: (w: Omit<WallSegment, 'id'>) => void;
   removeWall: (id: string) => void;
+  setBackgroundImage: (bg: BackgroundImage | null) => void;
+  updateBackgroundImage: (updates: Partial<BackgroundImage>) => void;
   clearAll: () => void;
   undo: () => void;
   redo: () => void;
