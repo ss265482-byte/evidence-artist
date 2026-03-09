@@ -90,6 +90,113 @@ function MeasurementLine({ m, isSelected, onSelect, onRemove }: { m: Measurement
   );
 }
 
+function AngleMeasurement({ m, isSelected, onSelect, onRemove }: { m: Measurement; isSelected?: boolean; onSelect?: () => void; onRemove: () => void }) {
+  // m.x1,y1 = vertex, m.x2,y2 = ray1 end, m.x3,y3 = ray2 end
+  const vx = m.x1, vy = m.y1;
+  const ax = m.x2, ay = m.y2;
+  const bx = m.x3 ?? m.x2, by = m.y3 ?? m.y2;
+
+  const angle1 = Math.atan2(ay - vy, ax - vx);
+  const angle2 = Math.atan2(by - vy, bx - vx);
+  let angleDeg = ((angle2 - angle1) * 180) / Math.PI;
+  if (angleDeg < 0) angleDeg += 360;
+  if (angleDeg > 180) angleDeg = 360 - angleDeg;
+
+  const strokeColor = isSelected ? '#f59e0b' : '#f97316';
+  const arcRadius = 30;
+  
+  // Draw arc for angle visualization
+  const startAngle = angle1;
+  const endAngle = angle2;
+  const arcPoints: number[] = [];
+  let sweep = endAngle - startAngle;
+  if (sweep < -Math.PI) sweep += 2 * Math.PI;
+  if (sweep > Math.PI) sweep -= 2 * Math.PI;
+  const steps = 30;
+  for (let i = 0; i <= steps; i++) {
+    const t = startAngle + (sweep * i) / steps;
+    arcPoints.push(vx + Math.cos(t) * arcRadius, vy + Math.sin(t) * arcRadius);
+  }
+
+  const labelAngle = startAngle + sweep / 2;
+  const labelX = vx + Math.cos(labelAngle) * (arcRadius + 18);
+  const labelY = vy + Math.sin(labelAngle) * (arcRadius + 18);
+
+  return (
+    <Group onClick={onSelect} onTap={onSelect}>
+      <Line points={[ax, ay, vx, vy]} stroke={strokeColor} strokeWidth={isSelected ? 2.5 : 1.5} dash={[6, 3]} />
+      <Line points={[vx, vy, bx, by]} stroke={strokeColor} strokeWidth={isSelected ? 2.5 : 1.5} dash={[6, 3]} />
+      {arcPoints.length >= 4 && <Line points={arcPoints} stroke={strokeColor} strokeWidth={1.5} />}
+      <Circle x={vx} y={vy} radius={4} fill={strokeColor} />
+      <Circle x={ax} y={ay} radius={3} fill={strokeColor} />
+      <Circle x={bx} y={by} radius={3} fill={strokeColor} />
+      <Group x={labelX} y={labelY}>
+        <Rect x={-24} y={-10} width={48} height={18} fill="hsl(225, 22%, 11%)" stroke={strokeColor} strokeWidth={1} cornerRadius={3} opacity={0.9} />
+        <Text x={-24} y={-8} width={48} text={`${angleDeg.toFixed(1)}°`} fontSize={11} fontFamily="JetBrains Mono, monospace" fill={strokeColor} align="center" />
+      </Group>
+      {isSelected && (
+        <Group x={labelX + 30} y={labelY - 10} onClick={onRemove} onTap={onRemove}>
+          <Circle radius={8} fill="#ef4444" opacity={0.9} />
+          <Text x={-4} y={-6} text="×" fontSize={12} fill="#fff" fontStyle="bold" />
+        </Group>
+      )}
+    </Group>
+  );
+}
+
+function ArcMeasurement({ m, isSelected, onSelect, onRemove }: { m: Measurement; isSelected?: boolean; onSelect?: () => void; onRemove: () => void }) {
+  // m.x1,y1 = start, m.x2,y2 = end, m.x3,y3 = control point
+  const sx = m.x1, sy = m.y1;
+  const ex = m.x2, ey = m.y2;
+  const cx = m.x3 ?? (sx + ex) / 2, cy = m.y3 ?? (sy + ey) / 2;
+
+  const strokeColor = isSelected ? '#f59e0b' : '#a855f7';
+
+  // Quadratic bezier curve points
+  const curvePoints: number[] = [];
+  const steps = 40;
+  let arcLength = 0;
+  let prevX = sx, prevY = sy;
+  for (let i = 0; i <= steps; i++) {
+    const t = i / steps;
+    const x = (1 - t) * (1 - t) * sx + 2 * (1 - t) * t * cx + t * t * ex;
+    const y = (1 - t) * (1 - t) * sy + 2 * (1 - t) * t * cy + t * t * ey;
+    curvePoints.push(x, y);
+    if (i > 0) {
+      arcLength += Math.sqrt((x - prevX) ** 2 + (y - prevY) ** 2);
+    }
+    prevX = x; prevY = y;
+  }
+
+  const distUnits = (arcLength / PIXELS_PER_UNIT).toFixed(1);
+  const midT = 0.5;
+  const midX = (1 - midT) * (1 - midT) * sx + 2 * (1 - midT) * midT * cx + midT * midT * ex;
+  const midY = (1 - midT) * (1 - midT) * sy + 2 * (1 - midT) * midT * cy + midT * midT * ey;
+
+  return (
+    <Group onClick={onSelect} onTap={onSelect}>
+      <Line points={curvePoints} stroke="transparent" strokeWidth={12} />
+      <Line points={curvePoints} stroke={strokeColor} strokeWidth={isSelected ? 2.5 : 1.5} dash={[6, 3]} />
+      <Circle x={sx} y={sy} radius={4} fill={strokeColor} />
+      <Circle x={ex} y={ey} radius={4} fill={strokeColor} />
+      <Circle x={cx} y={cy} radius={3} fill={strokeColor} opacity={0.5} />
+      {/* Dotted lines to control point */}
+      <Line points={[sx, sy, cx, cy]} stroke={strokeColor} strokeWidth={0.5} dash={[2, 4]} opacity={0.4} />
+      <Line points={[ex, ey, cx, cy]} stroke={strokeColor} strokeWidth={0.5} dash={[2, 4]} opacity={0.4} />
+      <Group x={midX} y={midY - 4}>
+        <Rect x={-32} y={-22} width={64} height={18} fill="hsl(225, 22%, 11%)" stroke={strokeColor} strokeWidth={1} cornerRadius={3} opacity={0.9} />
+        <Text x={-32} y={-20} width={64} text={`⌒ ${distUnits}'`} fontSize={11} fontFamily="JetBrains Mono, monospace" fill={strokeColor} align="center" />
+      </Group>
+      {isSelected && (
+        <Group x={midX + 38} y={midY - 26} onClick={onRemove} onTap={onRemove}>
+          <Circle radius={8} fill="#ef4444" opacity={0.9} />
+          <Text x={-4} y={-6} text="×" fontSize={12} fill="#fff" fontStyle="bold" />
+        </Group>
+      )}
+    </Group>
+  );
+}
+
 function WallLine({ w, isSelected, onSelect, onRemove }: { w: WallSegment; isSelected?: boolean; onSelect?: () => void; onRemove: () => void }) {
   const dx = w.x2 - w.x1;
   const dy = w.y2 - w.y1;
