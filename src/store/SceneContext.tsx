@@ -10,7 +10,7 @@ export type SceneObjectType =
   | 'phone' | 'camera' | 'id-card' | 'bag'
   | 'bed' | 'table' | 'chair' | 'sofa' | 'cabinet'
   | 'door' | 'window' | 'wall' | 'stairs'
-  | 'car' | 'motorcycle' | 'bicycle' | 'pickup-truck' | 'suv' | 'van' | 'bus' | 'semi-truck' | 'police-car' | 'ambulance' | 'fire-truck' | 'tow-truck'
+  | 'car' | 'motorcycle' | 'bicycle' | 'pickup-truck' | 'suv' | 'van' | 'bus' | 'semi-truck' | 'police-car'
   | 'tree' | 'bush' | 'fence' | 'streetlight' | 'fire-hydrant' | 'dumpster'
   | 'bench' | 'sidewalk' | 'road' | 'mailbox' | 'manhole' | 'trash-can'
   | 'text-label' | 'arrow' | 'line' | 'freehand' | 'room-label';
@@ -87,15 +87,6 @@ export interface CaseInfo {
 
 export type ToolType = 'select' | 'pan' | 'wall' | 'line' | 'arrow' | 'freehand' | 'text' | 'measure' | 'measure-angle' | 'measure-arc' | 'room-label';
 
-export type MeasurementUnit = 'ft' | 'm' | 'cm' | 'in';
-
-export const UNIT_CONFIG: Record<MeasurementUnit, { label: string; suffix: string; factor: number }> = {
-  ft: { label: 'Feet', suffix: "'", factor: 1 },
-  m: { label: 'Meters', suffix: 'm', factor: 0.3048 },
-  cm: { label: 'Centimeters', suffix: 'cm', factor: 30.48 },
-  in: { label: 'Inches', suffix: '"', factor: 12 },
-};
-
 export interface BackgroundImage {
   url: string;
   opacity: number;
@@ -127,8 +118,6 @@ interface SceneState {
   zoom: number;
   isDark: boolean;
   themeId: string;
-  measurementUnit: MeasurementUnit;
-  setMeasurementUnit: (unit: MeasurementUnit) => void;
   setTheme: (id: string) => void;
   backgroundImage: BackgroundImage | null;
   canUndo: boolean;
@@ -197,7 +186,6 @@ export function SceneProvider({ children }: { children: ReactNode }) {
   const [zoom, setZoom] = useState(1);
   const [isDark, setIsDark] = useState(true);
   const [themeId, setThemeId] = useState('dark');
-  const [measurementUnit, setMeasurementUnit] = useState<MeasurementUnit>('ft');
   const [backgroundImage, setBackgroundImageState] = useState<BackgroundImage | null>(null);
 
   const undoStack = useRef<SceneSnapshot[]>([]);
@@ -419,7 +407,7 @@ export function SceneProvider({ children }: { children: ReactNode }) {
   return (
     <SceneContext.Provider value={{
       objects, evidence, measurements, walls, caseInfo, selectedObjectId, selectedWallId, selectedMeasurementId, activeTool,
-      showGrid, snapToGrid, showLegend, zoom, isDark, themeId, measurementUnit, setMeasurementUnit, backgroundImage,
+      showGrid, snapToGrid, showLegend, zoom, isDark, themeId, backgroundImage,
       canUndo: undoStack.current.length > 0,
       canRedo: redoStack.current.length > 0,
       addObject, updateObject, updateObjectSilent, removeObject, selectObject, selectWall, selectMeasurement,
