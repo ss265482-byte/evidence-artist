@@ -8,8 +8,7 @@ import { Trash2, Copy, Lock, Unlock, ArrowUpToLine, ArrowDownToLine, X } from 'l
 const GRID_SIZE = 20;
 const PIXELS_PER_UNIT = 20;
 
-function BackgroundImageLayer() {
-  const { backgroundImage } = useScene();
+function BackgroundImageLayer({ backgroundImage }: { backgroundImage: import('@/store/SceneContext').BackgroundImage | null }) {
   const [image, setImage] = useState<HTMLImageElement | null>(null);
 
   useEffect(() => {
