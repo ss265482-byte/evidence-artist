@@ -167,12 +167,14 @@ interface SnapGuide {
   pos: number;
 }
 
-function SceneObjectShape({ obj, isSelected, onSelect, allObjects, onSnapGuides }: {
+function SceneObjectShape({ obj, isSelected, onSelect, allObjects, onSnapGuides, updateObject, updateObjectSilent, snapToGrid }: {
   obj: SceneObject; isSelected: boolean; onSelect: () => void;
   allObjects: SceneObject[];
   onSnapGuides: (guides: SnapGuide[]) => void;
+  updateObject: (id: string, updates: Partial<SceneObject>) => void;
+  updateObjectSilent: (id: string, updates: Partial<SceneObject>) => void;
+  snapToGrid: boolean;
 }) {
-  const { updateObject, updateObjectSilent, snapToGrid } = useScene();
   const shapeRef = useRef<Konva.Group>(null);
   const trRef = useRef<Konva.Transformer>(null);
   const [hovered, setHovered] = useState(false);
