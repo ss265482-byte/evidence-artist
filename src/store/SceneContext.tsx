@@ -373,6 +373,14 @@ export function SceneProvider({ children }: { children: ReactNode }) {
   const toggleGrid = useCallback(() => setShowGrid(p => !p), []);
   const toggleLegend = useCallback(() => setShowLegend(p => !p), []);
 
+  const setBackgroundImage = useCallback((bg: BackgroundImage | null) => {
+    setBackgroundImageState(bg);
+  }, []);
+
+  const updateBackgroundImage = useCallback((updates: Partial<BackgroundImage>) => {
+    setBackgroundImageState(prev => prev ? { ...prev, ...updates } : null);
+  }, []);
+
   React.useEffect(() => {
     document.documentElement.classList.toggle('dark', isDark);
   }, []);
@@ -380,13 +388,14 @@ export function SceneProvider({ children }: { children: ReactNode }) {
   return (
     <SceneContext.Provider value={{
       objects, evidence, measurements, walls, caseInfo, selectedObjectId, selectedWallId, selectedMeasurementId, activeTool,
-      showGrid, snapToGrid, showLegend, zoom, isDark,
+      showGrid, snapToGrid, showLegend, zoom, isDark, backgroundImage,
       canUndo: undoStack.current.length > 0,
       canRedo: redoStack.current.length > 0,
       addObject, updateObject, updateObjectSilent, removeObject, selectObject, selectWall, selectMeasurement,
       setTool: setActiveTool, toggleGrid, toggleSnap: () => setSnapToGrid(p => !p),
       toggleLegend, setZoom, toggleDark, setCaseInfo, addEvidence, updateEvidence,
       addMeasurement, removeMeasurement, addWall, removeWall,
+      setBackgroundImage, updateBackgroundImage,
       clearAll, undo, redo, bringToFront, sendToBack, moveLayerUp, moveLayerDown,
     }}>
       {children}
