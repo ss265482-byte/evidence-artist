@@ -6,7 +6,7 @@ import {
   MousePointer2, Hand, Minus, ArrowRight, Pencil, Type, Ruler,
   Grid3X3, Magnet, Sun, Moon, LayoutList, Square,
   Undo2, Redo2, Maximize, Info, Keyboard, ChevronDown, Trash2,
-  ImagePlus, Eye, EyeOff, X as XIcon, Palette, Check
+  ImagePlus, Eye, EyeOff, X as XIcon, Palette, Check, Compass, Spline
 } from 'lucide-react';
 import { Popover, PopoverTrigger, PopoverContent } from '@/components/ui/popover';
 import { Tooltip, TooltipTrigger, TooltipContent, TooltipProvider } from '@/components/ui/tooltip';
@@ -22,7 +22,12 @@ const tools: { type: ToolType; icon: React.ElementType; label: string; shortcut:
   { type: 'freehand', icon: Pencil, label: 'Draw', shortcut: 'P' },
   { type: 'text', icon: Type, label: 'Text', shortcut: 'T' },
   { type: 'room-label', icon: Square, label: 'Room', shortcut: 'R' },
-  { type: 'measure', icon: Ruler, label: 'Measure', shortcut: 'M' },
+];
+
+const measureTools: { type: ToolType; icon: React.ElementType; label: string; shortcut: string; desc: string }[] = [
+  { type: 'measure', icon: Ruler, label: 'Distance', shortcut: 'M', desc: '2 clicks — straight line' },
+  { type: 'measure-angle', icon: Compass, label: 'Angle', shortcut: '', desc: '3 clicks — ray, vertex, ray' },
+  { type: 'measure-arc', icon: Spline, label: 'Arc/Curve', shortcut: '', desc: '3 clicks — start, end, bend' },
 ];
 
 const shortcutMap: Record<string, ToolType> = {
