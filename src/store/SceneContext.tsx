@@ -110,6 +110,8 @@ interface SceneState {
   showLegend: boolean;
   zoom: number;
   isDark: boolean;
+  themeId: string;
+  setTheme: (id: string) => void;
   backgroundImage: BackgroundImage | null;
   canUndo: boolean;
   canRedo: boolean;
