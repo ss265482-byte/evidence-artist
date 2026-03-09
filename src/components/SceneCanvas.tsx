@@ -144,7 +144,7 @@ function AngleMeasurement({ m, isSelected, onSelect, onRemove }: { m: Measuremen
   );
 }
 
-function ArcMeasurement({ m, isSelected, onSelect, onRemove }: { m: Measurement; isSelected?: boolean; onSelect?: () => void; onRemove: () => void }) {
+function ArcMeasurement({ m, isSelected, onSelect, onRemove, unitConfig }: { m: Measurement; isSelected?: boolean; onSelect?: () => void; onRemove: () => void; unitConfig: { suffix: string; factor: number } }) {
   // m.x1,y1 = start, m.x2,y2 = end, m.x3,y3 = control point
   const sx = m.x1, sy = m.y1;
   const ex = m.x2, ey = m.y2;
@@ -168,7 +168,7 @@ function ArcMeasurement({ m, isSelected, onSelect, onRemove }: { m: Measurement;
     prevX = x; prevY = y;
   }
 
-  const distUnits = (arcLength / PIXELS_PER_UNIT).toFixed(1);
+  const distUnits = ((arcLength / PIXELS_PER_UNIT) * unitConfig.factor).toFixed(1);
   const midT = 0.5;
   const midX = (1 - midT) * (1 - midT) * sx + 2 * (1 - midT) * midT * cx + midT * midT * ex;
   const midY = (1 - midT) * (1 - midT) * sy + 2 * (1 - midT) * midT * cy + midT * midT * ey;
@@ -185,7 +185,7 @@ function ArcMeasurement({ m, isSelected, onSelect, onRemove }: { m: Measurement;
       <Line points={[ex, ey, cx, cy]} stroke={strokeColor} strokeWidth={0.5} dash={[2, 4]} opacity={0.4} />
       <Group x={midX} y={midY - 4}>
         <Rect x={-32} y={-22} width={64} height={18} fill="hsl(225, 22%, 11%)" stroke={strokeColor} strokeWidth={1} cornerRadius={3} opacity={0.9} />
-        <Text x={-32} y={-20} width={64} text={`⌒ ${distUnits}'`} fontSize={11} fontFamily="JetBrains Mono, monospace" fill={strokeColor} align="center" />
+        <Text x={-32} y={-20} width={64} text={`⌒ ${distUnits}${unitConfig.suffix}`} fontSize={11} fontFamily="JetBrains Mono, monospace" fill={strokeColor} align="center" />
       </Group>
       {isSelected && (
         <Group x={midX + 38} y={midY - 26} onClick={onRemove} onTap={onRemove}>
