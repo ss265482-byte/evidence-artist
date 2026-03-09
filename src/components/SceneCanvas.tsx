@@ -2263,13 +2263,17 @@ export default function SceneCanvas() {
 
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
+      const tag = document.activeElement?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA') return;
       if (e.key === 'Delete' || e.key === 'Backspace') {
-        const tag = document.activeElement?.tagName;
-        if (tag === 'INPUT' || tag === 'TEXTAREA') return;
         e.preventDefault();
         if (selectedObjectId) { removeObject(selectedObjectId); }
         else if (selectedWallId) { removeWall(selectedWallId); selectWall(null); }
         else if (selectedMeasurementId) { removeMeasurement(selectedMeasurementId); selectMeasurement(null); }
+      }
+      if ((e.ctrlKey || e.metaKey) && e.key === 'd') {
+        e.preventDefault();
+        if (selectedObjectId) handleDuplicate(selectedObjectId);
       }
       if (e.key === 'Escape') {
         selectObject(null);
@@ -2285,7 +2289,7 @@ export default function SceneCanvas() {
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [selectedObjectId, selectedWallId, selectedMeasurementId, removeObject, removeWall, removeMeasurement, selectObject, selectWall, selectMeasurement, setTool]);
+  }, [selectedObjectId, selectedWallId, selectedMeasurementId, removeObject, removeWall, removeMeasurement, selectObject, selectWall, selectMeasurement, setTool, handleDuplicate]);
 
   useEffect(() => {
     if (!contextMenu) return;
