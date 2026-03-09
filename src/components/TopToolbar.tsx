@@ -131,6 +131,43 @@ export default function TopToolbar() {
               </TooltipContent>
             </Tooltip>
           ))}
+
+          {/* Measure dropdown */}
+          <Popover>
+            <PopoverTrigger asChild>
+              <button
+                className={`h-7 flex items-center gap-0.5 px-1.5 rounded transition-colors ${
+                  activeTool === 'measure' || activeTool === 'measure-angle' || activeTool === 'measure-arc'
+                    ? 'bg-primary text-primary-foreground'
+                    : 'text-muted-foreground hover:text-foreground hover:bg-secondary'
+                }`}
+              >
+                {(() => {
+                  const active = measureTools.find(mt => mt.type === activeTool);
+                  const Icon = active?.icon || Ruler;
+                  return <Icon className="h-3.5 w-3.5" />;
+                })()}
+                <ChevronDown className="h-2.5 w-2.5" />
+              </button>
+            </PopoverTrigger>
+            <PopoverContent className="w-48 p-1.5" align="start">
+              {measureTools.map(mt => (
+                <button
+                  key={mt.type}
+                  onClick={() => setTool(mt.type)}
+                  className={`w-full flex items-center gap-2 px-2 py-1.5 rounded text-xs transition-colors ${
+                    activeTool === mt.type ? 'bg-primary text-primary-foreground' : 'text-foreground hover:bg-secondary'
+                  }`}
+                >
+                  <mt.icon className="h-3.5 w-3.5 shrink-0" />
+                  <div className="text-left">
+                    <div className="font-medium">{mt.label}{mt.shortcut ? ` (${mt.shortcut})` : ''}</div>
+                    <div className={`text-[10px] ${activeTool === mt.type ? 'text-primary-foreground/70' : 'text-muted-foreground'}`}>{mt.desc}</div>
+                  </div>
+                </button>
+              ))}
+            </PopoverContent>
+          </Popover>
         </div>
 
         <div className="h-5 w-px bg-border" />
