@@ -150,7 +150,7 @@ export default function TopToolbar() {
                 <ChevronDown className="h-2.5 w-2.5" />
               </button>
             </PopoverTrigger>
-            <PopoverContent className="w-48 p-1.5" align="start">
+            <PopoverContent className="w-52 p-1.5" align="start">
               {measureTools.map(mt => (
                 <button
                   key={mt.type}
@@ -166,6 +166,25 @@ export default function TopToolbar() {
                   </div>
                 </button>
               ))}
+              <div className="h-px bg-border my-1.5" />
+              <div className="px-2 py-1">
+                <label className="text-[9px] text-muted-foreground uppercase tracking-wider font-semibold">Unit System</label>
+                <div className="grid grid-cols-4 gap-1 mt-1">
+                  {(Object.keys(UNIT_CONFIG) as MeasurementUnit[]).map(unit => (
+                    <button
+                      key={unit}
+                      onClick={() => setMeasurementUnit(unit)}
+                      className={`text-[10px] font-mono py-1 rounded transition-colors ${
+                        measurementUnit === unit
+                          ? 'bg-primary text-primary-foreground'
+                          : 'bg-secondary text-muted-foreground hover:text-foreground'
+                      }`}
+                    >
+                      {UNIT_CONFIG[unit].suffix || unit}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </PopoverContent>
           </Popover>
         </div>
