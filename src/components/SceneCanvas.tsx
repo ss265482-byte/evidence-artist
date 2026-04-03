@@ -2510,8 +2510,13 @@ export default function SceneCanvas() {
         onDragEnd={(e) => { if (activeTool === 'pan') setStagePos({ x: e.target.x(), y: e.target.y() }); }}
       >
         <Layer>
+          {/* Night sky background */}
+          {sceneTime === 'night' && (
+            <Rect x={-10000} y={-10000} width={30000} height={30000} fill="#050d1a" listening={false} />
+          )}
           <BackgroundImageLayer backgroundImage={backgroundImage} />
-          {showGrid && <GridLayer width={dims.width} height={dims.height} zoom={zoom} isDark={isDark} />}
+          {sceneTime === 'night' && <NightSkyLayer width={dims.width} height={dims.height} zoom={zoom} />}
+          {showGrid && <GridLayer width={dims.width} height={dims.height} zoom={zoom} isDark={isDark} isNight={sceneTime === 'night'} />}
           {objects.map(obj => (
             <SceneObjectShape key={obj.id} obj={obj} isSelected={selectedObjectId === obj.id} onSelect={() => selectObject(obj.id)} allObjects={objects} onSnapGuides={setSnapGuides} updateObject={updateObject} updateObjectSilent={updateObjectSilent} snapToGrid={snapToGrid} />
           ))}
