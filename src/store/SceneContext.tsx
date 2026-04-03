@@ -87,6 +87,8 @@ export interface CaseInfo {
 
 export type ToolType = 'select' | 'pan' | 'wall' | 'line' | 'arrow' | 'freehand' | 'text' | 'measure' | 'measure-angle' | 'measure-arc' | 'room-label';
 
+export type SceneTime = 'day' | 'night';
+
 export interface BackgroundImage {
   url: string;
   opacity: number;
@@ -118,7 +120,9 @@ interface SceneState {
   zoom: number;
   isDark: boolean;
   themeId: string;
+  sceneTime: SceneTime;
   setTheme: (id: string) => void;
+  toggleSceneTime: () => void;
   backgroundImage: BackgroundImage | null;
   canUndo: boolean;
   canRedo: boolean;
@@ -187,6 +191,7 @@ export function SceneProvider({ children }: { children: ReactNode }) {
   const [isDark, setIsDark] = useState(true);
   const [themeId, setThemeId] = useState('dark');
   const [backgroundImage, setBackgroundImageState] = useState<BackgroundImage | null>(null);
+  const [sceneTime, setSceneTime] = useState<SceneTime>('day');
 
   const undoStack = useRef<SceneSnapshot[]>([]);
   const redoStack = useRef<SceneSnapshot[]>([]);
@@ -391,6 +396,7 @@ export function SceneProvider({ children }: { children: ReactNode }) {
 
   const toggleGrid = useCallback(() => setShowGrid(p => !p), []);
   const toggleLegend = useCallback(() => setShowLegend(p => !p), []);
+  const toggleSceneTime = useCallback(() => setSceneTime(p => p === 'day' ? 'night' : 'day'), []);
 
   const setBackgroundImage = useCallback((bg: BackgroundImage | null) => {
     setBackgroundImageState(bg);
@@ -407,12 +413,12 @@ export function SceneProvider({ children }: { children: ReactNode }) {
   return (
     <SceneContext.Provider value={{
       objects, evidence, measurements, walls, caseInfo, selectedObjectId, selectedWallId, selectedMeasurementId, activeTool,
-      showGrid, snapToGrid, showLegend, zoom, isDark, themeId, backgroundImage,
+      showGrid, snapToGrid, showLegend, zoom, isDark, themeId, sceneTime, backgroundImage,
       canUndo: undoStack.current.length > 0,
       canRedo: redoStack.current.length > 0,
       addObject, updateObject, updateObjectSilent, removeObject, selectObject, selectWall, selectMeasurement,
       setTool: setActiveTool, toggleGrid, toggleSnap: () => setSnapToGrid(p => !p),
-      toggleLegend, setZoom, toggleDark, setTheme: applyTheme, setCaseInfo, addEvidence, updateEvidence,
+      toggleLegend, setZoom, toggleDark, toggleSceneTime, setTheme: applyTheme, setCaseInfo, addEvidence, updateEvidence,
       addMeasurement, removeMeasurement, addWall, removeWall,
       setBackgroundImage, updateBackgroundImage,
       clearAll, undo, redo, bringToFront, sendToBack, moveLayerUp, moveLayerDown,
