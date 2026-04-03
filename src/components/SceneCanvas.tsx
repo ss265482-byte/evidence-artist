@@ -2487,9 +2487,12 @@ export default function SceneCanvas() {
   return (
     <div
       ref={containerRef}
-      className="flex-1 bg-canvas-bg relative overflow-hidden"
+      className={`flex-1 relative overflow-hidden transition-colors duration-700 ${sceneTime === 'night' ? 'bg-[#050d1a]' : 'bg-canvas-bg'}`}
       style={{ cursor: getCursor() }}
       onDrop={handleDrop}
+      onDragOver={(e) => e.preventDefault()}
+      onContextMenu={handleContextMenu}
+    >
       onDragOver={(e) => e.preventDefault()}
       onContextMenu={handleContextMenu}
     >
