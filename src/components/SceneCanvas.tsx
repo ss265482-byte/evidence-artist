@@ -37,22 +37,88 @@ function BackgroundImageLayer({ backgroundImage }: { backgroundImage: import('@/
   );
 }
 
-function GridLayer({ width, height, zoom, isDark }: { width: number; height: number; zoom: number; isDark: boolean }) {
+function GridLayer({ width, height, zoom, isDark, isNight }: { width: number; height: number; zoom: number; isDark: boolean; isNight?: boolean }) {
   const lines: React.ReactElement[] = [];
   const step = GRID_SIZE;
   const w = width / zoom + step;
   const h = height / zoom + step;
-  const gridColor = isDark ? 'hsl(225, 18%, 18%)' : 'hsl(220, 15%, 82%)';
-  const majorColor = isDark ? 'hsl(225, 18%, 22%)' : 'hsl(220, 15%, 75%)';
+  const gridColor = isNight ? 'hsl(225, 30%, 12%)' : isDark ? 'hsl(225, 18%, 18%)' : 'hsl(220, 15%, 82%)';
+  const majorColor = isNight ? 'hsl(225, 30%, 16%)' : isDark ? 'hsl(225, 18%, 22%)' : 'hsl(220, 15%, 75%)';
+  const gridOpacity = isNight ? 0.3 : 0.4;
+  const majorOpacity = isNight ? 0.4 : 0.6;
   for (let i = 0; i <= w / step; i++) {
     const isMajor = i % 5 === 0;
-    lines.push(<Line key={`v-${i}`} points={[i * step, 0, i * step, h]} stroke={isMajor ? majorColor : gridColor} strokeWidth={isMajor ? 1 : 0.5} opacity={isMajor ? 0.6 : 0.4} />);
+    lines.push(<Line key={`v-${i}`} points={[i * step, 0, i * step, h]} stroke={isMajor ? majorColor : gridColor} strokeWidth={isMajor ? 1 : 0.5} opacity={isMajor ? majorOpacity : gridOpacity} />);
   }
   for (let i = 0; i <= h / step; i++) {
     const isMajor = i % 5 === 0;
-    lines.push(<Line key={`h-${i}`} points={[0, i * step, w, i * step]} stroke={isMajor ? majorColor : gridColor} strokeWidth={isMajor ? 1 : 0.5} opacity={isMajor ? 0.6 : 0.4} />);
+    lines.push(<Line key={`h-${i}`} points={[0, i * step, w, i * step]} stroke={isMajor ? majorColor : gridColor} strokeWidth={isMajor ? 1 : 0.5} opacity={isMajor ? majorOpacity : gridOpacity} />);
   }
   return <>{lines}</>;
+}
+
+// Night sky with stars
+function NightSkyLayer({ width, height, zoom }: { width: number; height: number; zoom: number }) {
+  const stars = React.useMemo(() => {
+    const s: { x: number; y: number; r: number; o: number }[] = [];
+    const rng = (seed: number) => {
+      let x = Math.sin(seed) * 10000;
+      return x - Math.floor(x);
+    };
+    const w = width / zoom + 200;
+    const h = height / zoom + 200;
+    for (let i = 0; i < 80; i++) {
+      s.push({
+        x: rng(i * 13.37) * w,
+        y: rng(i * 7.91) * h,
+        r: rng(i * 3.14) * 1.5 + 0.5,
+        o: rng(i * 2.71) * 0.5 + 0.2,
+      });
+    }
+    return s;
+  }, [width, height, zoom]);
+
+  return (
+    <>
+      {stars.map((s, i) => (
+        <Circle key={`star-${i}`} x={s.x} y={s.y} radius={s.r} fill="#e2e8f0" opacity={s.o} listening={false} />
+      ))}
+      {/* Moon */}
+      <Circle x={width / zoom - 80} y={60} radius={22} fill="#f1f5f9" opacity={0.25} listening={false} />
+      <Circle x={width / zoom - 74} y={56} radius={18} fill="#0a1628" opacity={0.25} listening={false} />
+    </>
+  );
+}
+
+// Glow halos around evidence in night mode
+function EvidenceGlowLayer({ objects }: { objects: import('@/store/SceneContext').SceneObject[] }) {
+  return (
+    <>
+      {objects.filter(o => o.evidenceId).map(o => (
+        <React.Fragment key={`glow-${o.id}`}>
+          <Circle x={o.x + o.width / 2} y={o.y + o.height / 2} radius={Math.max(o.width, o.height) * 0.8} fill="#eab308" opacity={0.06} listening={false} />
+          <Circle x={o.x + o.width / 2} y={o.y + o.height / 2} radius={Math.max(o.width, o.height) * 0.5} fill="#eab308" opacity={0.1} listening={false} />
+        </React.Fragment>
+      ))}
+      {/* Streetlight cones */}
+      {objects.filter(o => o.type === 'streetlight').map(o => (
+        <React.Fragment key={`light-${o.id}`}>
+          <Line
+            points={[
+              o.x + o.width / 2, o.y + o.height * 0.3,
+              o.x - o.width * 1.5, o.y + o.height * 3,
+              o.x + o.width * 2.5, o.y + o.height * 3,
+            ]}
+            closed
+            fill="#fbbf24"
+            opacity={0.07}
+            listening={false}
+          />
+          <Circle x={o.x + o.width / 2} y={o.y + o.height * 0.3} radius={6} fill="#fbbf24" opacity={0.3} listening={false} />
+        </React.Fragment>
+      ))}
+    </>
+  );
 }
 
 function MeasurementLine({ m, isSelected, onSelect, onRemove }: { m: Measurement; isSelected?: boolean; onSelect?: () => void; onRemove: () => void }) {
