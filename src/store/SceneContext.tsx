@@ -396,6 +396,7 @@ export function SceneProvider({ children }: { children: ReactNode }) {
 
   const toggleGrid = useCallback(() => setShowGrid(p => !p), []);
   const toggleLegend = useCallback(() => setShowLegend(p => !p), []);
+  const toggleSceneTime = useCallback(() => setSceneTime(p => p === 'day' ? 'night' : 'day'), []);
 
   const setBackgroundImage = useCallback((bg: BackgroundImage | null) => {
     setBackgroundImageState(bg);
