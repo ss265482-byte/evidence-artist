@@ -2493,9 +2493,6 @@ export default function SceneCanvas() {
       onDragOver={(e) => e.preventDefault()}
       onContextMenu={handleContextMenu}
     >
-      onDragOver={(e) => e.preventDefault()}
-      onContextMenu={handleContextMenu}
-    >
       <Stage
         ref={stageRef}
         width={dims.width}
