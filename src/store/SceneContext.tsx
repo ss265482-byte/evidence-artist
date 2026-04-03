@@ -87,6 +87,8 @@ export interface CaseInfo {
 
 export type ToolType = 'select' | 'pan' | 'wall' | 'line' | 'arrow' | 'freehand' | 'text' | 'measure' | 'measure-angle' | 'measure-arc' | 'room-label';
 
+export type SceneTime = 'day' | 'night';
+
 export interface BackgroundImage {
   url: string;
   opacity: number;
