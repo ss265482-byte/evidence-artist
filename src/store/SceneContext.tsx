@@ -191,6 +191,7 @@ export function SceneProvider({ children }: { children: ReactNode }) {
   const [isDark, setIsDark] = useState(true);
   const [themeId, setThemeId] = useState('dark');
   const [backgroundImage, setBackgroundImageState] = useState<BackgroundImage | null>(null);
+  const [sceneTime, setSceneTime] = useState<SceneTime>('day');
 
   const undoStack = useRef<SceneSnapshot[]>([]);
   const redoStack = useRef<SceneSnapshot[]>([]);
