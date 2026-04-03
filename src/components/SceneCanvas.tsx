@@ -2610,24 +2610,20 @@ export default function SceneCanvas() {
               </Group>
             );
           })()}
-          {/* Night overlay */}
+          {/* Night mode effects */}
           {sceneTime === 'night' && (
-            <Rect
-              x={-10000}
-              y={-10000}
-              width={30000}
-              height={30000}
-              fill="#0a1628"
-              opacity={0.55}
-              listening={false}
-            />
+            <>
+              {/* Evidence glow halos + streetlight cones */}
+              <EvidenceGlowLayer objects={objects} />
+              {/* Dark overlay with reduced opacity so objects remain visible */}
+              <Rect x={-10000} y={-10000} width={30000} height={30000} fill="#0a1628" opacity={0.4} listening={false} />
+            </>
           )}
         </Layer>
-        {/* Flashlight / spotlight cones for night mode */}
+        {/* Night ambient light layer */}
         {sceneTime === 'night' && (
           <Layer listening={false}>
-            {/* Ambient moonlight vignette */}
-            <Rect x={-10000} y={-10000} width={30000} height={30000} fillLinearGradientStartPoint={{ x: 0, y: 0 }} fillLinearGradientEndPoint={{ x: 30000, y: 30000 }} fillLinearGradientColorStops={[0, 'rgba(59,130,246,0.08)', 0.5, 'transparent', 1, 'rgba(59,130,246,0.06)']} listening={false} />
+            <Rect x={-10000} y={-10000} width={30000} height={30000} fillLinearGradientStartPoint={{ x: 0, y: 0 }} fillLinearGradientEndPoint={{ x: 30000, y: 30000 }} fillLinearGradientColorStops={[0, 'rgba(59,130,246,0.08)', 0.5, 'transparent', 1, 'rgba(99,102,241,0.06)']} listening={false} />
           </Layer>
         )}
       </Stage>
