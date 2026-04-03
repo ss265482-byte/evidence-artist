@@ -2669,7 +2669,7 @@ export default function SceneCanvas() {
         <span className="h-3 w-px bg-border" />
         <span>{evidence.length} ev</span>
         <span className="flex-1" />
-        <span className="text-muted-foreground/50">Grid: {showGrid ? 'ON' : 'OFF'} · Snap: {snapToGrid ? 'ON' : 'OFF'}</span>
+        <span className="text-muted-foreground/50">Grid: {showGrid ? 'ON' : 'OFF'} · Snap: {snapToGrid ? 'ON' : 'OFF'} · Scene: {sceneTime === 'night' ? '🌙 Night' : '☀️ Day'}</span>
       </div>
 
       {/* Selection action bar */}
