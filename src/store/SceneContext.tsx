@@ -418,7 +418,7 @@ export function SceneProvider({ children }: { children: ReactNode }) {
       canRedo: redoStack.current.length > 0,
       addObject, updateObject, updateObjectSilent, removeObject, selectObject, selectWall, selectMeasurement,
       setTool: setActiveTool, toggleGrid, toggleSnap: () => setSnapToGrid(p => !p),
-      toggleLegend, setZoom, toggleDark, setTheme: applyTheme, setCaseInfo, addEvidence, updateEvidence,
+      toggleLegend, setZoom, toggleDark, toggleSceneTime, setTheme: applyTheme, setCaseInfo, addEvidence, updateEvidence,
       addMeasurement, removeMeasurement, addWall, removeWall,
       setBackgroundImage, updateBackgroundImage,
       clearAll, undo, redo, bringToFront, sendToBack, moveLayerUp, moveLayerDown,
