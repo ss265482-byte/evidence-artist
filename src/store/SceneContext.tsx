@@ -120,7 +120,9 @@ interface SceneState {
   zoom: number;
   isDark: boolean;
   themeId: string;
+  sceneTime: SceneTime;
   setTheme: (id: string) => void;
+  toggleSceneTime: () => void;
   backgroundImage: BackgroundImage | null;
   canUndo: boolean;
   canRedo: boolean;
