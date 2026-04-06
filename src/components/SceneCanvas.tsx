@@ -2624,17 +2624,28 @@ export default function SceneCanvas() {
           {/* Night mode effects */}
           {sceneTime === 'night' && (
             <>
-              {/* Evidence glow halos + streetlight cones */}
               <EvidenceGlowLayer objects={objects} />
-              {/* Dark overlay with reduced opacity so objects remain visible */}
+              {/* Dark overlay */}
               <Rect x={-10000} y={-10000} width={30000} height={30000} fill="#0a1628" opacity={0.4} listening={false} />
+              {/* Vignette effect — darker edges */}
+              <Rect x={-10000} y={-10000} width={30000} height={30000}
+                fillRadialGradientStartPoint={{ x: dims.width / zoom / 2, y: dims.height / zoom / 2 }}
+                fillRadialGradientEndPoint={{ x: dims.width / zoom / 2, y: dims.height / zoom / 2 }}
+                fillRadialGradientStartRadius={0}
+                fillRadialGradientEndRadius={Math.max(dims.width, dims.height) / zoom}
+                fillRadialGradientColorStops={[0, 'transparent', 0.6, 'transparent', 1, 'rgba(0,0,0,0.25)']}
+                listening={false}
+              />
             </>
           )}
         </Layer>
         {/* Night ambient light layer */}
         {sceneTime === 'night' && (
           <Layer listening={false}>
-            <Rect x={-10000} y={-10000} width={30000} height={30000} fillLinearGradientStartPoint={{ x: 0, y: 0 }} fillLinearGradientEndPoint={{ x: 30000, y: 30000 }} fillLinearGradientColorStops={[0, 'rgba(59,130,246,0.08)', 0.5, 'transparent', 1, 'rgba(99,102,241,0.06)']} listening={false} />
+            <Rect x={-10000} y={-10000} width={30000} height={30000}
+              fillLinearGradientStartPoint={{ x: 0, y: 0 }} fillLinearGradientEndPoint={{ x: 30000, y: 30000 }}
+              fillLinearGradientColorStops={[0, 'rgba(59,130,246,0.06)', 0.3, 'transparent', 0.7, 'transparent', 1, 'rgba(99,102,241,0.05)']}
+              listening={false} />
           </Layer>
         )}
       </Stage>
