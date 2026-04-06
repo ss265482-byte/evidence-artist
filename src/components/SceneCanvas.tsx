@@ -2679,19 +2679,24 @@ export default function SceneCanvas() {
         </div>
       </div>
 
-      {/* Status bar */}
-      <div className="absolute bottom-0 left-0 right-0 h-7 bg-card/90 backdrop-blur-sm border-t border-border flex items-center px-3 gap-4 text-[10px] font-mono text-muted-foreground">
-        <span>Zoom: {Math.round(zoom * 100)}%</span>
+      {/* Enhanced Status bar */}
+      <div className={`absolute bottom-0 left-0 right-0 h-7 backdrop-blur-sm border-t border-border flex items-center px-3 gap-3 text-[10px] font-mono transition-colors duration-500 ${sceneTime === 'night' ? 'bg-[#0a1628]/90 text-blue-300/70' : 'bg-card/90 text-muted-foreground'}`}>
+        <span className="flex items-center gap-1">
+          <span className={`w-1.5 h-1.5 rounded-full ${sceneTime === 'night' ? 'bg-indigo-400' : 'bg-emerald-400'}`} />
+          {Math.round(zoom * 100)}%
+        </span>
         <span className="h-3 w-px bg-border" />
         <span>({mousePos.x}, {mousePos.y})</span>
         <span className="h-3 w-px bg-border" />
-        <span>{objects.length} obj</span>
-        <span className="h-3 w-px bg-border" />
-        <span>{walls.length} walls</span>
-        <span className="h-3 w-px bg-border" />
-        <span>{evidence.length} ev</span>
+        <span>{objects.length} obj · {walls.length} walls · {evidence.length} ev · {measurements.length} meas</span>
         <span className="flex-1" />
-        <span className="text-muted-foreground/50">Grid: {showGrid ? 'ON' : 'OFF'} · Snap: {snapToGrid ? 'ON' : 'OFF'} · Scene: {sceneTime === 'night' ? '🌙 Night' : '☀️ Day'}</span>
+        <span className="flex items-center gap-2">
+          <span className={`px-1.5 py-0.5 rounded ${showGrid ? 'bg-secondary text-foreground' : 'opacity-50'}`}>Grid</span>
+          <span className={`px-1.5 py-0.5 rounded ${snapToGrid ? 'bg-secondary text-foreground' : 'opacity-50'}`}>Snap</span>
+          <span className={`px-1.5 py-0.5 rounded flex items-center gap-1 ${sceneTime === 'night' ? 'bg-indigo-600/30 text-indigo-300' : 'bg-amber-500/20 text-amber-600'}`}>
+            {sceneTime === 'night' ? '🌙' : '☀️'} {sceneTime === 'night' ? 'Night' : 'Day'}
+          </span>
+        </span>
       </div>
 
       {/* Selection action bar */}
