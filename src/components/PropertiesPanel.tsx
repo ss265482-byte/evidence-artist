@@ -215,9 +215,16 @@ export default function PropertiesPanel() {
       {/* Evidence Log */}
       <div className="flex-1 overflow-y-auto scrollbar-thin p-3">
         <div className="flex items-center justify-between mb-2">
-          <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Evidence Log</h2>
+          <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+            <Tag className="h-3 w-3" /> Evidence Log
+          </h2>
           {evidence.length > 0 && (
-            <span className="text-[9px] font-mono bg-accent text-accent-foreground px-1.5 py-0.5 rounded-full font-bold">{evidence.length}</span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-[9px] font-mono bg-accent text-accent-foreground px-1.5 py-0.5 rounded-full font-bold">{evidence.length}</span>
+              <span className="text-[8px] text-muted-foreground/50">
+                {evidence.filter(e => e.status === 'collected' || e.status === 'processed' || e.status === 'sent-to-lab').length}/{evidence.length} processed
+              </span>
+            </div>
           )}
         </div>
 
