@@ -57,22 +57,23 @@ function GridLayer({ width, height, zoom, isDark, isNight }: { width: number; he
   return <>{lines}</>;
 }
 
-// Night sky with stars
+// Night sky with stars, constellations, and moon with glow
 function NightSkyLayer({ width, height, zoom }: { width: number; height: number; zoom: number }) {
   const stars = React.useMemo(() => {
-    const s: { x: number; y: number; r: number; o: number }[] = [];
+    const s: { x: number; y: number; r: number; o: number; twinkle: boolean }[] = [];
     const rng = (seed: number) => {
       let x = Math.sin(seed) * 10000;
       return x - Math.floor(x);
     };
     const w = width / zoom + 200;
     const h = height / zoom + 200;
-    for (let i = 0; i < 80; i++) {
+    for (let i = 0; i < 120; i++) {
       s.push({
         x: rng(i * 13.37) * w,
         y: rng(i * 7.91) * h,
-        r: rng(i * 3.14) * 1.5 + 0.5,
-        o: rng(i * 2.71) * 0.5 + 0.2,
+        r: rng(i * 3.14) * 2 + 0.3,
+        o: rng(i * 2.71) * 0.6 + 0.15,
+        twinkle: rng(i * 5.55) > 0.7,
       });
     }
     return s;
@@ -81,40 +82,50 @@ function NightSkyLayer({ width, height, zoom }: { width: number; height: number;
   return (
     <>
       {stars.map((s, i) => (
-        <Circle key={`star-${i}`} x={s.x} y={s.y} radius={s.r} fill="#e2e8f0" opacity={s.o} listening={false} />
+        <React.Fragment key={`star-${i}`}>
+          <Circle x={s.x} y={s.y} radius={s.r} fill="#e2e8f0" opacity={s.o} listening={false} />
+          {s.twinkle && <Circle x={s.x} y={s.y} radius={s.r * 3} fill="#e2e8f0" opacity={s.o * 0.15} listening={false} />}
+        </React.Fragment>
       ))}
-      {/* Moon */}
-      <Circle x={width / zoom - 80} y={60} radius={22} fill="#f1f5f9" opacity={0.25} listening={false} />
-      <Circle x={width / zoom - 74} y={56} radius={18} fill="#0a1628" opacity={0.25} listening={false} />
+      {/* Moon with glow halo */}
+      <Circle x={width / zoom - 80} y={60} radius={35} fill="#c8d6e5" opacity={0.06} listening={false} />
+      <Circle x={width / zoom - 80} y={60} radius={28} fill="#dfe6e9" opacity={0.1} listening={false} />
+      <Circle x={width / zoom - 80} y={60} radius={22} fill="#f1f5f9" opacity={0.3} listening={false} />
+      <Circle x={width / zoom - 74} y={56} radius={18} fill="#0a1628" opacity={0.3} listening={false} />
+      {/* Distant horizon glow */}
+      <Rect x={-500} y={height / zoom - 60} width={width / zoom + 1000} height={60}
+        fillLinearGradientStartPoint={{ x: 0, y: 0 }} fillLinearGradientEndPoint={{ x: 0, y: 60 }}
+        fillLinearGradientColorStops={[0, 'rgba(30,58,138,0.08)', 1, 'transparent']} listening={false} />
     </>
   );
 }
 
-// Glow halos around evidence in night mode
+// Enhanced glow halos with flashlight cones and evidence marker pools
 function EvidenceGlowLayer({ objects }: { objects: import('@/store/SceneContext').SceneObject[] }) {
   return (
     <>
       {objects.filter(o => o.evidenceId).map(o => (
         <React.Fragment key={`glow-${o.id}`}>
+          <Circle x={o.x + o.width / 2} y={o.y + o.height / 2} radius={Math.max(o.width, o.height) * 1.2} fill="#eab308" opacity={0.03} listening={false} />
           <Circle x={o.x + o.width / 2} y={o.y + o.height / 2} radius={Math.max(o.width, o.height) * 0.8} fill="#eab308" opacity={0.06} listening={false} />
-          <Circle x={o.x + o.width / 2} y={o.y + o.height / 2} radius={Math.max(o.width, o.height) * 0.5} fill="#eab308" opacity={0.1} listening={false} />
+          <Circle x={o.x + o.width / 2} y={o.y + o.height / 2} radius={Math.max(o.width, o.height) * 0.5} fill="#eab308" opacity={0.12} listening={false} />
+          <Circle x={o.x + o.width / 2} y={o.y + o.height / 2} radius={3} fill="#fbbf24" opacity={0.6} listening={false} />
         </React.Fragment>
       ))}
-      {/* Streetlight cones */}
+      {/* Streetlight cones with layered falloff */}
       {objects.filter(o => o.type === 'streetlight').map(o => (
         <React.Fragment key={`light-${o.id}`}>
-          <Line
-            points={[
-              o.x + o.width / 2, o.y + o.height * 0.3,
-              o.x - o.width * 1.5, o.y + o.height * 3,
-              o.x + o.width * 2.5, o.y + o.height * 3,
-            ]}
-            closed
-            fill="#fbbf24"
-            opacity={0.07}
-            listening={false}
-          />
-          <Circle x={o.x + o.width / 2} y={o.y + o.height * 0.3} radius={6} fill="#fbbf24" opacity={0.3} listening={false} />
+          <Line points={[o.x + o.width / 2, o.y + o.height * 0.2, o.x - o.width * 2.5, o.y + o.height * 4, o.x + o.width * 3.5, o.y + o.height * 4]} closed fill="#fbbf24" opacity={0.03} listening={false} />
+          <Line points={[o.x + o.width / 2, o.y + o.height * 0.3, o.x - o.width * 1.2, o.y + o.height * 3, o.x + o.width * 2.2, o.y + o.height * 3]} closed fill="#fbbf24" opacity={0.07} listening={false} />
+          <Circle x={o.x + o.width / 2} y={o.y + o.height * 0.25} radius={8} fill="#fbbf24" opacity={0.35} listening={false} />
+          <Circle x={o.x + o.width / 2} y={o.y + o.height * 0.25} radius={4} fill="#fff" opacity={0.5} listening={false} />
+        </React.Fragment>
+      ))}
+      {/* Flashlight pools under evidence markers */}
+      {objects.filter(o => o.type === 'evidence-marker').map(o => (
+        <React.Fragment key={`flash-${o.id}`}>
+          <Circle x={o.x + o.width / 2} y={o.y + o.height / 2} radius={Math.max(o.width, o.height) * 2} fill="#fef3c7" opacity={0.04} listening={false} />
+          <Circle x={o.x + o.width / 2} y={o.y + o.height / 2} radius={Math.max(o.width, o.height) * 1.2} fill="#fef3c7" opacity={0.08} listening={false} />
         </React.Fragment>
       ))}
     </>
@@ -2613,17 +2624,28 @@ export default function SceneCanvas() {
           {/* Night mode effects */}
           {sceneTime === 'night' && (
             <>
-              {/* Evidence glow halos + streetlight cones */}
               <EvidenceGlowLayer objects={objects} />
-              {/* Dark overlay with reduced opacity so objects remain visible */}
+              {/* Dark overlay */}
               <Rect x={-10000} y={-10000} width={30000} height={30000} fill="#0a1628" opacity={0.4} listening={false} />
+              {/* Vignette effect — darker edges */}
+              <Rect x={-10000} y={-10000} width={30000} height={30000}
+                fillRadialGradientStartPoint={{ x: dims.width / zoom / 2, y: dims.height / zoom / 2 }}
+                fillRadialGradientEndPoint={{ x: dims.width / zoom / 2, y: dims.height / zoom / 2 }}
+                fillRadialGradientStartRadius={0}
+                fillRadialGradientEndRadius={Math.max(dims.width, dims.height) / zoom}
+                fillRadialGradientColorStops={[0, 'transparent', 0.6, 'transparent', 1, 'rgba(0,0,0,0.25)']}
+                listening={false}
+              />
             </>
           )}
         </Layer>
         {/* Night ambient light layer */}
         {sceneTime === 'night' && (
           <Layer listening={false}>
-            <Rect x={-10000} y={-10000} width={30000} height={30000} fillLinearGradientStartPoint={{ x: 0, y: 0 }} fillLinearGradientEndPoint={{ x: 30000, y: 30000 }} fillLinearGradientColorStops={[0, 'rgba(59,130,246,0.08)', 0.5, 'transparent', 1, 'rgba(99,102,241,0.06)']} listening={false} />
+            <Rect x={-10000} y={-10000} width={30000} height={30000}
+              fillLinearGradientStartPoint={{ x: 0, y: 0 }} fillLinearGradientEndPoint={{ x: 30000, y: 30000 }}
+              fillLinearGradientColorStops={[0, 'rgba(59,130,246,0.06)', 0.3, 'transparent', 0.7, 'transparent', 1, 'rgba(99,102,241,0.05)']}
+              listening={false} />
           </Layer>
         )}
       </Stage>
@@ -2657,19 +2679,24 @@ export default function SceneCanvas() {
         </div>
       </div>
 
-      {/* Status bar */}
-      <div className="absolute bottom-0 left-0 right-0 h-7 bg-card/90 backdrop-blur-sm border-t border-border flex items-center px-3 gap-4 text-[10px] font-mono text-muted-foreground">
-        <span>Zoom: {Math.round(zoom * 100)}%</span>
+      {/* Enhanced Status bar */}
+      <div className={`absolute bottom-0 left-0 right-0 h-7 backdrop-blur-sm border-t border-border flex items-center px-3 gap-3 text-[10px] font-mono transition-colors duration-500 ${sceneTime === 'night' ? 'bg-[#0a1628]/90 text-blue-300/70' : 'bg-card/90 text-muted-foreground'}`}>
+        <span className="flex items-center gap-1">
+          <span className={`w-1.5 h-1.5 rounded-full ${sceneTime === 'night' ? 'bg-indigo-400' : 'bg-emerald-400'}`} />
+          {Math.round(zoom * 100)}%
+        </span>
         <span className="h-3 w-px bg-border" />
         <span>({mousePos.x}, {mousePos.y})</span>
         <span className="h-3 w-px bg-border" />
-        <span>{objects.length} obj</span>
-        <span className="h-3 w-px bg-border" />
-        <span>{walls.length} walls</span>
-        <span className="h-3 w-px bg-border" />
-        <span>{evidence.length} ev</span>
+        <span>{objects.length} obj · {walls.length} walls · {evidence.length} ev · {measurements.length} meas</span>
         <span className="flex-1" />
-        <span className="text-muted-foreground/50">Grid: {showGrid ? 'ON' : 'OFF'} · Snap: {snapToGrid ? 'ON' : 'OFF'} · Scene: {sceneTime === 'night' ? '🌙 Night' : '☀️ Day'}</span>
+        <span className="flex items-center gap-2">
+          <span className={`px-1.5 py-0.5 rounded ${showGrid ? 'bg-secondary text-foreground' : 'opacity-50'}`}>Grid</span>
+          <span className={`px-1.5 py-0.5 rounded ${snapToGrid ? 'bg-secondary text-foreground' : 'opacity-50'}`}>Snap</span>
+          <span className={`px-1.5 py-0.5 rounded flex items-center gap-1 ${sceneTime === 'night' ? 'bg-indigo-600/30 text-indigo-300' : 'bg-amber-500/20 text-amber-600'}`}>
+            {sceneTime === 'night' ? '🌙' : '☀️'} {sceneTime === 'night' ? 'Night' : 'Day'}
+          </span>
+        </span>
       </div>
 
       {/* Selection action bar */}

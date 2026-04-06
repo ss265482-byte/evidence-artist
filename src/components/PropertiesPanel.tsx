@@ -215,9 +215,16 @@ export default function PropertiesPanel() {
       {/* Evidence Log */}
       <div className="flex-1 overflow-y-auto scrollbar-thin p-3">
         <div className="flex items-center justify-between mb-2">
-          <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider">Evidence Log</h2>
+          <h2 className="text-xs font-semibold text-muted-foreground uppercase tracking-wider flex items-center gap-1.5">
+            <Tag className="h-3 w-3" /> Evidence Log
+          </h2>
           {evidence.length > 0 && (
-            <span className="text-[9px] font-mono bg-accent text-accent-foreground px-1.5 py-0.5 rounded-full font-bold">{evidence.length}</span>
+            <div className="flex items-center gap-1.5">
+              <span className="text-[9px] font-mono bg-accent text-accent-foreground px-1.5 py-0.5 rounded-full font-bold">{evidence.length}</span>
+              <span className="text-[8px] text-muted-foreground/50">
+                {evidence.filter(e => e.status === 'collected' || e.status === 'processed' || e.status === 'sent-to-lab').length}/{evidence.length} processed
+              </span>
+            </div>
           )}
         </div>
 
@@ -255,15 +262,27 @@ export default function PropertiesPanel() {
               const StatusIcon = stat.icon;
               return (
                 <button key={ev.id} onClick={() => selectObject(ev.objectId)}
-                  className={`w-full text-left p-2 rounded-md border transition-all ${
+                  className={`w-full text-left p-2.5 rounded-md border transition-all ${
                     selectedObjectId === ev.objectId
                       ? 'border-primary bg-primary/10 shadow-sm'
                       : 'border-border bg-secondary/30 hover:bg-secondary/60 hover:shadow-sm'
                   }`}>
-                  <div className="flex items-center gap-2 mb-1">
+                  <div className="flex items-center gap-2 mb-1.5">
                     <span className="text-xs font-mono font-bold bg-accent text-accent-foreground w-6 h-6 flex items-center justify-center rounded">{ev.letter}</span>
                     <span className="text-xs font-medium text-foreground truncate flex-1">{ev.description}</span>
                     <span className={`text-[8px] font-mono font-bold px-1 py-0.5 rounded border ${prio.bg} ${prio.color}`}>{prio.label}</span>
+                  </div>
+
+                  {/* Status progress bar */}
+                  <div className="flex gap-0.5 mb-1.5">
+                    {Object.entries(statusConfig).map(([key], idx) => {
+                      const statusOrder = ['identified', 'photographed', 'collected', 'processed', 'sent-to-lab'];
+                      const currentIdx = statusOrder.indexOf(ev.status);
+                      const isComplete = idx <= currentIdx;
+                      return (
+                        <div key={key} className={`flex-1 h-1 rounded-full transition-colors ${isComplete ? 'bg-accent' : 'bg-secondary'}`} />
+                      );
+                    })}
                   </div>
 
                   {/* Status row */}

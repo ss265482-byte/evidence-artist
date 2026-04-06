@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { useScene, ToolType } from '@/store/SceneContext';
 import { themes, themeCategories, ThemeDefinition } from '@/lib/themes';
 import { stageStore } from '@/lib/stageRef';
@@ -34,6 +34,14 @@ const shortcutMap: Record<string, ToolType> = {
   v: 'select', h: 'pan', w: 'wall', a: 'arrow', p: 'freehand', t: 'text', r: 'room-label', m: 'measure',
 };
 
+const additionalShortcuts = [
+  { key: 'N', label: 'Day/Night Toggle' },
+  { key: 'L', label: 'Toggle Legend' },
+  { key: 'F', label: 'Fit to Content' },
+  { key: '+/−', label: 'Zoom In/Out' },
+  { key: '1', label: 'Reset Zoom 100%' },
+];
+
 export default function TopToolbar() {
   const { activeTool, setTool, showGrid, toggleGrid, snapToGrid, toggleSnap, showLegend, toggleLegend, isDark, toggleDark, themeId, setTheme, sceneTime, toggleSceneTime, caseInfo, setCaseInfo, zoom, setZoom, undo, redo, canUndo, canRedo, objects, clearAll, walls, measurements, backgroundImage, setBackgroundImage, updateBackgroundImage } = useScene();
   const [showShortcuts, setShowShortcuts] = useState(false);
@@ -61,24 +69,7 @@ export default function TopToolbar() {
     e.target.value = '';
   };
 
-  useEffect(() => {
-    const handler = (e: KeyboardEvent) => {
-      const tag = document.activeElement?.tagName;
-      if (tag === 'INPUT' || tag === 'TEXTAREA') return;
-      if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) { e.preventDefault(); undo(); }
-      if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) { e.preventDefault(); redo(); }
-      if (!e.ctrlKey && !e.metaKey && !e.altKey) {
-        const tool = shortcutMap[e.key.toLowerCase()];
-        if (tool) { e.preventDefault(); setTool(tool); }
-        if (e.key === 'g') { e.preventDefault(); toggleGrid(); }
-        if (e.key === 's' && !e.shiftKey) { e.preventDefault(); toggleSnap(); }
-      }
-    };
-    window.addEventListener('keydown', handler);
-    return () => window.removeEventListener('keydown', handler);
-  }, [undo, redo, setTool, toggleGrid, toggleSnap]);
-
-  const handleFitToContent = () => {
+  const handleFitToContent = useCallback(() => {
     if (objects.length === 0) return;
     const stage = stageStore.current;
     if (!stage) return;
@@ -95,7 +86,30 @@ export default function TopToolbar() {
     const scaleY = stage.height() / contentH;
     const newZoom = Math.min(scaleX, scaleY, 2);
     setZoom(newZoom);
-  };
+  }, [objects, setZoom]);
+
+  useEffect(() => {
+    const handler = (e: KeyboardEvent) => {
+      const tag = document.activeElement?.tagName;
+      if (tag === 'INPUT' || tag === 'TEXTAREA') return;
+      if ((e.ctrlKey || e.metaKey) && e.key === 'z' && !e.shiftKey) { e.preventDefault(); undo(); }
+      if ((e.ctrlKey || e.metaKey) && (e.key === 'y' || (e.key === 'z' && e.shiftKey))) { e.preventDefault(); redo(); }
+      if (!e.ctrlKey && !e.metaKey && !e.altKey) {
+        const tool = shortcutMap[e.key.toLowerCase()];
+        if (tool) { e.preventDefault(); setTool(tool); }
+        if (e.key === 'g') { e.preventDefault(); toggleGrid(); }
+        if (e.key === 's' && !e.shiftKey) { e.preventDefault(); toggleSnap(); }
+        if (e.key === 'n') { e.preventDefault(); toggleSceneTime(); }
+        if (e.key === 'l') { e.preventDefault(); toggleLegend(); }
+        if (e.key === 'f') { e.preventDefault(); handleFitToContent(); }
+        if (e.key === '1') { e.preventDefault(); setZoom(1); }
+        if (e.key === '=' || e.key === '+') { e.preventDefault(); setZoom(Math.min(5, zoom + 0.1)); }
+        if (e.key === '-') { e.preventDefault(); setZoom(Math.max(0.1, zoom - 0.1)); }
+      }
+    };
+    window.addEventListener('keydown', handler);
+    return () => window.removeEventListener('keydown', handler);
+  }, [undo, redo, setTool, toggleGrid, toggleSnap, toggleSceneTime, toggleLegend, handleFitToContent, setZoom, zoom]);
 
   return (
     <TooltipProvider delayDuration={300}>
@@ -249,11 +263,14 @@ export default function TopToolbar() {
         </Tooltip>
         <Tooltip>
           <TooltipTrigger asChild>
-            <button onClick={toggleSceneTime} className={`h-7 w-7 flex items-center justify-center rounded transition-colors ${sceneTime === 'night' ? 'bg-indigo-600 text-white' : 'text-muted-foreground hover:text-foreground hover:bg-secondary'}`}>
+            <button onClick={toggleSceneTime} className={`h-7 px-1.5 flex items-center gap-1 rounded transition-all duration-300 ${sceneTime === 'night' ? 'bg-indigo-600 text-white shadow-[0_0_8px_rgba(99,102,241,0.4)]' : 'text-amber-500 hover:text-foreground hover:bg-secondary'}`}>
               {sceneTime === 'night' ? <Moon className="h-3.5 w-3.5" /> : <Sun className="h-3.5 w-3.5" />}
+              <span className="text-[10px] font-mono hidden lg:inline">{sceneTime === 'night' ? 'Night' : 'Day'}</span>
             </button>
           </TooltipTrigger>
-          <TooltipContent side="bottom" className="text-xs">Scene: {sceneTime === 'day' ? 'Day' : 'Night'}</TooltipContent>
+          <TooltipContent side="bottom" className="text-xs">
+            {sceneTime === 'day' ? '☀️ Day Mode' : '🌙 Night Mode'} <kbd className="ml-1.5 px-1 py-0.5 bg-secondary rounded text-[10px] font-mono">N</kbd>
+          </TooltipContent>
         </Tooltip>
 
         <div className="h-5 w-px bg-border" />
@@ -348,6 +365,13 @@ export default function TopToolbar() {
               <div className="flex justify-between text-muted-foreground"><span>Redo</span><kbd className="px-1.5 py-0.5 bg-secondary rounded font-mono text-[10px]">⌘⇧Z</kbd></div>
               <div className="flex justify-between text-muted-foreground"><span>Delete</span><kbd className="px-1.5 py-0.5 bg-secondary rounded font-mono text-[10px]">Del</kbd></div>
               <div className="flex justify-between text-muted-foreground"><span>Deselect</span><kbd className="px-1.5 py-0.5 bg-secondary rounded font-mono text-[10px]">Esc</kbd></div>
+              <div className="h-px bg-border my-1.5" />
+              {additionalShortcuts.map(s => (
+                <div key={s.key} className="flex justify-between text-muted-foreground">
+                  <span>{s.label}</span>
+                  <kbd className="px-1.5 py-0.5 bg-secondary rounded font-mono text-[10px]">{s.key}</kbd>
+                </div>
+              ))}
             </div>
           </PopoverContent>
         </Popover>
