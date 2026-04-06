@@ -263,11 +263,14 @@ export default function TopToolbar() {
         </Tooltip>
         <Tooltip>
           <TooltipTrigger asChild>
-            <button onClick={toggleSceneTime} className={`h-7 w-7 flex items-center justify-center rounded transition-colors ${sceneTime === 'night' ? 'bg-indigo-600 text-white' : 'text-muted-foreground hover:text-foreground hover:bg-secondary'}`}>
+            <button onClick={toggleSceneTime} className={`h-7 px-1.5 flex items-center gap-1 rounded transition-all duration-300 ${sceneTime === 'night' ? 'bg-indigo-600 text-white shadow-[0_0_8px_rgba(99,102,241,0.4)]' : 'text-amber-500 hover:text-foreground hover:bg-secondary'}`}>
               {sceneTime === 'night' ? <Moon className="h-3.5 w-3.5" /> : <Sun className="h-3.5 w-3.5" />}
+              <span className="text-[10px] font-mono hidden lg:inline">{sceneTime === 'night' ? 'Night' : 'Day'}</span>
             </button>
           </TooltipTrigger>
-          <TooltipContent side="bottom" className="text-xs">Scene: {sceneTime === 'day' ? 'Day' : 'Night'}</TooltipContent>
+          <TooltipContent side="bottom" className="text-xs">
+            {sceneTime === 'day' ? '☀️ Day Mode' : '🌙 Night Mode'} <kbd className="ml-1.5 px-1 py-0.5 bg-secondary rounded text-[10px] font-mono">N</kbd>
+          </TooltipContent>
         </Tooltip>
 
         <div className="h-5 w-px bg-border" />
