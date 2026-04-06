@@ -1,4 +1,4 @@
-import { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef, useCallback } from 'react';
 import { useScene, ToolType } from '@/store/SceneContext';
 import { themes, themeCategories, ThemeDefinition } from '@/lib/themes';
 import { stageStore } from '@/lib/stageRef';
@@ -69,6 +69,25 @@ export default function TopToolbar() {
     e.target.value = '';
   };
 
+  const handleFitToContent = useCallback(() => {
+    if (objects.length === 0) return;
+    const stage = stageStore.current;
+    if (!stage) return;
+    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+    objects.forEach(obj => {
+      minX = Math.min(minX, obj.x);
+      minY = Math.min(minY, obj.y);
+      maxX = Math.max(maxX, obj.x + obj.width);
+      maxY = Math.max(maxY, obj.y + obj.height);
+    });
+    const contentW = maxX - minX + 100;
+    const contentH = maxY - minY + 100;
+    const scaleX = stage.width() / contentW;
+    const scaleY = stage.height() / contentH;
+    const newZoom = Math.min(scaleX, scaleY, 2);
+    setZoom(newZoom);
+  }, [objects, setZoom]);
+
   useEffect(() => {
     const handler = (e: KeyboardEvent) => {
       const tag = document.activeElement?.tagName;
@@ -90,26 +109,7 @@ export default function TopToolbar() {
     };
     window.addEventListener('keydown', handler);
     return () => window.removeEventListener('keydown', handler);
-  }, [undo, redo, setTool, toggleGrid, toggleSnap]);
-
-  const handleFitToContent = () => {
-    if (objects.length === 0) return;
-    const stage = stageStore.current;
-    if (!stage) return;
-    let minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
-    objects.forEach(obj => {
-      minX = Math.min(minX, obj.x);
-      minY = Math.min(minY, obj.y);
-      maxX = Math.max(maxX, obj.x + obj.width);
-      maxY = Math.max(maxY, obj.y + obj.height);
-    });
-    const contentW = maxX - minX + 100;
-    const contentH = maxY - minY + 100;
-    const scaleX = stage.width() / contentW;
-    const scaleY = stage.height() / contentH;
-    const newZoom = Math.min(scaleX, scaleY, 2);
-    setZoom(newZoom);
-  };
+  }, [undo, redo, setTool, toggleGrid, toggleSnap, toggleSceneTime, toggleLegend, handleFitToContent, setZoom, zoom]);
 
   return (
     <TooltipProvider delayDuration={300}>
