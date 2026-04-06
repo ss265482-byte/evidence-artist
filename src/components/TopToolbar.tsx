@@ -362,6 +362,13 @@ export default function TopToolbar() {
               <div className="flex justify-between text-muted-foreground"><span>Redo</span><kbd className="px-1.5 py-0.5 bg-secondary rounded font-mono text-[10px]">⌘⇧Z</kbd></div>
               <div className="flex justify-between text-muted-foreground"><span>Delete</span><kbd className="px-1.5 py-0.5 bg-secondary rounded font-mono text-[10px]">Del</kbd></div>
               <div className="flex justify-between text-muted-foreground"><span>Deselect</span><kbd className="px-1.5 py-0.5 bg-secondary rounded font-mono text-[10px]">Esc</kbd></div>
+              <div className="h-px bg-border my-1.5" />
+              {additionalShortcuts.map(s => (
+                <div key={s.key} className="flex justify-between text-muted-foreground">
+                  <span>{s.label}</span>
+                  <kbd className="px-1.5 py-0.5 bg-secondary rounded font-mono text-[10px]">{s.key}</kbd>
+                </div>
+              ))}
             </div>
           </PopoverContent>
         </Popover>
