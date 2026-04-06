@@ -34,6 +34,14 @@ const shortcutMap: Record<string, ToolType> = {
   v: 'select', h: 'pan', w: 'wall', a: 'arrow', p: 'freehand', t: 'text', r: 'room-label', m: 'measure',
 };
 
+const additionalShortcuts = [
+  { key: 'N', label: 'Day/Night Toggle' },
+  { key: 'L', label: 'Toggle Legend' },
+  { key: 'F', label: 'Fit to Content' },
+  { key: '+/−', label: 'Zoom In/Out' },
+  { key: '1', label: 'Reset Zoom 100%' },
+];
+
 export default function TopToolbar() {
   const { activeTool, setTool, showGrid, toggleGrid, snapToGrid, toggleSnap, showLegend, toggleLegend, isDark, toggleDark, themeId, setTheme, sceneTime, toggleSceneTime, caseInfo, setCaseInfo, zoom, setZoom, undo, redo, canUndo, canRedo, objects, clearAll, walls, measurements, backgroundImage, setBackgroundImage, updateBackgroundImage } = useScene();
   const [showShortcuts, setShowShortcuts] = useState(false);
@@ -72,6 +80,12 @@ export default function TopToolbar() {
         if (tool) { e.preventDefault(); setTool(tool); }
         if (e.key === 'g') { e.preventDefault(); toggleGrid(); }
         if (e.key === 's' && !e.shiftKey) { e.preventDefault(); toggleSnap(); }
+        if (e.key === 'n') { e.preventDefault(); toggleSceneTime(); }
+        if (e.key === 'l') { e.preventDefault(); toggleLegend(); }
+        if (e.key === 'f') { e.preventDefault(); handleFitToContent(); }
+        if (e.key === '1') { e.preventDefault(); setZoom(1); }
+        if (e.key === '=' || e.key === '+') { e.preventDefault(); setZoom(Math.min(5, zoom + 0.1)); }
+        if (e.key === '-') { e.preventDefault(); setZoom(Math.max(0.1, zoom - 0.1)); }
       }
     };
     window.addEventListener('keydown', handler);
