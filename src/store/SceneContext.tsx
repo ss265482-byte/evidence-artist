@@ -2,19 +2,25 @@ import React, { createContext, useContext, useState, useCallback, useRef, ReactN
 import { getThemeById } from '@/lib/themes';
 
 export type SceneObjectType = 
-  | 'body-outline' | 'body-standing' | 'body-prone'
-  | 'knife' | 'gun' | 'bullet-casing' | 'bullet-hole'
+  | 'body-outline' | 'body-standing' | 'body-prone' | 'body-seated' | 'body-fetal'
+  | 'knife' | 'gun' | 'bullet-casing' | 'bullet-hole' | 'rifle' | 'shotgun' | 'bat' | 'crowbar' | 'rope'
   | 'evidence-marker' | 'blood-stain' | 'footprint' | 'tire-mark'
   | 'fingerprint' | 'hair-fiber' | 'clothing' | 'document-evidence'
   | 'drug-paraphernalia' | 'glass-fragment' | 'shell-casing' | 'dna-sample'
-  | 'phone' | 'camera' | 'id-card' | 'bag'
-  | 'bed' | 'table' | 'chair' | 'sofa' | 'cabinet'
-  | 'door' | 'window' | 'wall' | 'stairs'
+  | 'phone' | 'camera' | 'id-card' | 'bag' | 'wallet' | 'keys' | 'cigarette-butt' | 'weapon-sheath'
+  | 'bed' | 'table' | 'chair' | 'sofa' | 'cabinet' | 'nightstand' | 'dresser' | 'bookcase' | 'rug' | 'mirror' | 'tv-stand'
+  | 'door' | 'window' | 'wall' | 'stairs' | 'elevator' | 'column' | 'garage-door' | 'sliding-door' | 'archway'
   | 'car' | 'motorcycle' | 'bicycle' | 'pickup-truck' | 'suv' | 'van' | 'bus' | 'semi-truck' | 'police-car'
+  | 'ambulance' | 'fire-truck' | 'taxi' | 'boat' | 'atv' | 'scooter'
   | 'tree' | 'bush' | 'fence' | 'streetlight' | 'fire-hydrant' | 'dumpster'
   | 'bench' | 'sidewalk' | 'road' | 'mailbox' | 'manhole' | 'trash-can'
+  | 'parking-spot' | 'crosswalk' | 'traffic-cone' | 'barrier' | 'median' | 'curb'
   | 'stove' | 'fridge' | 'sink' | 'bathtub' | 'toilet' | 'shower' | 'microwave' | 'dishwasher' | 'washer-dryer' | 'counter'
   | 'desk' | 'computer' | 'filing-cabinet' | 'bookshelf' | 'printer' | 'office-chair' | 'whiteboard' | 'safe' | 'lamp' | 'tv'
+  | 'hospital-bed' | 'gurney' | 'iv-stand' | 'wheelchair' | 'med-cabinet' | 'defibrillator' | 'first-aid' | 'oxygen-tank'
+  | 'workbench' | 'toolbox' | 'shelving' | 'ladder' | 'generator' | 'electrical-panel' | 'water-heater' | 'furnace'
+  | 'ceiling-light' | 'floor-lamp' | 'spotlight' | 'exit-sign' | 'security-camera' | 'smoke-detector' | 'sprinkler'
+  | 'crime-tape' | 'cone-marker' | 'photo-placard' | 'scale-ruler' | 'compass-rose' | 'north-arrow'
   | 'text-label' | 'arrow' | 'line' | 'freehand' | 'room-label';
 
 export interface SceneObject {

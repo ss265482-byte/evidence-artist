@@ -3,7 +3,7 @@ import { objectLibrary } from '@/lib/sceneObjects';
 import {
   ChevronDown, ChevronRight, Search, Skull, Crosshair, Fingerprint,
   Sofa, Building, Car, Trees, Star, Clock, ChevronsUpDown, GripVertical,
-  X
+  X, ChefHat, Briefcase, HeartPulse, Wrench, Lightbulb, Shield, Tag
 } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -16,6 +16,12 @@ const categoryIcons: Record<string, React.ElementType> = {
   'Structures': Building,
   'Vehicles': Car,
   'Outdoor': Trees,
+  'Kitchen & Bath': ChefHat,
+  'Office': Briefcase,
+  'Medical': HeartPulse,
+  'Garage & Workshop': Wrench,
+  'Lighting & Safety': Lightbulb,
+  'Scene Markers': Shield,
 };
 
 const categoryColors: Record<string, string> = {
@@ -26,6 +32,12 @@ const categoryColors: Record<string, string> = {
   'Structures': 'text-primary',
   'Vehicles': 'text-primary',
   'Outdoor': 'text-primary',
+  'Kitchen & Bath': 'text-accent-foreground',
+  'Office': 'text-primary',
+  'Medical': 'text-destructive',
+  'Garage & Workshop': 'text-muted-foreground',
+  'Lighting & Safety': 'text-warning',
+  'Scene Markers': 'text-primary',
 };
 
 const FAVORITES_KEY = 'scene-object-favorites';
