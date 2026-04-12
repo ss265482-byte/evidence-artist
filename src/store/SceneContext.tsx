@@ -13,6 +13,8 @@ export type SceneObjectType =
   | 'car' | 'motorcycle' | 'bicycle' | 'pickup-truck' | 'suv' | 'van' | 'bus' | 'semi-truck' | 'police-car'
   | 'tree' | 'bush' | 'fence' | 'streetlight' | 'fire-hydrant' | 'dumpster'
   | 'bench' | 'sidewalk' | 'road' | 'mailbox' | 'manhole' | 'trash-can'
+  | 'stove' | 'fridge' | 'sink' | 'bathtub' | 'toilet' | 'shower' | 'microwave' | 'dishwasher' | 'washer-dryer' | 'counter'
+  | 'desk' | 'computer' | 'filing-cabinet' | 'bookshelf' | 'printer' | 'office-chair' | 'whiteboard' | 'safe' | 'lamp' | 'tv'
   | 'text-label' | 'arrow' | 'line' | 'freehand' | 'room-label';
 
 export interface SceneObject {
