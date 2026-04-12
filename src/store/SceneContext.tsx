@@ -430,7 +430,7 @@ export function SceneProvider({ children }: { children: ReactNode }) {
   );
 }
 
-export function useScene() {
+export function useScene(): SceneState {
   const ctx = useContext(SceneContext);
   if (!ctx) throw new Error('useScene must be used within SceneProvider');
   return ctx;
