@@ -435,5 +435,3 @@ export function useScene(): SceneState {
   if (!ctx) throw new Error('useScene must be used within SceneProvider');
   return ctx;
 }
-  return ctx;
-}
