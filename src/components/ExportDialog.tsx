@@ -336,15 +336,45 @@ export default function ExportDialog() {
           });
         }
 
-        // ── Footer on all pages ──
+        // ── IICSF Watermark + Footer on all pages ──
         const totalPages = pdf.getNumberOfPages();
         for (let p = 1; p <= totalPages; p++) {
           pdf.setPage(p);
+
+          // Diagonal watermark
+          pdf.saveGraphicsState();
+          pdf.setFontSize(48);
+          pdf.setTextColor(200, 200, 200);
+          // @ts-ignore - setGState exists in jspdf
+          const gState = new (pdf as any).GState({ opacity: 0.12 });
+          // @ts-ignore
+          pdf.setGState(gState);
+          pdf.setFont('helvetica', 'bold');
+          const cx = pageW / 2;
+          const cy = pageH / 2;
+          // Rotated watermark text
+          const rad = -Math.PI / 6;
+          const cos = Math.cos(rad);
+          const sin = Math.sin(rad);
+          const watermarkText = 'IICSF';
+          const wGap = 200;
+          for (let wy = -pageH; wy < pageH * 2; wy += wGap) {
+            for (let wx = -pageW; wx < pageW * 2; wx += wGap) {
+              const rx = cos * (wx - cx) - sin * (wy - cy) + cx;
+              const ry = sin * (wx - cx) + cos * (wy - cy) + cy;
+              if (rx > -100 && rx < pageW + 100 && ry > -100 && ry < pageH + 100) {
+                pdf.text(watermarkText, rx, ry, { angle: 30 });
+              }
+            }
+          }
+          pdf.restoreGraphicsState();
+
+          // Footer
           pdf.setFontSize(7);
           pdf.setTextColor(148, 163, 184);
           pdf.setFont('helvetica', 'normal');
           pdf.line(margin, pageH - 30, pageW - margin, pageH - 30);
-          pdf.text('CONFIDENTIAL — Crime Scene Sketcher Report', margin, pageH - 20);
+          pdf.text('CONFIDENTIAL — IICSF Crime Scene Sketcher Report', margin, pageH - 20);
           pdf.text(`Page ${p} of ${totalPages}`, pageW - margin, pageH - 20, { align: 'right' });
         }
 
