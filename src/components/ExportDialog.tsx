@@ -21,6 +21,48 @@ export default function ExportDialog() {
 
   const caseLabel = caseInfo.caseNumber || 'scene';
 
+  const addWatermark = (dataURL: string, width: number, height: number): Promise<string> => {
+    return new Promise((resolve) => {
+      const img = new window.Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d')!;
+        ctx.drawImage(img, 0, 0);
+
+        // Diagonal watermark pattern
+        ctx.save();
+        const fontSize = Math.max(24, Math.min(width, height) * 0.06);
+        ctx.font = `bold ${fontSize}px sans-serif`;
+        ctx.fillStyle = 'rgba(150, 150, 150, 0.18)';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        const text = 'IICSF';
+        const gap = fontSize * 5;
+        ctx.translate(width / 2, height / 2);
+        ctx.rotate(-Math.PI / 6);
+        for (let y = -height; y < height * 2; y += gap) {
+          for (let x = -width; x < width * 2; x += gap) {
+            ctx.fillText(text, x - width / 2, y - height / 2);
+          }
+        }
+        ctx.restore();
+
+        // Bottom-right badge
+        const badgeFontSize = Math.max(12, fontSize * 0.5);
+        ctx.font = `bold ${badgeFontSize}px sans-serif`;
+        ctx.fillStyle = 'rgba(100, 100, 100, 0.35)';
+        ctx.textAlign = 'right';
+        ctx.fillText('IICSF Certified', width - 15, height - 15);
+
+        resolve(canvas.toDataURL('image/png'));
+      };
+      img.src = dataURL;
+    });
+  };
+
   const getStageDataURL = (pixelRatio: number): string | null => {
     const stage = stageStore.current;
     if (!stage) return null;
