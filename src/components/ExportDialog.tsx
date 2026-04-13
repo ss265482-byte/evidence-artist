@@ -21,6 +21,48 @@ export default function ExportDialog() {
 
   const caseLabel = caseInfo.caseNumber || 'scene';
 
+  const addWatermark = (dataURL: string, width: number, height: number): Promise<string> => {
+    return new Promise((resolve) => {
+      const img = new window.Image();
+      img.onload = () => {
+        const canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        const ctx = canvas.getContext('2d')!;
+        ctx.drawImage(img, 0, 0);
+
+        // Diagonal watermark pattern
+        ctx.save();
+        const fontSize = Math.max(24, Math.min(width, height) * 0.06);
+        ctx.font = `bold ${fontSize}px sans-serif`;
+        ctx.fillStyle = 'rgba(150, 150, 150, 0.18)';
+        ctx.textAlign = 'center';
+        ctx.textBaseline = 'middle';
+
+        const text = 'IICSF';
+        const gap = fontSize * 5;
+        ctx.translate(width / 2, height / 2);
+        ctx.rotate(-Math.PI / 6);
+        for (let y = -height; y < height * 2; y += gap) {
+          for (let x = -width; x < width * 2; x += gap) {
+            ctx.fillText(text, x - width / 2, y - height / 2);
+          }
+        }
+        ctx.restore();
+
+        // Bottom-right badge
+        const badgeFontSize = Math.max(12, fontSize * 0.5);
+        ctx.font = `bold ${badgeFontSize}px sans-serif`;
+        ctx.fillStyle = 'rgba(100, 100, 100, 0.35)';
+        ctx.textAlign = 'right';
+        ctx.fillText('IICSF Certified', width - 15, height - 15);
+
+        resolve(canvas.toDataURL('image/png'));
+      };
+      img.src = dataURL;
+    });
+  };
+
   const getStageDataURL = (pixelRatio: number): string | null => {
     const stage = stageStore.current;
     if (!stage) return null;
@@ -29,13 +71,17 @@ export default function ExportDialog() {
 
   const handleExportPNG = () => {
     setExporting(true);
-    setTimeout(() => {
+    setTimeout(async () => {
       try {
         const dataURL = getStageDataURL(pngScale);
         if (!dataURL) { toast.error('Canvas not ready'); return; }
+        const stage = stageStore.current!;
+        const w = stage.width() * pngScale;
+        const h = stage.height() * pngScale;
+        const watermarked = await addWatermark(dataURL, w, h);
         const link = document.createElement('a');
         link.download = `crime-scene-${caseLabel}.png`;
-        link.href = dataURL;
+        link.href = watermarked;
         link.click();
         toast.success(`Exported PNG at ${pngScale}x resolution`);
         setOpen(false);
@@ -290,15 +336,45 @@ export default function ExportDialog() {
           });
         }
 
-        // ── Footer on all pages ──
+        // ── IICSF Watermark + Footer on all pages ──
         const totalPages = pdf.getNumberOfPages();
         for (let p = 1; p <= totalPages; p++) {
           pdf.setPage(p);
+
+          // Diagonal watermark
+          pdf.saveGraphicsState();
+          pdf.setFontSize(48);
+          pdf.setTextColor(200, 200, 200);
+          // @ts-ignore - setGState exists in jspdf
+          const gState = new (pdf as any).GState({ opacity: 0.12 });
+          // @ts-ignore
+          pdf.setGState(gState);
+          pdf.setFont('helvetica', 'bold');
+          const cx = pageW / 2;
+          const cy = pageH / 2;
+          // Rotated watermark text
+          const rad = -Math.PI / 6;
+          const cos = Math.cos(rad);
+          const sin = Math.sin(rad);
+          const watermarkText = 'IICSF';
+          const wGap = 200;
+          for (let wy = -pageH; wy < pageH * 2; wy += wGap) {
+            for (let wx = -pageW; wx < pageW * 2; wx += wGap) {
+              const rx = cos * (wx - cx) - sin * (wy - cy) + cx;
+              const ry = sin * (wx - cx) + cos * (wy - cy) + cy;
+              if (rx > -100 && rx < pageW + 100 && ry > -100 && ry < pageH + 100) {
+                pdf.text(watermarkText, rx, ry, { angle: 30 });
+              }
+            }
+          }
+          pdf.restoreGraphicsState();
+
+          // Footer
           pdf.setFontSize(7);
           pdf.setTextColor(148, 163, 184);
           pdf.setFont('helvetica', 'normal');
           pdf.line(margin, pageH - 30, pageW - margin, pageH - 30);
-          pdf.text('CONFIDENTIAL — Crime Scene Sketcher Report', margin, pageH - 20);
+          pdf.text('CONFIDENTIAL — IICSF Crime Scene Sketcher Report', margin, pageH - 20);
           pdf.text(`Page ${p} of ${totalPages}`, pageW - margin, pageH - 20, { align: 'right' });
         }
 
