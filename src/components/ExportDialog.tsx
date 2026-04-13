@@ -71,13 +71,17 @@ export default function ExportDialog() {
 
   const handleExportPNG = () => {
     setExporting(true);
-    setTimeout(() => {
+    setTimeout(async () => {
       try {
         const dataURL = getStageDataURL(pngScale);
         if (!dataURL) { toast.error('Canvas not ready'); return; }
+        const stage = stageStore.current!;
+        const w = stage.width() * pngScale;
+        const h = stage.height() * pngScale;
+        const watermarked = await addWatermark(dataURL, w, h);
         const link = document.createElement('a');
         link.download = `crime-scene-${caseLabel}.png`;
-        link.href = dataURL;
+        link.href = watermarked;
         link.click();
         toast.success(`Exported PNG at ${pngScale}x resolution`);
         setOpen(false);
