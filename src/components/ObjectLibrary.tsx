@@ -22,6 +22,8 @@ const categoryIcons: Record<string, React.ElementType> = {
   'Garage & Workshop': Wrench,
   'Lighting & Safety': Lightbulb,
   'Scene Markers': Shield,
+  'Hazmat & Industrial': Tag,
+  'Recreation': Star,
 };
 
 const categoryColors: Record<string, string> = {
@@ -38,6 +40,8 @@ const categoryColors: Record<string, string> = {
   'Garage & Workshop': 'text-muted-foreground',
   'Lighting & Safety': 'text-warning',
   'Scene Markers': 'text-primary',
+  'Hazmat & Industrial': 'text-warning',
+  'Recreation': 'text-primary',
 };
 
 const FAVORITES_KEY = 'scene-object-favorites';
