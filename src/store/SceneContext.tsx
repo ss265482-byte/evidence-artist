@@ -34,6 +34,12 @@ export type SceneObjectType =
   | 'measurement-marker' | 'blood-spatter-card' | 'trajectory-rod' | 'grid-marker' | 'entry-point' | 'exit-point'
   | 'hazmat-barrel' | 'chemical-spill' | 'gas-leak' | 'biohazard-zone' | 'radiation-sign' | 'caution-sign'
   | 'playground-swing' | 'slide' | 'picnic-table' | 'pool' | 'hot-tub' | 'trampoline' | 'basketball-hoop' | 'grill'
+  | 'sandbox' | 'seesaw' | 'soccer-goal' | 'tennis-net' | 'volleyball-net' | 'skate-ramp' | 'monkey-bars' | 'firepit'
+  | 'dog' | 'cat' | 'horse' | 'cow' | 'pig' | 'chicken' | 'bird' | 'snake' | 'rodent' | 'fish-tank' | 'pet-bed' | 'pet-crate'
+  | 'k9-unit' | 'police-shield' | 'police-barricade' | 'evidence-tent' | 'cordon-post' | 'spike-strip' | 'breaching-ram' | 'body-armor'
+  | 'k9-leash' | 'handcuffs' | 'baton' | 'radio' | 'badge' | 'megaphone' | 'drone' | 'searchlight'
+  | 'molotov' | 'grenade' | 'ied' | 'detonator' | 'wire' | 'gunpowder-residue' | 'shell-fragment' | 'arson-pattern'
+  | 'fire-origin' | 'soot-mark' | 'burn-mark' | 'water-damage' | 'smoke-stain' | 'broken-glass-pile'
   | 'text-label' | 'arrow' | 'line' | 'freehand' | 'room-label';
 
 export interface SceneObject {

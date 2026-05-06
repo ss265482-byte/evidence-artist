@@ -3,7 +3,7 @@ import { objectLibrary } from '@/lib/sceneObjects';
 import {
   ChevronDown, ChevronRight, Search, Skull, Crosshair, Fingerprint,
   Sofa, Building, Car, Trees, Star, Clock, ChevronsUpDown, GripVertical,
-  X, ChefHat, Briefcase, HeartPulse, Wrench, Lightbulb, Shield, Tag
+  X, ChefHat, Briefcase, HeartPulse, Wrench, Lightbulb, Shield, Tag, PawPrint, Siren, Flame
 } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -24,6 +24,9 @@ const categoryIcons: Record<string, React.ElementType> = {
   'Scene Markers': Shield,
   'Hazmat & Industrial': Tag,
   'Recreation': Star,
+  'Animals': PawPrint,
+  'Tactical & Police': Siren,
+  'Explosives & Arson': Flame,
 };
 
 const categoryColors: Record<string, string> = {
@@ -42,6 +45,9 @@ const categoryColors: Record<string, string> = {
   'Scene Markers': 'text-primary',
   'Hazmat & Industrial': 'text-warning',
   'Recreation': 'text-primary',
+  'Animals': 'text-accent-foreground',
+  'Tactical & Police': 'text-primary',
+  'Explosives & Arson': 'text-destructive',
 };
 
 const FAVORITES_KEY = 'scene-object-favorites';
