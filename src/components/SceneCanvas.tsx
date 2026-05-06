@@ -2068,13 +2068,46 @@ function SceneObjectShape({ obj, isSelected, onSelect, allObjects, onSnapGuides,
             <Line points={[w * 0.65, h * 0.22, w * 0.64, h * 0.9]} stroke={c} strokeWidth={0.6} opacity={0.3} />
           </>
         );
-      default:
+      default: {
+        // Auto-render any object using its library template (icon + label) so
+        // items without a hand-drawn case still look distinct, not plain boxes.
+        const tmpl = objectTemplateMap[obj.type];
+        const emoji = tmpl?.icon ?? '◻';
+        const label = obj.label || tmpl?.label || obj.type;
+        const minSide = Math.min(w, h);
+        const iconSize = Math.max(10, Math.min(minSide * 0.55, 48));
+        const showLabel = h >= 28 && w >= 30;
         return (
           <>
-            <Rect width={w} height={h} fill={c} opacity={0.15} stroke={c} strokeWidth={1.5} cornerRadius={3} />
-            <Text text={obj.label} x={2} y={h / 2 - 6} width={w - 4} fontSize={10} fill={c} align="center" fontFamily="JetBrains Mono, monospace" />
+            <Rect width={w} height={h} fill={c} opacity={0.12} stroke={c} strokeWidth={1.5} cornerRadius={4} />
+            <Rect x={2} y={2} width={w - 4} height={h - 4} stroke={c} strokeWidth={0.5} opacity={0.4} dash={[2, 2]} cornerRadius={3} />
+            <Text
+              text={emoji}
+              x={0}
+              y={showLabel ? (h - iconSize) / 2 - 6 : (h - iconSize) / 2}
+              width={w}
+              height={iconSize}
+              fontSize={iconSize}
+              align="center"
+              verticalAlign="middle"
+            />
+            {showLabel && (
+              <Text
+                text={label}
+                x={2}
+                y={h - 12}
+                width={w - 4}
+                fontSize={9}
+                fill={c}
+                align="center"
+                fontFamily="JetBrains Mono, monospace"
+                ellipsis
+                wrap="none"
+              />
+            )}
           </>
         );
+      }
     }
   };
 
