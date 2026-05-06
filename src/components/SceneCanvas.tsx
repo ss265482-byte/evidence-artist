@@ -2,6 +2,12 @@ import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { Stage, Layer, Rect, Text, Line, Circle, Group, Transformer, Arrow as KonvaArrow, Image as KonvaImage } from 'react-konva';
 import { useScene, SceneObject, Measurement, WallSegment } from '@/store/SceneContext';
 import { objectLibrary } from '@/lib/sceneObjects';
+
+const objectTemplateMap: Record<string, { icon: string; label: string }> =
+  Object.values(objectLibrary).flat().reduce((acc, t) => {
+    acc[t.type] = { icon: t.icon, label: t.label };
+    return acc;
+  }, {} as Record<string, { icon: string; label: string }>);
 import Konva from 'konva';
 import { stageStore } from '@/lib/stageRef';
 import { Trash2, Copy, Lock, Unlock, ArrowUpToLine, ArrowDownToLine, X } from 'lucide-react';
