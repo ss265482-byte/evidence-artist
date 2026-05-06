@@ -219,12 +219,15 @@ export default function ObjectLibrary() {
                                   : 'bg-secondary/50 hover:bg-secondary border-transparent hover:border-border'
                                 } hover:shadow-sm`}
                             >
-                              {/* Favorite star */}
+                              {/* Favorite star - always visible for one-click access */}
                               <button
                                 onClick={(e) => { e.stopPropagation(); toggleFavorite(item.type); }}
-                                className={`absolute top-0.5 right-0.5 p-0.5 rounded transition-opacity ${isHovered || isFav ? 'opacity-100' : 'opacity-0'}`}
+                                aria-label={isFav ? `Remove ${item.label} from favorites` : `Add ${item.label} to favorites`}
+                                aria-pressed={isFav}
+                                title={isFav ? 'Remove from favorites' : 'Add to favorites'}
+                                className="absolute top-0.5 right-0.5 p-0.5 rounded hover:bg-background/60 transition-colors z-10"
                               >
-                                <Star className={`h-2.5 w-2.5 ${isFav ? 'fill-yellow-500 text-yellow-500' : 'text-muted-foreground hover:text-yellow-500'}`} />
+                                <Star className={`h-3 w-3 transition-colors ${isFav ? 'fill-yellow-500 text-yellow-500' : 'text-muted-foreground/40 hover:text-yellow-500'}`} />
                               </button>
 
                               {/* Drag grip */}
