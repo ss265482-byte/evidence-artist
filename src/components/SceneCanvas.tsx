@@ -2665,15 +2665,15 @@ export default function SceneCanvas() {
           {sceneTime === 'night' && (
             <>
               <EvidenceGlowLayer objects={objects} />
-              {/* Dark overlay */}
-              <Rect x={-10000} y={-10000} width={30000} height={30000} fill="#0a1628" opacity={0.4} listening={false} />
-              {/* Vignette effect — darker edges */}
+              {/* Subtle blue tint overlay — keeps objects readable */}
+              <Rect x={-10000} y={-10000} width={30000} height={30000} fill="#0a1628" opacity={0.18} listening={false} globalCompositeOperation="multiply" />
+              {/* Vignette effect — softer darker edges */}
               <Rect x={-10000} y={-10000} width={30000} height={30000}
                 fillRadialGradientStartPoint={{ x: dims.width / zoom / 2, y: dims.height / zoom / 2 }}
                 fillRadialGradientEndPoint={{ x: dims.width / zoom / 2, y: dims.height / zoom / 2 }}
                 fillRadialGradientStartRadius={0}
                 fillRadialGradientEndRadius={Math.max(dims.width, dims.height) / zoom}
-                fillRadialGradientColorStops={[0, 'transparent', 0.6, 'transparent', 1, 'rgba(0,0,0,0.25)']}
+                fillRadialGradientColorStops={[0, 'transparent', 0.55, 'transparent', 1, 'rgba(0,0,0,0.35)']}
                 listening={false}
               />
             </>
