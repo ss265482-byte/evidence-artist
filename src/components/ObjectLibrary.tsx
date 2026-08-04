@@ -154,6 +154,18 @@ export default function ObjectLibrary() {
               <span className="text-[9px] font-mono text-muted-foreground/50 bg-secondary px-1.5 py-0.5 rounded">{totalObjects}</span>
               <Tooltip>
                 <TooltipTrigger asChild>
+                  <button
+                    onClick={() => setDensityPersisted(density === 'grid' ? 'list' : 'grid')}
+                    aria-label="Toggle layout density"
+                    className="p-0.5 rounded hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    {density === 'grid' ? <List className="h-3.5 w-3.5" /> : <LayoutGrid className="h-3.5 w-3.5" />}
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom"><p className="text-xs">{density === 'grid' ? 'Compact list view' : 'Grid view'}</p></TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
                   <button onClick={toggleAll} className="p-0.5 rounded hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors">
                     <ChevronsUpDown className="h-3.5 w-3.5" />
                   </button>
@@ -161,6 +173,7 @@ export default function ObjectLibrary() {
                 <TooltipContent side="bottom"><p className="text-xs">Toggle all categories</p></TooltipContent>
               </Tooltip>
             </div>
+
           </div>
 
           {/* Search */}
