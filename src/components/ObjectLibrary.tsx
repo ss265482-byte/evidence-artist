@@ -1,12 +1,14 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import { objectLibrary } from '@/lib/sceneObjects';
 import {
   ChevronDown, ChevronRight, Search, Skull, Crosshair, Fingerprint,
   Sofa, Building, Car, Trees, Star, Clock, ChevronsUpDown, GripVertical,
-  X, ChefHat, Briefcase, HeartPulse, Wrench, Lightbulb, Shield, Tag, PawPrint, Siren, Flame
+  X, ChefHat, Briefcase, HeartPulse, Wrench, Lightbulb, Shield, Tag, PawPrint, Siren, Flame,
+  LayoutGrid, List
 } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
 
 const categoryIcons: Record<string, React.ElementType> = {
   'Bodies': Skull,
@@ -53,6 +55,7 @@ const categoryColors: Record<string, string> = {
 const FAVORITES_KEY = 'scene-object-favorites';
 const RECENTS_KEY = 'scene-object-recents';
 const MAX_RECENTS = 8;
+const DENSITY_KEY = 'scene-object-density';
 
 function loadFromStorage<T>(key: string, fallback: T): T {
   try {
@@ -72,8 +75,28 @@ export default function ObjectLibrary() {
   const [favorites, setFavorites] = useState<string[]>(() => loadFromStorage(FAVORITES_KEY, []));
   const [recents, setRecents] = useState<string[]>(() => loadFromStorage(RECENTS_KEY, []));
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+  const [density, setDensity] = useState<'grid' | 'list'>(() => (loadFromStorage<'grid' | 'list'>(DENSITY_KEY, 'grid')));
+  const searchRef = useRef<HTMLInputElement>(null);
+
+  const setDensityPersisted = useCallback((d: 'grid' | 'list') => {
+    setDensity(d);
+    localStorage.setItem(DENSITY_KEY, JSON.stringify(d));
+  }, []);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'f') {
+        e.preventDefault();
+        searchRef.current?.focus();
+        searchRef.current?.select();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
 
   const allItems = useMemo(() => Object.values(objectLibrary).flat(), []);
+
 
   const toggleFavorite = useCallback((type: string) => {
     setFavorites(prev => {
@@ -131,6 +154,18 @@ export default function ObjectLibrary() {
               <span className="text-[9px] font-mono text-muted-foreground/50 bg-secondary px-1.5 py-0.5 rounded">{totalObjects}</span>
               <Tooltip>
                 <TooltipTrigger asChild>
+                  <button
+                    onClick={() => setDensityPersisted(density === 'grid' ? 'list' : 'grid')}
+                    aria-label="Toggle layout density"
+                    className="p-0.5 rounded hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors"
+                  >
+                    {density === 'grid' ? <List className="h-3.5 w-3.5" /> : <LayoutGrid className="h-3.5 w-3.5" />}
+                  </button>
+                </TooltipTrigger>
+                <TooltipContent side="bottom"><p className="text-xs">{density === 'grid' ? 'Compact list view' : 'Grid view'}</p></TooltipContent>
+              </Tooltip>
+              <Tooltip>
+                <TooltipTrigger asChild>
                   <button onClick={toggleAll} className="p-0.5 rounded hover:bg-secondary text-muted-foreground hover:text-foreground transition-colors">
                     <ChevronsUpDown className="h-3.5 w-3.5" />
                   </button>
@@ -138,12 +173,14 @@ export default function ObjectLibrary() {
                 <TooltipContent side="bottom"><p className="text-xs">Toggle all categories</p></TooltipContent>
               </Tooltip>
             </div>
+
           </div>
 
           {/* Search */}
           <div className="relative">
             <Search className="absolute left-2 top-1/2 -translate-y-1/2 h-3.5 w-3.5 text-muted-foreground" />
             <input
+              ref={searchRef}
               type="text"
               placeholder="Search objects..."
               value={search}
@@ -198,7 +235,7 @@ export default function ObjectLibrary() {
                   </div>
                 )}
                 {(isSpecial || expandedCategories[category]) && (
-                  <div className="grid grid-cols-2 gap-1 px-1 pb-1">
+                  <div className={density === 'grid' ? 'grid grid-cols-2 gap-1 px-1 pb-1' : 'flex flex-col gap-0.5 px-1 pb-1'}>
                     {items.map(item => {
                       const isFav = favorites.includes(item.type);
                       const isHovered = hoveredItem === item.type;
@@ -213,11 +250,14 @@ export default function ObjectLibrary() {
                               }}
                               onMouseEnter={() => setHoveredItem(item.type)}
                               onMouseLeave={() => setHoveredItem(null)}
-                              className={`relative flex flex-col items-center gap-0.5 p-2 rounded-md cursor-grab active:cursor-grabbing transition-all border text-center group
+                              className={`relative rounded-md cursor-grab active:cursor-grabbing transition-all border group hover:shadow-sm
+                                ${density === 'grid'
+                                  ? 'flex flex-col items-center gap-0.5 p-2 text-center'
+                                  : 'flex items-center gap-2 pl-2 pr-6 py-1'}
                                 ${isFav
                                   ? 'bg-yellow-500/5 border-yellow-500/20 hover:border-yellow-500/40 hover:bg-yellow-500/10'
                                   : 'bg-secondary/50 hover:bg-secondary border-transparent hover:border-border'
-                                } hover:shadow-sm`}
+                                }`}
                             >
                               {/* Favorite star - always visible for one-click access */}
                               <button
@@ -225,19 +265,22 @@ export default function ObjectLibrary() {
                                 aria-label={isFav ? `Remove ${item.label} from favorites` : `Add ${item.label} to favorites`}
                                 aria-pressed={isFav}
                                 title={isFav ? 'Remove from favorites' : 'Add to favorites'}
-                                className="absolute top-0.5 right-0.5 p-0.5 rounded hover:bg-background/60 transition-colors z-10"
+                                className={`absolute p-0.5 rounded hover:bg-background/60 transition-colors z-10 ${density === 'grid' ? 'top-0.5 right-0.5' : 'right-0.5 top-1/2 -translate-y-1/2'}`}
                               >
                                 <Star className={`h-3 w-3 transition-colors ${isFav ? 'fill-yellow-500 text-yellow-500' : 'text-muted-foreground/40 hover:text-yellow-500'}`} />
                               </button>
 
                               {/* Drag grip */}
-                              <div className={`absolute top-0.5 left-0.5 transition-opacity ${isHovered ? 'opacity-40' : 'opacity-0'}`}>
-                                <GripVertical className="h-2.5 w-2.5 text-muted-foreground" />
-                              </div>
+                              {density === 'grid' && (
+                                <div className={`absolute top-0.5 left-0.5 transition-opacity ${isHovered ? 'opacity-40' : 'opacity-0'}`}>
+                                  <GripVertical className="h-2.5 w-2.5 text-muted-foreground" />
+                                </div>
+                              )}
 
-                              <span className="text-lg leading-none group-hover:scale-110 transition-transform">{item.icon}</span>
-                              <span className="text-[10px] text-muted-foreground leading-tight group-hover:text-foreground transition-colors">{item.label}</span>
+                              <span className={`${density === 'grid' ? 'text-lg' : 'text-sm'} leading-none group-hover:scale-110 transition-transform`}>{item.icon}</span>
+                              <span className={`text-[10px] text-muted-foreground leading-tight group-hover:text-foreground transition-colors ${density === 'list' ? 'truncate' : ''}`}>{item.label}</span>
                             </div>
+
                           </TooltipTrigger>
                           <TooltipContent side="right" className="text-xs space-y-1">
                             <p className="font-medium">{item.label}</p>
