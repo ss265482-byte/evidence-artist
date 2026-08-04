@@ -294,7 +294,7 @@ export default function ObjectLibrary() {
 
                               {/* Icon medallion tinted with the object's scene color */}
                               <span
-                                className={`relative flex items-center justify-center rounded-md ring-1 transition-transform duration-200 group-hover:scale-110
+                                className={`relative flex items-center justify-center rounded-md transition-transform duration-200 group-hover:scale-110
                                   ${density === 'grid' ? 'h-8 w-8 text-lg' : 'h-6 w-6 text-sm shrink-0'}`}
                                 style={{
                                   backgroundColor: `color-mix(in srgb, ${item.color} 16%, transparent)`,
