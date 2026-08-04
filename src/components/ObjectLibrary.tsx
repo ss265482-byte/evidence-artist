@@ -74,8 +74,28 @@ export default function ObjectLibrary() {
   const [favorites, setFavorites] = useState<string[]>(() => loadFromStorage(FAVORITES_KEY, []));
   const [recents, setRecents] = useState<string[]>(() => loadFromStorage(RECENTS_KEY, []));
   const [hoveredItem, setHoveredItem] = useState<string | null>(null);
+  const [density, setDensity] = useState<'grid' | 'list'>(() => (loadFromStorage<'grid' | 'list'>(DENSITY_KEY, 'grid')));
+  const searchRef = useRef<HTMLInputElement>(null);
+
+  const setDensityPersisted = useCallback((d: 'grid' | 'list') => {
+    setDensity(d);
+    localStorage.setItem(DENSITY_KEY, JSON.stringify(d));
+  }, []);
+
+  useEffect(() => {
+    const onKey = (e: KeyboardEvent) => {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'f') {
+        e.preventDefault();
+        searchRef.current?.focus();
+        searchRef.current?.select();
+      }
+    };
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, []);
 
   const allItems = useMemo(() => Object.values(objectLibrary).flat(), []);
+
 
   const toggleFavorite = useCallback((type: string) => {
     setFavorites(prev => {
