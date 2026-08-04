@@ -40,7 +40,7 @@ function applyDragGhost(e: React.DragEvent, item: DragTemplate & { icon?: string
   ghost.appendChild(inner);
 
   const cross = document.createElement('span');
-  cross.style.cssText = `position:absolute;width:9px;height:9px;border-radius:50%;border:2px solid ${item.color};background:rgba(255,255,255,.9)`;
+  cross.style.cssText = `position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);width:9px;height:9px;border-radius:50%;border:2px solid ${item.color};background:rgba(255,255,255,.9)`;
   ghost.appendChild(cross);
 
   document.body.appendChild(ghost);
