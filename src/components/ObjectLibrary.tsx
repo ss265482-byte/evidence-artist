@@ -235,7 +235,7 @@ export default function ObjectLibrary() {
                   </div>
                 )}
                 {(isSpecial || expandedCategories[category]) && (
-                  <div className="grid grid-cols-2 gap-1 px-1 pb-1">
+                  <div className={density === 'grid' ? 'grid grid-cols-2 gap-1 px-1 pb-1' : 'flex flex-col gap-0.5 px-1 pb-1'}>
                     {items.map(item => {
                       const isFav = favorites.includes(item.type);
                       const isHovered = hoveredItem === item.type;
@@ -250,11 +250,14 @@ export default function ObjectLibrary() {
                               }}
                               onMouseEnter={() => setHoveredItem(item.type)}
                               onMouseLeave={() => setHoveredItem(null)}
-                              className={`relative flex flex-col items-center gap-0.5 p-2 rounded-md cursor-grab active:cursor-grabbing transition-all border text-center group
+                              className={`relative rounded-md cursor-grab active:cursor-grabbing transition-all border group hover:shadow-sm
+                                ${density === 'grid'
+                                  ? 'flex flex-col items-center gap-0.5 p-2 text-center'
+                                  : 'flex items-center gap-2 pl-2 pr-6 py-1'}
                                 ${isFav
                                   ? 'bg-yellow-500/5 border-yellow-500/20 hover:border-yellow-500/40 hover:bg-yellow-500/10'
                                   : 'bg-secondary/50 hover:bg-secondary border-transparent hover:border-border'
-                                } hover:shadow-sm`}
+                                }`}
                             >
                               {/* Favorite star - always visible for one-click access */}
                               <button
@@ -262,19 +265,22 @@ export default function ObjectLibrary() {
                                 aria-label={isFav ? `Remove ${item.label} from favorites` : `Add ${item.label} to favorites`}
                                 aria-pressed={isFav}
                                 title={isFav ? 'Remove from favorites' : 'Add to favorites'}
-                                className="absolute top-0.5 right-0.5 p-0.5 rounded hover:bg-background/60 transition-colors z-10"
+                                className={`absolute p-0.5 rounded hover:bg-background/60 transition-colors z-10 ${density === 'grid' ? 'top-0.5 right-0.5' : 'right-0.5 top-1/2 -translate-y-1/2'}`}
                               >
                                 <Star className={`h-3 w-3 transition-colors ${isFav ? 'fill-yellow-500 text-yellow-500' : 'text-muted-foreground/40 hover:text-yellow-500'}`} />
                               </button>
 
                               {/* Drag grip */}
-                              <div className={`absolute top-0.5 left-0.5 transition-opacity ${isHovered ? 'opacity-40' : 'opacity-0'}`}>
-                                <GripVertical className="h-2.5 w-2.5 text-muted-foreground" />
-                              </div>
+                              {density === 'grid' && (
+                                <div className={`absolute top-0.5 left-0.5 transition-opacity ${isHovered ? 'opacity-40' : 'opacity-0'}`}>
+                                  <GripVertical className="h-2.5 w-2.5 text-muted-foreground" />
+                                </div>
+                              )}
 
-                              <span className="text-lg leading-none group-hover:scale-110 transition-transform">{item.icon}</span>
-                              <span className="text-[10px] text-muted-foreground leading-tight group-hover:text-foreground transition-colors">{item.label}</span>
+                              <span className={`${density === 'grid' ? 'text-lg' : 'text-sm'} leading-none group-hover:scale-110 transition-transform`}>{item.icon}</span>
+                              <span className={`text-[10px] text-muted-foreground leading-tight group-hover:text-foreground transition-colors ${density === 'list' ? 'truncate' : ''}`}>{item.label}</span>
                             </div>
+
                           </TooltipTrigger>
                           <TooltipContent side="right" className="text-xs space-y-1">
                             <p className="font-medium">{item.label}</p>
