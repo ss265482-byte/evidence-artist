@@ -55,6 +55,7 @@ const categoryColors: Record<string, string> = {
 const FAVORITES_KEY = 'scene-object-favorites';
 const RECENTS_KEY = 'scene-object-recents';
 const MAX_RECENTS = 8;
+const DENSITY_KEY = 'scene-object-density';
 
 function loadFromStorage<T>(key: string, fallback: T): T {
   try {
