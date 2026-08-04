@@ -10,6 +10,7 @@ const objectTemplateMap: Record<string, { icon: string; label: string }> =
   }, {} as Record<string, { icon: string; label: string }>);
 import Konva from 'konva';
 import { stageStore } from '@/lib/stageRef';
+import { getDragTemplate, setDragTemplate, type DragTemplate } from '@/lib/dragState';
 import { Trash2, Copy, Lock, Unlock, ArrowUpToLine, ArrowDownToLine, X } from 'lucide-react';
 
 const GRID_SIZE = 20;
