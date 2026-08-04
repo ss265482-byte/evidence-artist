@@ -10,6 +10,7 @@ const objectTemplateMap: Record<string, { icon: string; label: string }> =
   }, {} as Record<string, { icon: string; label: string }>);
 import Konva from 'konva';
 import { stageStore } from '@/lib/stageRef';
+import { getDragTemplate, setDragTemplate, type DragTemplate } from '@/lib/dragState';
 import { Trash2, Copy, Lock, Unlock, ArrowUpToLine, ArrowDownToLine, X } from 'lucide-react';
 
 const GRID_SIZE = 20;
@@ -2248,6 +2249,7 @@ export default function SceneCanvas() {
   const [isDrawing, setIsDrawing] = useState(false);
   const [arrowStart, setArrowStart] = useState<{ x: number; y: number } | null>(null);
   const [arrowPreview, setArrowPreview] = useState<{ x: number; y: number } | null>(null);
+  const [dropPreview, setDropPreview] = useState<{ template: DragTemplate; x: number; y: number } | null>(null);
   const [snapGuides, setSnapGuides] = useState<SnapGuide[]>([]);
 
   useEffect(() => {
@@ -2506,8 +2508,30 @@ export default function SceneCanvas() {
     if (activeTool !== 'freehand') { setIsDrawing(false); setFreehandPoints([]); }
   }, [activeTool]);
 
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'copy';
+    const template = getDragTemplate();
+    const rect = containerRef.current?.getBoundingClientRect();
+    if (!template || !rect) return;
+    const x = (e.clientX - rect.left - stagePos.x) / zoom;
+    const y = (e.clientY - rect.top - stagePos.y) / zoom;
+    const snapPos = (v: number) => (snapToGrid ? Math.round(v / GRID_SIZE) * GRID_SIZE : v);
+    setDropPreview({
+      template,
+      x: snapPos(x - template.width / 2),
+      y: snapPos(y - template.height / 2),
+    });
+  }, [stagePos, zoom, snapToGrid]);
+
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    if (e.currentTarget === e.target) setDropPreview(null);
+  }, []);
+
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
+    setDropPreview(null);
+    setDragTemplate(null);
     const data = e.dataTransfer.getData('application/scene-object');
     if (!data) return;
     const template = JSON.parse(data);
@@ -2522,6 +2546,7 @@ export default function SceneCanvas() {
       label: template.label, color: template.color, category: template.category,
     });
   }, [addObject, zoom, stagePos, snapToGrid]);
+
 
   const legendX = (dims.width - stagePos.x) / zoom - 200;
   const legendY = 20 / zoom;
@@ -2541,7 +2566,8 @@ export default function SceneCanvas() {
       className={`flex-1 relative overflow-hidden transition-colors duration-700 ${sceneTime === 'night' ? 'bg-[#050d1a]' : 'bg-canvas-bg'}`}
       style={{ cursor: getCursor() }}
       onDrop={handleDrop}
-      onDragOver={(e) => e.preventDefault()}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
       onContextMenu={handleContextMenu}
     >
       <Stage
@@ -2571,6 +2597,60 @@ export default function SceneCanvas() {
           {objects.map(obj => (
             <SceneObjectShape key={obj.id} obj={obj} isSelected={selectedObjectId === obj.id} onSelect={() => selectObject(obj.id)} allObjects={objects} onSnapGuides={setSnapGuides} updateObject={updateObject} updateObjectSilent={updateObjectSilent} snapToGrid={snapToGrid} />
           ))}
+          {/* Live drop preview while dragging from the object library */}
+          {dropPreview && (
+            <Group listening={false}>
+              <Rect
+                x={dropPreview.x}
+                y={dropPreview.y}
+                width={dropPreview.template.width}
+                height={dropPreview.template.height}
+                fill={dropPreview.template.color}
+                opacity={0.22}
+                stroke={dropPreview.template.color}
+                strokeWidth={2 / zoom}
+                dash={[8 / zoom, 5 / zoom]}
+                cornerRadius={3 / zoom}
+              />
+              {/* Center crosshair marks the exact anchor point */}
+              <Line
+                points={[
+                  dropPreview.x + dropPreview.template.width / 2 - 8 / zoom, dropPreview.y + dropPreview.template.height / 2,
+                  dropPreview.x + dropPreview.template.width / 2 + 8 / zoom, dropPreview.y + dropPreview.template.height / 2,
+                ]}
+                stroke={dropPreview.template.color}
+                strokeWidth={1.5 / zoom}
+              />
+              <Line
+                points={[
+                  dropPreview.x + dropPreview.template.width / 2, dropPreview.y + dropPreview.template.height / 2 - 8 / zoom,
+                  dropPreview.x + dropPreview.template.width / 2, dropPreview.y + dropPreview.template.height / 2 + 8 / zoom,
+                ]}
+                stroke={dropPreview.template.color}
+                strokeWidth={1.5 / zoom}
+              />
+              <Text
+                x={dropPreview.x}
+                y={dropPreview.y - 18 / zoom}
+                width={dropPreview.template.width}
+                align="center"
+                text={dropPreview.template.label}
+                fontSize={12 / zoom}
+                fontStyle="bold"
+                fill={dropPreview.template.color}
+              />
+              <Text
+                x={dropPreview.x}
+                y={dropPreview.y + dropPreview.template.height + 4 / zoom}
+                width={dropPreview.template.width}
+                align="center"
+                text={`${(dropPreview.template.width / PIXELS_PER_UNIT).toFixed(1)} × ${(dropPreview.template.height / PIXELS_PER_UNIT).toFixed(1)} ft${snapToGrid ? ' · snapped' : ''}`}
+                fontSize={10 / zoom}
+                fill={sceneTime === 'night' ? '#93c5fd' : '#64748b'}
+              />
+            </Group>
+          )}
+
           {/* Snap alignment guides */}
           {snapGuides.map((g, i) =>
             g.orientation === 'v'
