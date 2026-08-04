@@ -1,12 +1,14 @@
-import { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useRef, useEffect } from 'react';
 import { objectLibrary } from '@/lib/sceneObjects';
 import {
   ChevronDown, ChevronRight, Search, Skull, Crosshair, Fingerprint,
   Sofa, Building, Car, Trees, Star, Clock, ChevronsUpDown, GripVertical,
-  X, ChefHat, Briefcase, HeartPulse, Wrench, Lightbulb, Shield, Tag, PawPrint, Siren, Flame
+  X, ChefHat, Briefcase, HeartPulse, Wrench, Lightbulb, Shield, Tag, PawPrint, Siren, Flame,
+  LayoutGrid, List
 } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+
 
 const categoryIcons: Record<string, React.ElementType> = {
   'Bodies': Skull,
