@@ -2566,7 +2566,8 @@ export default function SceneCanvas() {
       className={`flex-1 relative overflow-hidden transition-colors duration-700 ${sceneTime === 'night' ? 'bg-[#050d1a]' : 'bg-canvas-bg'}`}
       style={{ cursor: getCursor() }}
       onDrop={handleDrop}
-      onDragOver={(e) => e.preventDefault()}
+      onDragOver={handleDragOver}
+      onDragLeave={handleDragLeave}
       onContextMenu={handleContextMenu}
     >
       <Stage
