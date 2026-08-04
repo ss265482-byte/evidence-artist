@@ -246,8 +246,13 @@ export default function ObjectLibrary() {
                               draggable
                               onDragStart={e => {
                                 e.dataTransfer.setData('application/scene-object', JSON.stringify(item));
+                                e.dataTransfer.effectAllowed = 'copy';
+                                setDragTemplate(item);
+                                applyDragGhost(e, item);
                                 addRecent(item.type);
                               }}
+                              onDragEnd={() => setDragTemplate(null)}
+
                               onMouseEnter={() => setHoveredItem(item.type)}
                               onMouseLeave={() => setHoveredItem(null)}
                               style={{ ['--obj-color' as string]: item.color }}
