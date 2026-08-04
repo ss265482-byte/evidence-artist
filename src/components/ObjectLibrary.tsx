@@ -8,6 +8,46 @@ import {
 } from 'lucide-react';
 import { Tooltip, TooltipContent, TooltipTrigger, TooltipProvider } from '@/components/ui/tooltip';
 import { Tabs, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import { setDragTemplate, type DragTemplate } from '@/lib/dragState';
+
+/**
+ * Builds a floating "ghost" that mirrors the object's real canvas footprint
+ * (scaled to a sane on-screen size) so users can judge placement while dragging.
+ */
+function applyDragGhost(e: React.DragEvent, item: DragTemplate & { icon?: string }) {
+  const MAX = 140;
+  const MIN = 44;
+  const ratio = Math.min(MAX / Math.max(item.width, item.height), 2);
+  const w = Math.max(MIN, Math.round(item.width * ratio));
+  const h = Math.max(MIN, Math.round(item.height * ratio));
+
+  const ghost = document.createElement('div');
+  ghost.style.cssText = `
+    position:fixed; top:-1000px; left:-1000px; z-index:-1;
+    width:${w}px; height:${h}px; box-sizing:border-box;
+    display:flex; align-items:center; justify-content:center;
+    border:2px dashed ${item.color}; border-radius:8px;
+    background:${item.color}2e; backdrop-filter:blur(2px);
+    font-family:ui-sans-serif,system-ui,sans-serif;
+  `;
+
+  const inner = document.createElement('div');
+  inner.style.cssText = 'display:flex;flex-direction:column;align-items:center;gap:2px;line-height:1;';
+  inner.innerHTML = `
+    <span style="font-size:${Math.min(28, Math.max(16, Math.round(Math.min(w, h) * 0.45)))}px">${item.icon ?? '📍'}</span>
+    <span style="font-size:10px;font-weight:600;color:#0f172a;background:rgba(255,255,255,.85);padding:1px 5px;border-radius:4px;white-space:nowrap">${item.label}</span>
+  `;
+  ghost.appendChild(inner);
+
+  const cross = document.createElement('span');
+  cross.style.cssText = `position:absolute;width:9px;height:9px;border-radius:50%;border:2px solid ${item.color};background:rgba(255,255,255,.9)`;
+  ghost.appendChild(cross);
+
+  document.body.appendChild(ghost);
+  e.dataTransfer.setDragImage(ghost, w / 2, h / 2);
+  setTimeout(() => ghost.remove(), 0);
+}
+
 
 
 const categoryIcons: Record<string, React.ElementType> = {
