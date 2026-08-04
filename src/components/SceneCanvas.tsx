@@ -2506,8 +2506,30 @@ export default function SceneCanvas() {
     if (activeTool !== 'freehand') { setIsDrawing(false); setFreehandPoints([]); }
   }, [activeTool]);
 
+  const handleDragOver = useCallback((e: React.DragEvent) => {
+    e.preventDefault();
+    e.dataTransfer.dropEffect = 'copy';
+    const template = getDragTemplate();
+    const rect = containerRef.current?.getBoundingClientRect();
+    if (!template || !rect) return;
+    const x = (e.clientX - rect.left - stagePos.x) / zoom;
+    const y = (e.clientY - rect.top - stagePos.y) / zoom;
+    const snapPos = (v: number) => (snapToGrid ? Math.round(v / GRID_SIZE) * GRID_SIZE : v);
+    setDropPreview({
+      template,
+      x: snapPos(x - template.width / 2),
+      y: snapPos(y - template.height / 2),
+    });
+  }, [stagePos, zoom, snapToGrid]);
+
+  const handleDragLeave = useCallback((e: React.DragEvent) => {
+    if (e.currentTarget === e.target) setDropPreview(null);
+  }, []);
+
   const handleDrop = useCallback((e: React.DragEvent) => {
     e.preventDefault();
+    setDropPreview(null);
+    setDragTemplate(null);
     const data = e.dataTransfer.getData('application/scene-object');
     if (!data) return;
     const template = JSON.parse(data);
@@ -2522,6 +2544,7 @@ export default function SceneCanvas() {
       label: template.label, color: template.color, category: template.category,
     });
   }, [addObject, zoom, stagePos, snapToGrid]);
+
 
   const legendX = (dims.width - stagePos.x) / zoom - 200;
   const legendY = 20 / zoom;
